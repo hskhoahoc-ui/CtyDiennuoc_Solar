@@ -138,7 +138,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // --- API ENDPOINTS ---
 
-// 1. Solar Products
 app.get('/api/solar-products', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM solar_products ORDER BY id DESC');
@@ -177,7 +176,6 @@ app.delete('/api/solar-products/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 2. Materials
 app.get('/api/materials', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM materials ORDER BY id DESC');
@@ -239,7 +237,6 @@ app.post('/api/materials/import', upload.single('file'), async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 3. Equipment
 app.get('/api/equipment', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM equipment ORDER BY id DESC');
@@ -278,7 +275,6 @@ app.delete('/api/equipment/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 4. Customers
 app.get('/api/customers', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM customers ORDER BY id DESC');
@@ -316,7 +312,6 @@ app.delete('/api/customers/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 5. Package Quotations (Báo giá trọn gói)
 app.get('/api/package-quotations', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM package_quotations ORDER BY id DESC');
@@ -355,7 +350,6 @@ app.delete('/api/package-quotations/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 6. Login
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -373,7 +367,6 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// 7. Services
 app.get('/api/services', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM services ORDER BY id DESC');
@@ -399,7 +392,6 @@ app.delete('/api/services/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 8. Sales
 app.get('/api/sales', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM sales ORDER BY id DESC');
@@ -429,7 +421,6 @@ app.post('/api/sales', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 9. Expenses
 app.get('/api/expenses', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM expenses ORDER BY id DESC');
@@ -455,7 +446,6 @@ app.delete('/api/expenses/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 10. Admins
 app.get('/api/admins', async (req, res) => {
   try {
     const result = await pool.query('SELECT id, username, full_name, role, created_at FROM admins ORDER BY id DESC');
@@ -500,7 +490,6 @@ app.delete('/api/admins/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 11. Export Reports
 app.get('/api/export/inventory-report', async (req, res) => {
   try {
     const pRes = await pool.query('SELECT * FROM solar_products');
