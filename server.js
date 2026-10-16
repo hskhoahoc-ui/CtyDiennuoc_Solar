@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // PostgreSQL Connection
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/angiang_solar',
+  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:6543/angiang_solar',
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
