@@ -27,9 +27,9 @@
       @media print {
         body * { visibility: hidden !important; }
         #print-section, #print-section * { visibility: visible !important; }
-        #print-section { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; }
+        #print-section { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; background: white !important; }
         #print-sales-section, #print-sales-section * { visibility: visible !important; }
-        #print-sales-section { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; padding: 20px !important; display: block !important; }
+        #print-sales-section { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; padding: 20px !important; display: block !important; background: white !important; }
         .no-print { display: none !important; }
       }
     </style>
@@ -1315,8 +1315,12 @@
             }
 
             document.getElementById('print-sales-tbody').innerHTML = tbodyHtml;
-            document.getElementById('print-sales-section').classList.remove('hidden');
-            setTimeout(() => { window.print(); }, 100);
+            
+            const salesPrintSection = document.getElementById('print-sales-section');
+            salesPrintSection.classList.remove('hidden');
+            salesPrintSection.scrollIntoView({ behavior: 'smooth' });
+
+            setTimeout(() => { window.print(); }, 200);
         }
 
         function filterRevenueReport() { renderRevenueReport(); }
