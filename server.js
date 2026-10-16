@@ -78,6 +78,18 @@ pool.query(`
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 
+  CREATE TABLE IF NOT EXISTS package_quotations (
+      id SERIAL PRIMARY KEY,
+      image_url TEXT,
+      package_name VARCHAR(255) NOT NULL,
+      power VARCHAR(100),
+      battery_warranty VARCHAR(100),
+      inverter_warranty VARCHAR(100),
+      accu_warranty VARCHAR(100),
+      package_price NUMERIC(15,2) DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+
   CREATE TABLE IF NOT EXISTS quotations (
       id SERIAL PRIMARY KEY,
       code VARCHAR(50) UNIQUE,
@@ -284,27 +296,7 @@ app.post('/api/customers', async (req, res) => {
     res.json(result.rows[0]);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
-// --- BỔ SUNG API ĐĂNG NHẬP ---
-app.post('/api/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    
-    // Kiểm tra tài khoản khởi tạo mặc định
-    if (username === 'admin' && password === '123456') {
-      return res.json({ success: true, message: 'Đăng nhập thành công', role: 'Super Admin' });
-    }
 
-    // Kiểm tra trong cơ sở dữ liệu bảng admins
-    const result = await pool.query('SELECT * FROM admins WHERE username = $1 AND password = $2', [username, password]);
-    if (result.rows.length > 0) {
-      res.json({ success: true, message: 'Đăng nhập thành công', role: result.rows[0].role });
-    } else {
-      res.status(401).json({ success: false, error: 'Tên đăng nhập hoặc mật khẩu không chính xác!' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 app.put('/api/customers/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -324,7 +316,64 @@ app.delete('/api/customers/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 5. Services
+// 5. Package Quotations (Báo giá trọn gói)
+app.get('/api/package-quotations', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM package_quotations ORDER BY id DESC');
+    res.json(result.rows);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/package-quotations', async (req, res) => {
+  try {
+    const { image_url, package_name, power, battery_warranty, inverter_warranty, accu_warranty, package_price } = req.body;
+    const result = await pool.query(
+      `INSERT INTO package_quotations (image_url, package_name, power, battery_warranty, inverter_warranty, accu_warranty, package_price) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [image_url, package_name, power, battery_warranty, inverter_warranty, accu_warranty, package_price || 0]
+    );
+    res.json(result.rows[0]);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.put('/api/package-quotations/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { image_url, package_name, power, battery_warranty, inverter_warranty, accu_warranty, package_price } = req.body;
+    const result = await pool.query(
+      `UPDATE package_quotations SET image_url=$1, package_name=$2, power=$3, battery_warranty=$4, inverter_warranty=$5, accu_warranty=$6, package_price=$7 WHERE id=$8 RETURNING *`,
+      [image_url, package_name, power, battery_warranty, inverter_warranty, accu_warranty, package_price, id]
+    );
+    res.json(result.rows[0]);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.delete('/api/package-quotations/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM package_quotations WHERE id=$1', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// 6. Login
+app.post('/api/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (username === 'admin' && password === '123456') {
+      return res.json({ success: true, message: 'Đăng nhập thành công', role: 'Super Admin' });
+    }
+    const result = await pool.query('SELECT * FROM admins WHERE username = $1 AND password = $2', [username, password]);
+    if (result.rows.length > 0) {
+      res.json({ success: true, message: 'Đăng nhập thành công', role: result.rows[0].role });
+    } else {
+      res.status(401).json({ success: false, error: 'Tên đăng nhập hoặc mật khẩu không chính xác!' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 7. Services
 app.get('/api/services', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM services ORDER BY id DESC');
@@ -350,7 +399,7 @@ app.delete('/api/services/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 6. Sales
+// 8. Sales
 app.get('/api/sales', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM sales ORDER BY id DESC');
@@ -380,7 +429,7 @@ app.post('/api/sales', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 7. Expenses
+// 9. Expenses
 app.get('/api/expenses', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM expenses ORDER BY id DESC');
@@ -406,7 +455,7 @@ app.delete('/api/expenses/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 8. Admins (Quản lý tài khoản quản trị)
+// 10. Admins
 app.get('/api/admins', async (req, res) => {
   try {
     const result = await pool.query('SELECT id, username, full_name, role, created_at FROM admins ORDER BY id DESC');
@@ -451,7 +500,7 @@ app.delete('/api/admins/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 9. Export Reports
+// 11. Export Reports
 app.get('/api/export/inventory-report', async (req, res) => {
   try {
     const pRes = await pool.query('SELECT * FROM solar_products');
@@ -488,6 +537,7 @@ app.get('/api/export/revenue-report', async (req, res) => {
         'Mã Khách Hàng': 'KH-' + r.id,
         'Thời Gian Xuất': r.created_at,
         'Họ Tên Khách Hàng': r.customer_name,
+        'Nội Dung Xuất': r.content,
         'Địa Chỉ': r.address,
         'Số Tiền (Doanh Thu)': r.total_amount,
         'Giá Vốn Nhập': r.total_import_cost,
