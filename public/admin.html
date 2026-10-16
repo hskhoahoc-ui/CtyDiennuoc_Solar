@@ -46,12 +46,12 @@
                 </div>
             </div>
             <div class="mt-3 md:mt-0 flex items-center space-x-3">
-                <span class="bg-blue-100 text-brandBlue px-3 py-1 rounded-full text-xs font-bold uppercase shadow-inner flex items-center">
-                    <i class="fas fa-user-shield mr-1"></i> Quản trị viên
-                    <button type="button" onclick="switchTab('tab-admins')" class="ml-2 bg-white text-brandBlue px-2 py-0.5 rounded text-[10px] shadow hover:bg-blue-50 font-bold" title="Đổi mật khẩu / Quản lý admin">
-                        <i class="fas fa-key mr-1"></i> Đổi Mật Khẩu
+                <div class="flex items-center bg-blue-50 border border-blue-200 px-3 py-1 rounded-full text-xs font-bold text-brandBlue shadow-inner">
+                    <i class="fas fa-user-shield mr-1.5"></i> Quản trị viên
+                    <button type="button" onclick="switchTab('tab-admins')" class="ml-3 bg-brandBlue text-white px-2 py-0.5 rounded text-[11px] shadow hover:bg-blue-700 transition flex items-center">
+                        <i class="fas fa-key mr-1"></i> Đổi mật khẩu
                     </button>
-                </span>
+                </div>
                 <a href="index.html" class="bg-gray-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-700 transition"><i class="fas fa-home mr-1"></i> Xem Trang Chủ</a>
                 <button type="button" onclick="handleLogout()" class="bg-brandRed text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-red-700 transition"><i class="fas fa-sign-out-alt mr-1"></i> Đăng Xuất</button>
             </div>
@@ -642,4 +642,751 @@
                     fetch('/api/services').then(r => r.json()),
                     fetch('/api/expenses').then(r => r.json()),
                     fetch('/api/sales').then(r => r.json()),
-                    fetch('/api/admins').then(r => r.json
+                    fetch('/api/admins').then(r => r.json())
+                ]);
+                allPackages = pkgRes;
+                allProducts = pRes;
+                allMaterials = mRes;
+                allEquipment = eRes;
+                allCustomers = cRes;
+                allServices = sRes;
+                allExpenses = expRes;
+                allSales = salesRes;
+                allAdmins = adminRes;
+
+                renderPackages();
+                renderProducts();
+                renderMaterials();
+                renderEquipment();
+                renderCustomers();
+                renderServices();
+                renderExpenses();
+                renderInventoryReport();
+                renderRevenueReport();
+                renderAdmins();
+                populateQuotePackageSelect();
+            } catch (err) {
+                console.error("Error loading data:", err);
+            }
+        }
+
+        function openPostImgPkg() {
+            window.open('https://postimg.cc', '_blank');
+            const url = prompt("Nhập trực tiếp link ảnh đã upload từ postimg.cc:");
+            if (url) document.getElementById('pkg-image').value = url;
+        }
+
+        function openPostImg() {
+            window.open('https://postimg.cc', '_blank');
+            const url = prompt("Nhập trực tiếp link ảnh đã upload từ postimg.cc:");
+            if (url) document.getElementById('prod-image').value = url;
+        }
+
+        function openPostImgEq() {
+            window.open('https://postimg.cc', '_blank');
+            const url = prompt("Nhập trực tiếp link ảnh đã upload từ postimg.cc:");
+            if (url) document.getElementById('eq-image').value = url;
+        }
+
+        // --- Package Quotations ---
+        async function savePackage(e) {
+            e.preventDefault();
+            const packageName = document.getElementById('pkg-name').value.trim();
+            const power = document.getElementById('pkg-power').value.trim();
+            if (!packageName || !power) {
+                alert('Vui lòng nhập Tên gói và Công suất!');
+                return;
+            }
+            const id = document.getElementById('pkg-id').value;
+            const data = {
+                image_url: document.getElementById('pkg-image').value.trim() || 'https://i.imgur.com/7j8p3Q8.png',
+                package_name: packageName,
+                power: power,
+                battery_warranty: document.getElementById('pkg-battery-war').value.trim(),
+                inverter_warranty: document.getElementById('pkg-inverter-war').value.trim(),
+                accu_warranty: document.getElementById('pkg-accu-war').value.trim(),
+                package_price: parseFloat(document.getElementById('pkg-price').value) || 0
+            };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/package-quotations/${id}` : '/api/package-quotations';
+            const res = await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            if (res.ok) {
+                alert('Lưu báo giá trọn gói thành công!');
+                resetPackageForm();
+                loadAllData();
+            } else {
+                alert('Có lỗi xảy ra khi lưu gói!');
+            }
+        }
+
+        function resetPackageForm() { document.getElementById('package-form').reset(); document.getElementById('pkg-id').value = ''; }
+
+        function editPackage(id) {
+            const pkg = allPackages.find(x => x.id === id);
+            if (!pkg) return;
+            document.getElementById('pkg-id').value = pkg.id;
+            document.getElementById('pkg-image').value = pkg.image_url || '';
+            document.getElementById('pkg-name').value = pkg.package_name || '';
+            document.getElementById('pkg-power').value = pkg.power || '';
+            document.getElementById('pkg-battery-war').value = pkg.battery_warranty || '';
+            document.getElementById('pkg-inverter-war').value = pkg.inverter_warranty || '';
+            document.getElementById('pkg-accu-war').value = pkg.accu_warranty || '';
+            document.getElementById('pkg-price').value = pkg.package_price || 0;
+        }
+
+        async function deletePackage(id) {
+            if (confirm('Xóa báo giá trọn gói này?')) { await fetch(`/api/package-quotations/${id}`, { method: 'DELETE' }); loadAllData(); }
+        }
+
+        function renderPackages() {
+            let html = '';
+            allPackages.forEach(pkg => {
+                const img = pkg.image_url || 'https://i.imgur.com/7j8p3Q8.png';
+                html += `<tr class="border-b hover:bg-gray-50">
+                    <td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td>
+                    <td class="p-2 font-bold">${pkg.package_name}</td>
+                    <td class="p-2">${pkg.power}</td>
+                    <td class="p-2 text-xs">Pin: ${pkg.battery_warranty || '-'}<br>Inv: ${pkg.inverter_warranty || '-'}<br>Accu: ${pkg.accu_warranty || '-'}</td>
+                    <td class="p-2 text-brandRed font-bold">⭐ ${Number(pkg.package_price).toLocaleString()}đ</td>
+                    <td class="p-2 text-right">
+                        <button type="button" onclick="editPackage(${pkg.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button>
+                        <button type="button" onclick="deletePackage(${pkg.id})" class="text-red-600"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('package-stock-table').innerHTML = html || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu trọn gói</td></tr>';
+        }
+
+        // --- Products ---
+        async function saveProduct(e) {
+            e.preventDefault();
+            const brand = document.getElementById('prod-brand').value.trim();
+            const power = document.getElementById('prod-power').value.trim();
+            if (!brand || !power) {
+                alert('Vui lòng nhập đầy đủ Thương Hiệu và Công Suất!');
+                return;
+            }
+            const id = document.getElementById('prod-id').value;
+            const data = {
+                image_url: document.getElementById('prod-image').value.trim() || 'https://i.imgur.com/7j8p3Q8.png',
+                brand: brand,
+                power: power,
+                category: document.getElementById('prod-category').value.trim(),
+                catalog_link: document.getElementById('prod-catalog').value.trim(),
+                stock: parseInt(document.getElementById('prod-stock').value) || 0,
+                unit: document.getElementById('prod-unit').value.trim() || 'Tấm',
+                import_price: parseFloat(document.getElementById('prod-import').value) || 0,
+                selling_price: parseFloat(document.getElementById('prod-selling').value) || 0
+            };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/solar-products/${id}` : '/api/solar-products';
+            const res = await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            if (res.ok) {
+                alert('Lưu sản phẩm thành công!');
+                resetProductForm();
+                loadAllData();
+            } else {
+                alert('Có lỗi xảy ra khi lưu!');
+            }
+        }
+
+        function resetProductForm() { document.getElementById('product-form').reset(); document.getElementById('prod-id').value = ''; }
+
+        function editProduct(id) {
+            const p = allProducts.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-image').value = p.image_url || '';
+            document.getElementById('prod-brand').value = p.brand || '';
+            document.getElementById('prod-power').value = p.power || '';
+            document.getElementById('prod-category').value = p.category || '';
+            document.getElementById('prod-catalog').value = p.catalog_link || '';
+            document.getElementById('prod-stock').value = p.stock || 0;
+            document.getElementById('prod-unit').value = p.unit || 'Tấm';
+            document.getElementById('prod-import').value = p.import_price || 0;
+            document.getElementById('prod-selling').value = p.selling_price || 0;
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('Xóa pin NLMT này?')) { await fetch(`/api/solar-products/${id}`, { method: 'DELETE' }); loadAllData(); }
+        }
+
+        function renderProducts() {
+            let stockHtml = '';
+            allProducts.forEach(p => {
+                const img = p.image_url || 'https://i.imgur.com/7j8p3Q8.png';
+                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2 font-bold">${p.brand}</td><td class="p-2">${p.power}</td><td class="p-2">${p.stock} ${p.unit}</td><td class="p-2 text-brandBlue font-bold">${Number(p.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button type="button" onclick="editProduct(${p.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteProduct(${p.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('product-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
+        }
+
+        // --- Materials ---
+        async function saveMaterial(e) {
+            e.preventDefault();
+            const name = document.getElementById('mat-name').value.trim();
+            if (!name) { alert('Vui lòng nhập tên vật tư!'); return; }
+            const id = document.getElementById('mat-id').value;
+            const data = {
+                image_url: document.getElementById('mat-image').value.trim() || 'https://i.imgur.com/7j8p3Q8.png',
+                name: name,
+                category: document.getElementById('mat-category').value.trim(),
+                stock: parseInt(document.getElementById('mat-stock').value) || 0,
+                unit: document.getElementById('mat-unit').value.trim() || 'Kg',
+                import_price: parseFloat(document.getElementById('mat-import').value) || 0,
+                selling_price: parseFloat(document.getElementById('mat-selling').value) || 0
+            };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/materials/${id}` : '/api/materials';
+            const res = await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            if (res.ok) {
+                alert('Lưu vật tư thành công!');
+                resetMaterialForm(); loadAllData();
+            } else { alert('Lỗi khi lưu!'); }
+        }
+
+        function resetMaterialForm() { document.getElementById('material-form').reset(); document.getElementById('mat-id').value = ''; }
+
+        function editMaterial(id) {
+            const m = allMaterials.find(x => x.id === id);
+            if (!m) return;
+            document.getElementById('mat-id').value = m.id;
+            document.getElementById('mat-image').value = m.image_url || '';
+            document.getElementById('mat-name').value = m.name || '';
+            document.getElementById('mat-category').value = m.category || '';
+            document.getElementById('mat-stock').value = m.stock || 0;
+            document.getElementById('mat-unit').value = m.unit || 'Kg';
+            document.getElementById('mat-import').value = m.import_price || 0;
+            document.getElementById('mat-selling').value = m.selling_price || 0;
+        }
+
+        async function deleteMaterial(id) {
+            if (confirm('Xóa vật tư này?')) { await fetch(`/api/materials/${id}`, { method: 'DELETE' }); loadAllData(); }
+        }
+
+        async function importMaterialsXLSX() {
+            const fileInput = document.getElementById('mat-xlsx-file');
+            if (!fileInput.files[0]) { alert('Vui lòng chọn file xlsx!'); return; }
+            const formData = new FormData(); formData.append('file', fileInput.files[0]);
+            const res = await fetch('/api/materials/import', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.success) { alert(`Import thành công ${data.count} vật tư!`); loadAllData(); } else { alert('Lỗi: ' + data.error); }
+        }
+
+        function renderMaterials() {
+            let stockHtml = '';
+            allMaterials.forEach(m => {
+                const img = m.image_url || 'https://i.imgur.com/7j8p3Q8.png';
+                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2 font-bold">${m.name}</td><td class="p-2">${m.category || ''}</td><td class="p-2">${m.stock} ${m.unit}</td><td class="p-2 text-brandBlue">${Number(m.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button type="button" onclick="editMaterial(${m.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteMaterial(${m.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('material-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
+        }
+
+        // --- Equipment ---
+        async function saveEquipment(e) {
+            e.preventDefault();
+            const brand = document.getElementById('eq-brand').value.trim();
+            const power = document.getElementById('eq-power').value.trim();
+            if (!brand || !power) { alert('Vui lòng nhập Thương hiệu và Công suất thiết bị!'); return; }
+            const id = document.getElementById('eq-id').value;
+            const data = {
+                image_url: document.getElementById('eq-image').value.trim() || 'https://i.imgur.com/7j8p3Q8.png',
+                brand: brand,
+                power: power,
+                category: document.getElementById('eq-category').value.trim(),
+                catalog_link: document.getElementById('eq-catalog').value.trim(),
+                stock: parseInt(document.getElementById('eq-stock').value) || 0,
+                unit: document.getElementById('eq-unit').value.trim() || 'Bộ',
+                import_price: parseFloat(document.getElementById('eq-import').value) || 0,
+                selling_price: parseFloat(document.getElementById('eq-selling').value) || 0
+            };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/equipment/${id}` : '/api/equipment';
+            const res = await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            if (res.ok) { alert('Lưu thiết bị thành công!'); resetEquipmentForm(); loadAllData(); } else { alert('Lỗi khi lưu!'); }
+        }
+
+        function resetEquipmentForm() { document.getElementById('equipment-form').reset(); document.getElementById('eq-id').value = ''; }
+
+        function editEquipment(id) {
+            const eq = allEquipment.find(x => x.id === id);
+            if (!eq) return;
+            document.getElementById('eq-id').value = eq.id;
+            document.getElementById('eq-image').value = eq.image_url || '';
+            document.getElementById('eq-brand').value = eq.brand || '';
+            document.getElementById('eq-power').value = eq.power || '';
+            document.getElementById('eq-category').value = eq.category || '';
+            document.getElementById('eq-catalog').value = eq.catalog_link || '';
+            document.getElementById('eq-stock').value = eq.stock || 0;
+            document.getElementById('eq-unit').value = eq.unit || 'Bộ';
+            document.getElementById('eq-import').value = eq.import_price || 0;
+            document.getElementById('eq-selling').value = eq.selling_price || 0;
+        }
+
+        async function deleteEquipment(id) {
+            if (confirm('Xóa thiết bị này?')) { await fetch(`/api/equipment/${id}`, { method: 'DELETE' }); loadAllData(); }
+        }
+
+        function renderEquipment() {
+            let stockHtml = '';
+            allEquipment.forEach(eq => {
+                const img = eq.image_url || 'https://i.imgur.com/7j8p3Q8.png';
+                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2 font-bold">${eq.brand}</td><td class="p-2">${eq.power}</td><td class="p-2">${eq.stock} ${eq.unit}</td><td class="p-2 text-brandBlue font-bold">${Number(eq.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button type="button" onclick="editEquipment(${eq.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteEquipment(${eq.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('equipment-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
+        }
+
+        // --- Customers ---
+        async function saveCustomer(e) {
+            e.preventDefault();
+            const id = document.getElementById('cust-id').value;
+            const data = { name: document.getElementById('cust-name').value.trim(), address: document.getElementById('cust-address').value.trim(), link: document.getElementById('cust-link').value.trim(), status: document.getElementById('cust-status').value };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/customers/${id}` : '/api/customers';
+            await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            resetCustomerForm(); loadAllData();
+        }
+
+        function resetCustomerForm() { document.getElementById('customer-form').reset(); document.getElementById('cust-id').value = ''; }
+
+        function editCustomer(id) {
+            const c = allCustomers.find(x => x.id === id);
+            if (!c) return;
+            document.getElementById('cust-id').value = c.id;
+            document.getElementById('cust-name').value = c.name;
+            document.getElementById('cust-address').value = c.address;
+            document.getElementById('cust-link').value = c.link;
+            document.getElementById('cust-status').value = c.status;
+        }
+
+        async function deleteCustomer(id) {
+            if (confirm('Xóa khách hàng này?')) { await fetch(`/api/customers/${id}`, { method: 'DELETE' }); loadAllData(); }
+        }
+
+        function renderCustomers() {
+            let html = '';
+            allCustomers.forEach(c => {
+                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">${c.name}</td><td class="p-3 text-xs text-gray-600">${c.address}</td><td class="p-3"><a href="${c.link || '#'}" target="_blank" class="text-blue-500 underline text-xs">Xem Trang</a></td><td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-bold">${c.status}</span></td><td class="p-3 text-right"><button type="button" onclick="editCustomer(${c.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteCustomer(${c.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('customer-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có khách hàng</td></tr>';
+        }
+
+        // --- Services ---
+        async function saveService(e) {
+            e.preventDefault();
+            const data = { service_type: document.getElementById('serv-type').value.trim(), description: document.getElementById('serv-desc').value.trim(), unit: document.getElementById('serv-unit').value.trim(), price: parseFloat(document.getElementById('serv-price').value) };
+            await fetch('/api/services', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            document.getElementById('service-form').reset(); loadAllData();
+        }
+
+        async function deleteService(id) {
+            if (confirm('Xóa dịch vụ này?')) { await fetch(`/api/services/${id}`, { method: 'DELETE' }); loadAllData(); }
+        }
+
+        function renderServices() {
+            let html = '';
+            allServices.forEach(s => {
+                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">${s.service_type}</td><td class="p-3 text-xs text-gray-600">${s.description || ''}</td><td class="p-3">${s.unit}</td><td class="p-3 font-bold text-brandBlue">${Number(s.price).toLocaleString()} VNĐ</td><td class="p-3 text-right"><button type="button" onclick="deleteService(${s.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('service-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có dịch vụ</td></tr>';
+        }
+
+        // --- Quotation ---
+        function populateQuotePackageSelect() {
+            const select = document.getElementById('quote-package-select');
+            if(!select) return;
+            let options = '<option value="">-- Chọn gói công suất có sẵn --</option>';
+            allPackages.forEach(pkg => {
+                options += `<option value="${pkg.id}" data-power="${pkg.power}">${pkg.package_name} - ${pkg.power} (${Number(pkg.package_price).toLocaleString()}đ)</option>`;
+            });
+            select.innerHTML = options;
+        }
+
+        function applyPackageToQuotation(selectEl) {
+            const pkgId = selectEl.value;
+            if(!pkgId) return;
+            const pkg = allPackages.find(x => x.id == pkgId);
+            if(!pkg) return;
+
+            document.getElementById('quote-power').value = pkg.power;
+            
+            const tbody = document.getElementById('quote-items-tbody');
+            tbody.innerHTML = '';
+            
+            if(allEquipment.length > 0) {
+                const eq = allEquipment[0];
+                addQuoteItemRowWithData(`equipment_${eq.id}`, 1, eq.selling_price);
+            }
+            if(allProducts.length > 0) {
+                const p = allProducts[0];
+                addQuoteItemRowWithData(`product_${p.id}`, 10, p.selling_price);
+            }
+            calculateQuotation();
+        }
+
+        function addQuoteItemRowWithData(val, qty, price) {
+            const tbody = document.getElementById('quote-items-tbody');
+            const tr = document.createElement('tr'); tr.className = 'border-b quote-item-row';
+            let options = '<option value="">-- Chọn hàng hoá / vật tư / thiết bị --</option>';
+            allProducts.forEach(p => options += `<option value="product_${p.id}" data-price="${p.selling_price}">[Pin] ${p.brand} ${p.power} (${Number(p.selling_price).toLocaleString()}đ)</option>`);
+            allMaterials.forEach(m => options += `<option value="material_${m.id}" data-price="${m.selling_price}">[Vật tư] ${m.name} (${Number(m.selling_price).toLocaleString()}đ)</option>`);
+            allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (${Number(eq.selling_price).toLocaleString()}đ)</option>`);
+
+            tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 item-select" onchange="updateQuoteRow(this)">${options}</select></td><td class="p-2"><input type="number" value="${qty}" class="w-20 text-xs border rounded p-1 item-qty" onchange="calculateQuotation()"></td><td class="p-2"><input type="number" value="${price}" class="w-28 text-xs border rounded p-1 item-price" onchange="calculateQuotation()"></td><td class="p-2 item-subtotal font-bold text-brandBlue">0 VNĐ</td><td class="p-2"><button type="button" onclick="this.closest('tr').remove(); calculateQuotation();" class="text-red-600"><i class="fas fa-trash"></i></button></td>`;
+            tbody.appendChild(tr);
+            tr.querySelector('.item-select').value = val;
+            calculateQuotation();
+        }
+
+        function addQuoteItemRow() {
+            const tbody = document.getElementById('quote-items-tbody');
+            const tr = document.createElement('tr'); tr.className = 'border-b quote-item-row';
+            let options = '<option value="">-- Chọn hàng hoá / vật tư / thiết bị --</option>';
+            allProducts.forEach(p => options += `<option value="product_${p.id}" data-price="${p.selling_price}">[Pin] ${p.brand} ${p.power} (${Number(p.selling_price).toLocaleString()}đ)</option>`);
+            allMaterials.forEach(m => options += `<option value="material_${m.id}" data-price="${m.selling_price}">[Vật tư] ${m.name} (${Number(m.selling_price).toLocaleString()}đ)</option>`);
+            allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (${Number(eq.selling_price).toLocaleString()}đ)</option>`);
+
+            tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 item-select" onchange="updateQuoteRow(this)">${options}</select></td><td class="p-2"><input type="number" value="1" class="w-20 text-xs border rounded p-1 item-qty" onchange="calculateQuotation()"></td><td class="p-2"><input type="number" value="0" class="w-28 text-xs border rounded p-1 item-price" onchange="calculateQuotation()"></td><td class="p-2 item-subtotal font-bold text-brandBlue">0 VNĐ</td><td class="p-2"><button type="button" onclick="this.closest('tr').remove(); calculateQuotation();" class="text-red-600"><i class="fas fa-trash"></i></button></td>`;
+            tbody.appendChild(tr);
+        }
+
+        function filterQuoteItems(keyword) {
+            keyword = keyword.toLowerCase().trim();
+            document.querySelectorAll('.quote-item-row').forEach(tr => {
+                const select = tr.querySelector('.item-select');
+                let found = false;
+                for (let opt of select.options) {
+                    if (opt.text.toLowerCase().includes(keyword) || keyword === '') {
+                        found = true;
+                        break;
+                    }
+                }
+                tr.style.display = found ? '' : 'none';
+            });
+        }
+
+        function updateQuoteRow(selectEl) {
+            const opt = selectEl.options[selectEl.selectedIndex];
+            const price = opt.getAttribute('data-price') || 0;
+            selectEl.closest('tr').querySelector('.item-price').value = price;
+            calculateQuotation();
+        }
+
+        function calculateQuotation() {
+            let subtotal = 0;
+            document.querySelectorAll('.quote-item-row').forEach(tr => {
+                if(tr.style.display === 'none') return;
+                const qty = parseFloat(tr.querySelector('.item-qty').value) || 0;
+                const price = parseFloat(tr.querySelector('.item-price').value) || 0;
+                const total = qty * price;
+                tr.querySelector('.item-subtotal').innerText = total.toLocaleString() + ' VNĐ';
+                subtotal += total;
+            });
+            const install = parseFloat(document.getElementById('quote-install').value) || 0;
+            const design = parseFloat(document.getElementById('quote-design').value) || 0;
+            const grandTotal = subtotal + install + design;
+            document.getElementById('quote-total-display').innerText = grandTotal.toLocaleString();
+            return grandTotal;
+        }
+
+        function generateQuotationPrint() {
+            const custName = document.getElementById('quote-customer').value;
+            const power = document.getElementById('quote-power').value;
+            if (!custName) { alert('Nhập tên khách hàng!'); return; }
+
+            document.getElementById('print-cust-name').innerText = custName;
+            document.getElementById('print-cust-power').innerText = power + ' KW';
+            document.getElementById('print-install-cost').innerText = Number(document.getElementById('quote-install').value).toLocaleString();
+            document.getElementById('print-design-cost').innerText = Number(document.getElementById('quote-design').value).toLocaleString();
+            document.getElementById('print-grand-total').innerText = document.getElementById('quote-total-display').innerText;
+
+            let tbodyHtml = ''; let stt = 1;
+            document.querySelectorAll('.quote-item-row').forEach(tr => {
+                const select = tr.querySelector('.item-select');
+                const text = select.options[select.selectedIndex].text;
+                const qty = tr.querySelector('.item-qty').value;
+                const price = Number(tr.querySelector('.item-price').value).toLocaleString();
+                const sub = (parseFloat(tr.querySelector('.item-qty').value) * parseFloat(tr.querySelector('.item-price').value)).toLocaleString();
+                tbodyHtml += `<tr><td class="border border-gray-400 p-2 text-center">${stt++}</td><td class="border border-gray-400 p-2">${text}</td><td class="border border-gray-400 p-2 text-center">Cái</td><td class="border border-gray-400 p-2 text-center">${qty}</td><td class="border border-gray-400 p-2 text-right">${price}</td><td class="border border-gray-400 p-2 text-right">${sub}</td></tr>`;
+            });
+            document.getElementById('print-quotation-tbody').innerHTML = tbodyHtml;
+            document.getElementById('print-section').classList.remove('hidden');
+            window.print();
+        }
+
+        // --- Sales ---
+        function addSalesItemRow() {
+            const tbody = document.getElementById('sales-items-tbody');
+            const tr = document.createElement('tr'); tr.className = 'border-b sales-item-row';
+            let options = '<option value="">-- Chọn hàng từ kho / dịch vụ --</option>';
+            allProducts.forEach(p => options += `<option value="product_${p.id}" data-id="${p.id}" data-type="product" data-name="${p.brand} ${p.power}" data-import="${p.import_price}" data-price="${p.selling_price}">[Pin] ${p.brand} ${p.power} (Tồn: ${p.stock})</option>`);
+            allMaterials.forEach(m => options += `<option value="material_${m.id}" data-id="${m.id}" data-type="material" data-name="${m.name}" data-import="${m.import_price}" data-price="${m.selling_price}">[Vật tư] ${m.name} (Tồn: ${m.stock})</option>`);
+            allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-id="${eq.id}" data-type="equipment" data-name="${eq.brand} ${eq.power}" data-import="${eq.import_price}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (Tồn: ${eq.stock})</option>`);
+            allServices.forEach(s => options += `<option value="service_${s.id}" data-id="${s.id}" data-type="service" data-name="${s.service_type}" data-import="0" data-price="${s.price}">[Dịch vụ] ${s.service_type}</option>`);
+
+            tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 sales-select" onchange="updateSalesRow(this)">${options}</select></td><td class="p-2"><input type="number" value="1" class="w-20 text-xs border rounded p-1 sales-qty" onchange="calculateSalesTotal()"></td><td class="p-2"><input type="number" value="0" class="w-28 text-xs border rounded p-1 sales-price" onchange="calculateSalesTotal()"></td><td class="p-2 sales-subtotal font-bold text-brandRed">0 VNĐ</td><td class="p-2"><button type="button" onclick="this.closest('tr').remove(); calculateSalesTotal();" class="text-red-600"><i class="fas fa-trash"></i></button></td>`;
+            tbody.appendChild(tr);
+        }
+
+        function updateSalesRow(selectEl) {
+            const opt = selectEl.options[selectEl.selectedIndex];
+            selectEl.closest('tr').querySelector('.sales-price').value = opt.getAttribute('data-price') || 0;
+            calculateSalesTotal();
+        }
+
+        function calculateSalesTotal() {
+            let total = 0;
+            document.querySelectorAll('.sales-item-row').forEach(tr => {
+                const qty = parseFloat(tr.querySelector('.sales-qty').value) || 0;
+                const price = parseFloat(tr.querySelector('.sales-price').value) || 0;
+                const sub = qty * price;
+                tr.querySelector('.sales-subtotal').innerText = sub.toLocaleString() + ' VNĐ';
+                total += sub;
+            });
+            document.getElementById('sales-total-display').innerText = total.toLocaleString();
+            return total;
+        }
+
+        async function executeSalesExport() {
+            const custName = document.getElementById('sales-cust-name').value;
+            const phone = document.getElementById('sales-phone').value;
+            const address = document.getElementById('sales-address').value;
+            const content = document.getElementById('sales-content').value;
+            if (!custName) { alert('Nhập tên khách hàng!'); return; }
+
+            let items = [], totalAmount = 0, totalImportCost = 0;
+            document.querySelectorAll('.sales-item-row').forEach(tr => {
+                const select = tr.querySelector('.sales-select');
+                const opt = select.options[select.selectedIndex];
+                if (!opt.value) return;
+                const qty = parseFloat(tr.querySelector('.sales-qty').value) || 0;
+                const price = parseFloat(tr.querySelector('.sales-price').value) || 0;
+                const importPrice = parseFloat(opt.getAttribute('data-import')) || 0;
+
+                items.push({ id: opt.getAttribute('data-id'), type: opt.getAttribute('data-type'), name: opt.getAttribute('data-name'), quantity: qty, price: price, subtotal: qty * price });
+                totalAmount += qty * price;
+                totalImportCost += qty * importPrice;
+            });
+
+            if (items.length === 0) { alert('Chọn ít nhất một mặt hàng!'); return; }
+            const invoice_code = 'XK-' + Math.floor(100000 + Math.random() * 900000);
+
+            await fetch('/api/sales', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ invoice_code, customer_name: custName, phone, address, content, items, total_amount: totalAmount, total_import_cost: totalImportCost, profit: totalAmount - totalImportCost }) });
+
+            document.getElementById('print-sales-cust').innerText = custName;
+            document.getElementById('print-sales-phone').innerText = phone;
+            document.getElementById('print-sales-address').innerText = address;
+            document.getElementById('print-sales-content').innerText = content;
+            document.getElementById('sales-code-print').innerText = 'Mã: ' + invoice_code;
+            document.getElementById('print-sales-grand-total').innerText = totalAmount.toLocaleString();
+
+            let tbodyHtml = ''; let stt = 1;
+            items.forEach(i => {
+                tbodyHtml += `<tr><td class="border border-gray-400 p-2 text-center">${stt++}</td><td class="border border-gray-400 p-2">${i.name}</td><td class="border border-gray-400 p-2 text-center">Cái</td><td class="border border-gray-400 p-2 text-center">${i.quantity}</td><td class="border border-gray-400 p-2 text-right">${i.price.toLocaleString()}</td><td class="border border-gray-400 p-2 text-right">${i.subtotal.toLocaleString()}</td></tr>`;
+            });
+            document.getElementById('print-sales-tbody').innerHTML = tbodyHtml;
+            document.getElementById('print-sales-section').classList.remove('hidden');
+            window.print(); loadAllData();
+        }
+
+        // --- Inventory & Reports ---
+        function renderInventoryReport() {
+            let sHtml = '', mHtml = '', eHtml = '';
+            allProducts.forEach(p => {
+                const img = p.image_url || 'https://i.imgur.com/7j8p3Q8.png';
+                sHtml += `<tr class="border-b"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2">${p.brand}</td><td class="p-2">${p.power}</td><td class="p-2">${p.category || ''}</td><td class="p-2 font-bold">${p.stock} ${p.unit}</td><td class="p-2">${Number(p.import_price).toLocaleString()}đ</td><td class="p-2">${Number(p.selling_price).toLocaleString()}đ</td></tr>`;
+            });
+            allMaterials.forEach(m => {
+                const img = m.image_url || 'https://i.imgur.com/7j8p3Q8.png';
+                mHtml += `<tr class="border-b"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2">${m.name}</td><td class="p-2">${m.category || ''}</td><td class="p-2 font-bold">${m.stock}</td><td class="p-2">${m.unit}</td><td class="p-2">${Number(m.import_price).toLocaleString()}đ</td><td class="p-2">${Number(m.selling_price).toLocaleString()}đ</td></tr>`;
+            });
+            allEquipment.forEach(eq => {
+                const img = eq.image_url || 'https://i.imgur.com/7j8p3Q8.png';
+                eHtml += `<tr class="border-b"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2">${eq.brand}</td><td class="p-2">${eq.power}</td><td class="p-2">${eq.category || ''}</td><td class="p-2 font-bold">${eq.stock} ${eq.unit}</td><td class="p-2">${Number(eq.import_price).toLocaleString()}đ</td><td class="p-2">${Number(eq.selling_price).toLocaleString()}đ</td></tr>`;
+            });
+
+            document.getElementById('inv-report-solar').innerHTML = sHtml || '<tr><td colspan="7" class="p-2 text-gray-400">Không có dữ liệu</td></tr>';
+            document.getElementById('inv-report-material').innerHTML = mHtml || '<tr><td colspan="7" class="p-2 text-gray-400">Không có dữ liệu</td></tr>';
+            document.getElementById('inv-report-equipment').innerHTML = eHtml || '<tr><td colspan="7" class="p-2 text-gray-400">Không có dữ liệu</td></tr>';
+        }
+
+        function downloadInventoryExcel() { window.location.href = '/api/export/inventory-report'; }
+
+        // --- Expenses ---
+        async function saveExpense(e) {
+            e.preventDefault();
+            const data = { customer_name: document.getElementById('exp-customer').value.trim(), content: document.getElementById('exp-content').value.trim(), cost: parseFloat(document.getElementById('exp-cost').value) };
+            await fetch('/api/expenses', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            document.getElementById('expense-form').reset(); loadAllData();
+        }
+
+        async function deleteExpense(id) {
+            if (confirm('Xóa chi phí này?')) { await fetch(`/api/expenses/${id}`, { method: 'DELETE' }); loadAllData(); }
+        }
+
+        function renderExpenses() {
+            let html = '';
+            allExpenses.forEach(ex => {
+                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">${ex.customer_name}</td><td class="p-3 text-xs text-gray-600">${ex.content}</td><td class="p-3 text-brandRed font-bold">${Number(ex.cost).toLocaleString()} VNĐ</td><td class="p-3 text-xs text-gray-500">${new Date(ex.created_at).toLocaleDateString()}</td><td class="p-3 text-right"><button type="button" onclick="deleteExpense(${ex.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('expense-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
+        }
+
+        // --- Revenue & Filtering ---
+        function renderRevenueReport() {
+            const fromDateVal = document.getElementById('report-from-date').value;
+            const toDateVal = document.getElementById('report-to-date').value;
+
+            let totalSales = 0, totalImport = 0, totalExp = 0;
+
+            let filteredSales = allSales.filter(s => {
+                if (!s.created_at) return true;
+                const sDate = s.created_at.split('T')[0];
+                if (fromDateVal && sDate < fromDateVal) return false;
+                if (toDateVal && sDate > toDateVal) return false;
+                return true;
+            });
+
+            let filteredExpenses = allExpenses.filter(ex => {
+                if (!ex.created_at) return true;
+                const exDate = ex.created_at.split('T')[0];
+                if (fromDateVal && exDate < fromDateVal) return false;
+                if (toDateVal && exDate > toDateVal) return false;
+                return true;
+            });
+
+            filteredSales.forEach(s => { 
+                totalSales += parseFloat(s.total_amount || 0); 
+                totalImport += parseFloat(s.total_import_cost || 0); 
+            });
+
+            filteredExpenses.forEach(ex => { 
+                totalExp += parseFloat(ex.cost || 0); 
+            });
+
+            const netProfit = totalSales - totalImport - totalExp;
+
+            document.getElementById('rev-total-sales').innerText = totalSales.toLocaleString() + ' VNĐ';
+            document.getElementById('rev-total-import').innerText = totalImport.toLocaleString() + ' VNĐ';
+            document.getElementById('rev-total-expense').innerText = totalExp.toLocaleString() + ' VNĐ';
+            document.getElementById('rev-net-profit').innerText = netProfit.toLocaleString() + ' VNĐ';
+
+            let html = '';
+            filteredSales.forEach(s => {
+                html += `<tr class="border-b hover:bg-gray-50">
+                    <td class="p-3 font-bold">KH-${s.id}</td>
+                    <td class="p-3 text-xs">${new Date(s.created_at).toLocaleString()}</td>
+                    <td class="p-3 font-bold">${s.customer_name}</td>
+                    <td class="p-3 text-xs text-gray-700 italic">${s.content || 'Không có nội dung'}</td>
+                    <td class="p-3 text-brandBlue font-bold">${Number(s.total_amount).toLocaleString()} VNĐ</td>
+                    <td class="p-3 text-right"><button type="button" onclick="reprintSalesInvoice(${s.id})" class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold hover:bg-blue-200">In lại</button></td>
+                </tr>`;
+            });
+            document.getElementById('revenue-sales-table').innerHTML = html || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Không có dữ liệu phiếu xuất trong khoảng thời gian này</td></tr>';
+        }
+
+        function reprintSalesInvoice(salesId) {
+            const s = allSales.find(x => x.id === salesId);
+            if(!s) { alert('Không tìm thấy thông tin phiếu xuất!'); return; }
+
+            const printSection = document.getElementById('print-section');
+            if (printSection) printSection.classList.add('hidden');
+
+            document.getElementById('print-sales-cust').innerText = s.customer_name || '';
+            document.getElementById('print-sales-phone').innerText = s.phone || '';
+            document.getElementById('print-sales-address').innerText = s.address || '';
+            document.getElementById('print-sales-content').innerText = s.content || 'Xuất hàng bán';
+            document.getElementById('sales-code-print').innerText = 'Mã: ' + (s.invoice_code || ('XK-' + s.id));
+            document.getElementById('print-sales-grand-total').innerText = Number(s.total_amount || 0).toLocaleString();
+
+            let tbodyHtml = ''; let stt = 1;
+            let items = s.items;
+            if (typeof items === 'string') {
+                try { items = JSON.parse(items); } catch(e) { items = []; }
+            }
+            if(Array.isArray(items) && items.length > 0) {
+                items.forEach(i => {
+                    const qty = Number(i.quantity || 1);
+                    const price = Number(i.price || 0);
+                    const subtotal = Number(i.subtotal || (qty * price));
+                    tbodyHtml += `<tr><td class="border border-gray-400 p-2 text-center">${stt++}</td><td class="border border-gray-400 p-2">${i.name || 'Hàng hóa / Vật tư'}</td><td class="border border-gray-400 p-2 text-center">Cái</td><td class="border border-gray-400 p-2 text-center">${qty}</td><td class="border border-gray-400 p-2 text-right">${price.toLocaleString()}</td><td class="border border-gray-400 p-2 text-right">${subtotal.toLocaleString()}</td></tr>`;
+                });
+            } else {
+                tbodyHtml = `<tr><td class="border border-gray-400 p-2 text-center">1</td><td class="border border-gray-400 p-2">${s.content || 'Xuất bán theo đơn'}</td><td class="border border-gray-400 p-2 text-center">Gói</td><td class="border border-gray-400 p-2 text-center">1</td><td class="border border-gray-400 p-2 text-right">${Number(s.total_amount || 0).toLocaleString()}</td><td class="border border-gray-400 p-2 text-right">${Number(s.total_amount || 0).toLocaleString()}</td></tr>`;
+            }
+
+            document.getElementById('print-sales-tbody').innerHTML = tbodyHtml;
+            document.getElementById('print-sales-section').classList.remove('hidden');
+            setTimeout(() => { window.print(); }, 100);
+        }
+
+        function filterRevenueReport() { renderRevenueReport(); }
+
+        function resetRevenueFilter() {
+            document.getElementById('report-from-date').value = '';
+            document.getElementById('report-to-date').value = '';
+            renderRevenueReport();
+        }
+
+        function downloadRevenueExcel() { 
+            const fromDate = document.getElementById('report-from-date').value;
+            const toDate = document.getElementById('report-to-date').value;
+            let url = '/api/export/revenue-report';
+            if (fromDate || toDate) { url += `?from=${fromDate}&to=${toDate}`; }
+            window.location.href = url; 
+        }
+
+        // --- Admins ---
+        async function saveAdmin(e) {
+            e.preventDefault();
+            const id = document.getElementById('admin-id').value;
+            const data = {
+                username: document.getElementById('admin-user').value.trim(),
+                password: document.getElementById('admin-pass').value,
+                full_name: document.getElementById('admin-name').value.trim(),
+                role: document.getElementById('admin-role').value
+            };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/admins/${id}` : '/api/admins';
+            const res = await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            if(res.ok) {
+                alert('Lưu / Đổi mật khẩu tài khoản admin thành công!');
+                resetAdminForm(); 
+                loadAllData();
+            } else {
+                alert('Có lỗi xảy ra khi lưu tài khoản!');
+            }
+        }
+
+        function resetAdminForm() { document.getElementById('admin-form').reset(); document.getElementById('admin-id').value = ''; }
+
+        function editAdmin(id) {
+            const a = allAdmins.find(x => x.id === id);
+            if (!a) return;
+            document.getElementById('admin-id').value = a.id;
+            document.getElementById('admin-user').value = a.username;
+            document.getElementById('admin-pass').value = '';
+            document.getElementById('admin-name').value = a.full_name;
+            document.getElementById('admin-role').value = a.role;
+        }
+
+        async function deleteAdmin(id) {
+            if (confirm('Xóa tài khoản này?')) { await fetch(`/api/admins/${id}`, { method: 'DELETE' }); loadAllData(); }
+        }
+
+        function renderAdmins() {
+            let html = '';
+            allAdmins.forEach(a => {
+                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold text-brandBlue">${a.username}</td><td class="p-3">${a.full_name || ''}</td><td class="p-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-bold">${a.role}</span></td><td class="p-3 text-xs text-gray-500">${new Date(a.created_at).toLocaleDateString()}</td><td class="p-3 text-right"><button type="button" onclick="editAdmin(${a.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteAdmin(${a.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('admin-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có tài khoản quản trị</td></tr>';
+        }
+
+        window.onload = () => { 
+            loadAllData().then(() => {
+                addQuoteItemRow(); 
+                addSalesItemRow();
+            }); 
+        };
+    </script>
+</body>
+</html>
