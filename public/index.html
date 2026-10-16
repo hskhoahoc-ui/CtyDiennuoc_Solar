@@ -43,11 +43,12 @@
         </div>
     </header>
 
-    <!-- NAVIGATION TABS (Danh mục công khai) -->
+    <!-- NAVIGATION TABS -->
     <nav class="bg-brandDark text-white shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-2 overflow-x-auto">
             <div class="flex space-x-2 whitespace-nowrap py-3 text-sm font-semibold justify-center">
-                <button onclick="switchPublicTab('public-products')" class="pub-tab-btn px-4 py-2 rounded bg-brandBlue text-white transition"><i class="fas fa-solar-panel mr-1"></i> Danh Mục Pin NLMT</button>
+                <button onclick="switchPublicTab('public-packages')" class="pub-tab-btn px-4 py-2 rounded bg-brandBlue text-white transition"><i class="fas fa-box-open mr-1"></i> Báo Giá Trọn Gói</button>
+                <button onclick="switchPublicTab('public-products')" class="pub-tab-btn px-4 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-solar-panel mr-1"></i> Danh Mục Pin NLMT</button>
                 <button onclick="switchPublicTab('public-materials')" class="pub-tab-btn px-4 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-boxes mr-1"></i> Danh Mục Vật Tư</button>
                 <button onclick="switchPublicTab('public-equipment')" class="pub-tab-btn px-4 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-tools mr-1"></i> Danh Mục Thiết Bị</button>
                 <button onclick="switchPublicTab('public-customers')" class="pub-tab-btn px-4 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-users mr-1"></i> Danh Sách Khách Hàng</button>
@@ -59,8 +60,14 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-6">
 
+        <!-- 0. Báo giá trọn gói -->
+        <div id="public-packages" class="pub-tab-content">
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-box-open mr-2"></i> Báo Giá Trọn Gói Hệ Thống Điện Năng Lượng Mặt Trời</h2>
+            <div id="pub-package-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </div>
+
         <!-- 1. Pin NLMT -->
-        <div id="public-products" class="pub-tab-content">
+        <div id="public-products" class="pub-tab-content hidden">
             <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-solar-panel mr-2"></i> Danh Mục Hàng Hoá Pin Năng Lượng Mặt Trời</h2>
             <div id="pub-product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
         </div>
@@ -68,8 +75,8 @@
         <!-- 2. Vật tư -->
         <div id="public-materials" class="pub-tab-content hidden">
             <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-boxes mr-2"></i> Danh Mục Vật Tư Điện Năng Lượng</h2>
-            <div class="bg-white p-5 rounded-lg shadow border">
-                <table class="w-full text-left text-sm">
+            <div class="bg-white p-5 rounded-lg shadow border overflow-x-auto">
+                <table class="w-full text-left text-sm min-w-[500px]">
                     <thead class="bg-blue-50 border-b"><tr><th class="p-3">Tên Vật Tư</th><th class="p-3">Chủng Loại</th><th class="p-3">ĐVT</th><th class="p-3">Giá Bán</th></tr></thead>
                     <tbody id="pub-material-table"></tbody>
                 </table>
@@ -85,8 +92,8 @@
         <!-- 4. Khách hàng -->
         <div id="public-customers" class="pub-tab-content hidden">
             <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Danh Sách Khách Hàng & Dự Án Tiêu Biểu</h2>
-            <div class="bg-white p-5 rounded-lg shadow border">
-                <table class="w-full text-left text-sm">
+            <div class="bg-white p-5 rounded-lg shadow border overflow-x-auto">
+                <table class="w-full text-left text-sm min-w-[600px]">
                     <thead class="bg-gray-50 border-b"><tr><th class="p-3">Họ Tên Khách Hàng</th><th class="p-3">Địa Chỉ</th><th class="p-3">Link Trang / Dự Án</th><th class="p-3">Trạng Thái</th></tr></thead>
                     <tbody id="pub-customer-table"></tbody>
                 </table>
@@ -96,8 +103,8 @@
         <!-- 5. Dịch vụ -->
         <div id="public-services" class="pub-tab-content hidden">
             <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-concierge-bell mr-2"></i> Bảng Giá Dịch Vụ & Lắp Đặt Trọn Gói</h2>
-            <div class="bg-white p-5 rounded-lg shadow border">
-                <table class="w-full text-left text-sm">
+            <div class="bg-white p-5 rounded-lg shadow border overflow-x-auto">
+                <table class="w-full text-left text-sm min-w-[600px]">
                     <thead class="bg-gray-50 border-b"><tr><th class="p-3">Loại Dịch Vụ</th><th class="p-3">Mô Tả Chi Tiết</th><th class="p-3">ĐVT</th><th class="p-3">Giá Tiền</th></tr></thead>
                     <tbody id="pub-service-table"></tbody>
                 </table>
@@ -124,7 +131,8 @@
 
         async function loadPublicData() {
             try {
-                const [pRes, mRes, eRes, cRes, sRes] = await Promise.all([
+                const [pkgRes, pRes, mRes, eRes, cRes, sRes] = await Promise.all([
+                    fetch('/api/package-quotations').then(r => r.json()),
                     fetch('/api/solar-products').then(r => r.json()),
                     fetch('/api/materials').then(r => r.json()),
                     fetch('/api/equipment').then(r => r.json()),
@@ -132,10 +140,31 @@
                     fetch('/api/services').then(r => r.json())
                 ]);
 
-                // Render Products (3 items/row grid)
+                // Render Package Quotations
+                let pkgHtml = '';
+                pkgRes.forEach(pkg => {
+                    pkgHtml += `
+                    <div class="bg-white border rounded-lg p-4 shadow flex flex-col justify-between">
+                        <div>
+                            <img src="${pkg.image_url || 'https://i.imgur.com/7j8p3Q8.png'}" class="w-full h-40 object-cover rounded mb-2" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'">
+                            <h4 class="font-black text-brandBlue text-base">${pkg.package_name}</h4>
+                            <p class="text-xs text-gray-700 mt-1"><strong>Công suất:</strong> ${pkg.power}</p>
+                            <p class="text-xs text-gray-600 mt-0.5"><i class="fas fa-shield-alt text-green-600 mr-1"></i> BH Pin: ${pkg.battery_warranty || 'N/A'}</p>
+                            <p class="text-xs text-gray-600 mt-0.5"><i class="fas fa-shield-alt text-green-600 mr-1"></i> BH Biến tần: ${pkg.inverter_warranty || 'N/A'}</p>
+                            <p class="text-xs text-gray-600 mt-0.5"><i class="fas fa-shield-alt text-green-600 mr-1"></i> BH Accu: ${pkg.accu_warranty || 'N/A'}</p>
+                        </div>
+                        <div class="mt-3 pt-2 border-t flex justify-between items-center">
+                            <span class="text-brandRed font-black text-base">⭐ ${Number(pkg.package_price).toLocaleString()} VNĐ</span>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-bold">Trọn Gói</span>
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('pub-package-grid').innerHTML = pkgHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu báo giá trọn gói</p>';
+
+                // Render Products
                 let pHtml = '';
                 pRes.forEach(p => {
-                    pHtml += `<div class="bg-white border rounded-lg p-4 shadow flex flex-col justify-between"><div><img src="${p.image_url}" class="w-full h-40 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${p.brand} - ${p.power}</h4><p class="text-xs text-gray-600">Loại: ${p.category || 'N/A'}</p>${p.catalog_link ? `<a href="${p.catalog_link}" target="_blank" class="text-xs text-blue-500 underline block mt-1"><i class="fas fa-file-pdf mr-1"></i> Xem Catalog</a>` : ''}</div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-base">${Number(p.selling_price).toLocaleString()} VNĐ</span><span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Pin NLMT</span></div></div>`;
+                    pHtml += `<div class="bg-white border rounded-lg p-4 shadow flex flex-col justify-between"><div><img src="${p.image_url || 'https://i.imgur.com/7j8p3Q8.png'}" class="w-full h-40 object-cover rounded mb-2" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"><h4 class="font-black text-brandBlue text-sm">${p.brand} - ${p.power}</h4><p class="text-xs text-gray-600">Loại: ${p.category || 'N/A'}</p>${p.catalog_link ? `<a href="${p.catalog_link}" target="_blank" class="text-xs text-blue-500 underline block mt-1"><i class="fas fa-file-pdf mr-1"></i> Xem Catalog</a>` : ''}</div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-base">${Number(p.selling_price).toLocaleString()} VNĐ</span><span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Pin NLMT</span></div></div>`;
                 });
                 document.getElementById('pub-product-grid').innerHTML = pHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu hàng hoá</p>';
 
@@ -146,10 +175,10 @@
                 });
                 document.getElementById('pub-material-table').innerHTML = mHtml || '<tr><td colspan="4" class="text-center p-3 text-gray-400">Chưa có dữ liệu vật tư</td></tr>';
 
-                // Render Equipment (3 items/row grid)
+                // Render Equipment
                 let eHtml = '';
                 eRes.forEach(eq => {
-                    eHtml += `<div class="bg-white border rounded-lg p-4 shadow flex flex-col justify-between"><div><img src="${eq.image_url}" class="w-full h-40 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${eq.brand} - ${eq.power}</h4><p class="text-xs text-gray-600">Chủng loại: ${eq.category || 'N/A'}</p></div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-base">${Number(eq.selling_price).toLocaleString()} VNĐ</span><span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Thiết bị</span></div></div>`;
+                    eHtml += `<div class="bg-white border rounded-lg p-4 shadow flex flex-col justify-between"><div><img src="${eq.image_url || 'https://i.imgur.com/7j8p3Q8.png'}" class="w-full h-40 object-cover rounded mb-2" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"><h4 class="font-black text-brandBlue text-sm">${eq.brand} - ${eq.power}</h4><p class="text-xs text-gray-600">Chủng loại: ${eq.category || 'N/A'}</p></div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-base">${Number(eq.selling_price).toLocaleString()} VNĐ</span><span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Thiết bị</span></div></div>`;
                 });
                 document.getElementById('pub-equipment-grid').innerHTML = eHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu thiết bị</p>';
 
