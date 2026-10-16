@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CÔNG TY CP ĐIỆN NƯỚC AN GIANG - Quản Lý Điện Năng Lượng Mặt Trời</title>
+    <title>CÔNG TY CP ĐIỆN NƯỚC AN GIANG - Điện Năng Lượng Mặt Trời</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -19,50 +19,39 @@
         }
       }
     </script>
-    <style>
-      @media print {
-        body * { visibility: hidden; }
-        #print-section, #print-section * { visibility: visible; }
-        #print-section { position: absolute; left: 0; top: 0; width: 100%; }
-        #print-sales-section, #print-sales-section * { visibility: visible; }
-        #print-sales-section { position: absolute; left: 0; top: 0; width: 100%; }
-        .no-print { display: none !important; }
-      }
-    </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
 
     <!-- HEADER / COMPANY BANNER -->
     <header class="bg-white shadow-md border-b-4 border-brandBlue">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center space-x-4">
                 <img src="logo.png" alt="Logo POWACO" class="w-16 h-16 object-contain rounded shadow" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'">
                 <div>
                     <h1 class="text-2xl font-black text-brandBlue tracking-wide">CÔNG TY CP ĐIỆN NƯỚC AN GIANG</h1>
-                    <p class="text-sm font-semibold text-gray-600"><i class="fas fa-phone-alt text-brandRed mr-1"></i> Hotline: 0296 3852 345 | <i class="fas fa-map-marker-alt text-brandRed mr-1"></i> Địa chỉ: Số 18, Đường Tôn Đức Thắng, TP. Long Xuyên, Tỉnh An Giang</p>
+                    <p class="text-sm font-semibold text-gray-600 mt-1">
+                        <i class="fas fa-phone-alt text-brandRed mr-1"></i> SĐT/Hotline: 0296 3852 345 | 
+                        <i class="fas fa-map-marker-alt text-brandRed mr-1"></i> Địa chỉ: Số 18, Đường Tôn Đức Thắng, TP. Long Xuyên, Tỉnh An Giang
+                    </p>
                 </div>
             </div>
-            <div class="mt-3 md:mt-0 flex items-center space-x-3 no-print">
-                <span class="bg-blue-100 text-brandBlue px-3 py-1 rounded-full text-xs font-bold uppercase shadow-inner"><i class="fas fa-user-shield mr-1"></i> Quản trị hệ thống</span>
+            <div class="mt-3 md:mt-0">
+                <a href="admin.html" class="bg-brandBlue text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-blue-700 transition flex items-center">
+                    <i class="fas fa-user-shield mr-2"></i> Đăng Nhập Quản Trị
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- NAVIGATION TABS -->
-    <nav class="bg-brandDark text-white shadow-lg sticky top-0 z-50 no-print">
+    <!-- NAVIGATION TABS (Danh mục công khai) -->
+    <nav class="bg-brandDark text-white shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-2 overflow-x-auto">
-            <div class="flex space-x-1 whitespace-nowrap py-2 text-sm font-semibold">
-                <button onclick="switchTab('tab-products')" class="tab-btn px-3 py-2 rounded bg-brandBlue text-white hover:bg-blue-600 transition"><i class="fas fa-solar-panel mr-1"></i> Pin NLMT</button>
-                <button onclick="switchTab('tab-materials')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-boxes mr-1"></i> Vật Tư</button>
-                <button onclick="switchTab('tab-equipment')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-tools mr-1"></i> Thiết Bị</button>
-                <button onclick="switchTab('tab-customers')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-users mr-1"></i> Khách Hàng</button>
-                <button onclick="switchTab('tab-services')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-concierge-bell mr-1"></i> Dịch Vụ</button>
-                <button onclick="switchTab('tab-quotation')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-file-invoice-dollar mr-1"></i> Tạo Báo Giá</button>
-                <button onclick="switchTab('tab-sales')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-cash-register mr-1"></i> Xuất Kho</button>
-                <button onclick="switchTab('tab-inventory')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-warehouse mr-1"></i> Tồn Kho</button>
-                <button onclick="switchTab('tab-expenses')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-file-invoice mr-1"></i> Chi Phí</button>
-                <button onclick="switchTab('tab-revenue')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-chart-line mr-1"></i> Doanh Thu</button>
-                <button onclick="switchTab('tab-admins')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-user-shield mr-1"></i> Quản Lý Admin</button>
+            <div class="flex space-x-2 whitespace-nowrap py-3 text-sm font-semibold justify-center">
+                <button onclick="switchPublicTab('public-products')" class="pub-tab-btn px-4 py-2 rounded bg-brandBlue text-white transition"><i class="fas fa-solar-panel mr-1"></i> Danh Mục Pin NLMT</button>
+                <button onclick="switchPublicTab('public-materials')" class="pub-tab-btn px-4 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-boxes mr-1"></i> Danh Mục Vật Tư</button>
+                <button onclick="switchPublicTab('public-equipment')" class="pub-tab-btn px-4 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-tools mr-1"></i> Danh Mục Thiết Bị</button>
+                <button onclick="switchPublicTab('public-customers')" class="pub-tab-btn px-4 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-users mr-1"></i> Danh Sách Khách Hàng</button>
+                <button onclick="switchPublicTab('public-services')" class="pub-tab-btn px-4 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-concierge-bell mr-1"></i> Bảng Giá Dịch Vụ</button>
             </div>
         </div>
     </nav>
@@ -70,995 +59,118 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-6">
 
-        <!-- 1. TAB: PIN NLMT -->
-        <div id="tab-products" class="tab-content">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-solar-panel mr-2"></i> Nhập & Quản Lý Pin Năng Lượng Mặt Trời</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Thêm / Sửa Pin NLMT</h3>
-                    <form id="product-form" onsubmit="saveProduct(event)">
-                        <input type="hidden" id="prod-id">
-                        <div class="mb-3">
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Ảnh Hàng Hoá (Nhấp để upload lên postimg.cc)</label>
-                            <div class="flex items-center space-x-2">
-                                <input type="text" id="prod-image" placeholder="https://i.postimg.cc/..." class="w-full text-sm border rounded px-3 py-2" required>
-                                <button type="button" onclick="openPostImg()" class="bg-green-600 text-white text-xs px-3 py-2 rounded whitespace-nowrap"><i class="fas fa-cloud-upload-alt mr-1"></i> Upload</button>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Thương Hiệu</label><input type="text" id="prod-brand" class="w-full text-sm border rounded px-3 py-2" required></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Công Suất</label><input type="text" id="prod-power" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Chủng Loại</label><input type="text" id="prod-category" class="w-full text-sm border rounded px-3 py-2"></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Link Catalog</label><input type="text" id="prod-catalog" class="w-full text-sm border rounded px-3 py-2"></div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Số Lượng</label><input type="number" id="prod-stock" value="10" class="w-full text-sm border rounded px-3 py-2" required></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">ĐVT</label><input type="text" id="prod-unit" value="Tấm" class="w-full text-sm border rounded px-3 py-2"></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Giá Nhập</label><input type="number" id="prod-import" value="2500000" class="w-full text-sm border rounded px-3 py-2"></div>
-                        </div>
-                        <div class="mb-4"><label class="block text-xs font-bold text-gray-600 mb-1">Giá Bán</label><input type="number" id="prod-selling" value="3200000" class="w-full text-sm border rounded px-3 py-2"></div>
-                        <div class="flex space-x-2">
-                            <button type="submit" class="flex-1 bg-brandBlue text-white text-sm font-bold py-2 rounded hover:bg-blue-700 shadow">Lưu Hàng Hoá</button>
-                            <button type="button" onclick="resetProductForm()" class="bg-gray-300 text-gray-700 text-sm font-bold px-3 py-2 rounded">Hủy</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Tồn Kho & Thao Tác</h3>
-                        <div class="max-h-60 overflow-y-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 border-b">
-                                    <tr><th class="p-2">Ảnh</th><th class="p-2">Thương hiệu</th><th class="p-2">CS</th><th class="p-2">Tồn</th><th class="p-2">Giá Bán</th><th class="p-2 text-right">Thao Tác</th></tr>
-                                </thead>
-                                <tbody id="product-stock-table"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Hàng Hoá (Hiển thị 3 ô/dòng)</h3>
-                        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-                    </div>
-                </div>
-            </div>
+        <!-- 1. Pin NLMT -->
+        <div id="public-products" class="pub-tab-content">
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-solar-panel mr-2"></i> Danh Mục Hàng Hoá Pin Năng Lượng Mặt Trời</h2>
+            <div id="pub-product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
         </div>
 
-        <!-- 2. TAB: VẬT TƯ -->
-        <div id="tab-materials" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-boxes mr-2"></i> Nhập & Quản Lý Danh Mục Vật Tư</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Thêm / Sửa Vật Tư</h3>
-                    <form id="material-form" onsubmit="saveMaterial(event)">
-                        <input type="hidden" id="mat-id">
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Tên Vật Tư</label><input type="text" id="mat-name" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Loại Vật Tư</label><input type="text" id="mat-category" class="w-full text-sm border rounded px-3 py-2"></div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Số Lượng</label><input type="number" id="mat-stock" value="100" class="w-full text-sm border rounded px-3 py-2" required></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">ĐVT</label><input type="text" id="mat-unit" value="Mét" class="w-full text-sm border rounded px-3 py-2"></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Giá Nhập</label><input type="number" id="mat-import" value="15000" class="w-full text-sm border rounded px-3 py-2"></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Giá Bán</label><input type="number" id="mat-selling" value="22000" class="w-full text-sm border rounded px-3 py-2"></div>
-                        </div>
-                        <div class="flex space-x-2 mb-4">
-                            <button type="submit" class="flex-1 bg-brandBlue text-white text-sm font-bold py-2 rounded hover:bg-blue-700 shadow">Lưu Vật Tư</button>
-                            <button type="button" onclick="resetMaterialForm()" class="bg-gray-300 text-gray-700 text-sm font-bold px-3 py-2 rounded">Hủy</button>
-                        </div>
-                        <div class="border-t pt-3">
-                            <label class="block text-xs font-bold text-gray-600 mb-1"><i class="fas fa-file-excel text-green-600"></i> Import File XLSX Vật Tư</label>
-                            <input type="file" id="mat-xlsx-file" accept=".xlsx, .xls" class="w-full text-xs mb-2">
-                            <button type="button" onclick="importMaterialsXLSX()" class="w-full bg-green-600 text-white text-xs font-bold py-2 rounded hover:bg-green-700">Tải Lên & Nhập Dữ Liệu</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Tồn Kho Vật Tư & Sửa/Xóa</h3>
-                        <div class="max-h-60 overflow-y-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-2">Tên Vật Tư</th><th class="p-2">Loại</th><th class="p-2">Tồn</th><th class="p-2">ĐVT</th><th class="p-2">Giá Bán</th><th class="p-2 text-right">Thao Tác</th></tr></thead>
-                                <tbody id="material-stock-table"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Vật Tư (Dạng Bảng)</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-blue-50 border-b"><tr><th class="p-3">Tên Vật Tư</th><th class="p-3">Chủng Loại</th><th class="p-3">Đơn Vị Tính</th><th class="p-3">Giá Bán</th></tr></thead>
-                                <tbody id="material-table-list"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. TAB: THIẾT BỊ -->
-        <div id="tab-equipment" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-tools mr-2"></i> Nhập & Quản Lý Thiết Bị</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Thêm / Sửa Thiết Bị</h3>
-                    <form id="equipment-form" onsubmit="saveEquipment(event)">
-                        <input type="hidden" id="eq-id">
-                        <div class="mb-3">
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Ảnh Thiết Bị</label>
-                            <div class="flex items-center space-x-2">
-                                <input type="text" id="eq-image" placeholder="https://i.postimg.cc/..." class="w-full text-sm border rounded px-3 py-2" required>
-                                <button type="button" onclick="openPostImgEq()" class="bg-green-600 text-white text-xs px-3 py-2 rounded whitespace-nowrap">Upload</button>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Thương Hiệu</label><input type="text" id="eq-brand" class="w-full text-sm border rounded px-3 py-2" required></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Công Suất</label><input type="text" id="eq-power" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Chủng Loại</label><input type="text" id="eq-category" class="w-full text-sm border rounded px-3 py-2"></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Link Catalog</label><input type="text" id="eq-catalog" class="w-full text-sm border rounded px-3 py-2"></div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Số Lượng</label><input type="number" id="eq-stock" value="5" class="w-full text-sm border rounded px-3 py-2" required></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">ĐVT</label><input type="text" id="eq-unit" value="Bộ" class="w-full text-sm border rounded px-3 py-2"></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Giá Nhập</label><input type="number" id="eq-import" value="15000000" class="w-full text-sm border rounded px-3 py-2"></div>
-                        </div>
-                        <div class="mb-4"><label class="block text-xs font-bold text-gray-600 mb-1">Giá Bán</label><input type="number" id="eq-selling" value="18500000" class="w-full text-sm border rounded px-3 py-2"></div>
-                        <div class="flex space-x-2">
-                            <button type="submit" class="flex-1 bg-brandBlue text-white text-sm font-bold py-2 rounded hover:bg-blue-700 shadow">Lưu Thiết Bị</button>
-                            <button type="button" onclick="resetEquipmentForm()" class="bg-gray-300 text-gray-700 text-sm font-bold px-3 py-2 rounded">Hủy</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Tồn Kho Thiết Bị & Sửa/Xóa</h3>
-                        <div class="max-h-60 overflow-y-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-2">Ảnh</th><th class="p-2">Thương hiệu</th><th class="p-2">CS</th><th class="p-2">Tồn</th><th class="p-2">Giá Bán</th><th class="p-2 text-right">Thao Tác</th></tr></thead>
-                                <tbody id="equipment-stock-table"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Thiết Bị (Hiển thị 3 ô/dòng)</h3>
-                        <div id="equipment-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. TAB: KHÁCH HÀNG -->
-        <div id="tab-customers" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Quản Lý Khách Hàng</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Thêm / Sửa Khách Hàng</h3>
-                    <form id="customer-form" onsubmit="saveCustomer(event)">
-                        <input type="hidden" id="cust-id">
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Họ Tên Khách Hàng</label><input type="text" id="cust-name" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Địa Chỉ Khách Hàng</label><input type="text" id="cust-address" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Link Của Khách Hàng</label><input type="text" id="cust-link" class="w-full text-sm border rounded px-3 py-2"></div>
-                        <div class="mb-4">
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Trạng Thái Trang</label>
-                            <select id="cust-status" class="w-full text-sm border rounded px-3 py-2">
-                                <option value="Hoạt động">Hoạt động</option>
-                                <option value="Đang khảo sát">Đang khảo sát</option>
-                                <option value="Đang thi công">Đang thi công</option>
-                            </select>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button type="submit" class="flex-1 bg-brandBlue text-white text-sm font-bold py-2 rounded hover:bg-blue-700 shadow">Lưu Khách Hàng</button>
-                            <button type="button" onclick="resetCustomerForm()" class="bg-gray-300 text-gray-700 text-sm font-bold px-3 py-2 rounded">Hủy</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="lg:col-span-2">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Khách Hàng & Trạng Thái Trang</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-3">Họ Tên</th><th class="p-3">Địa Chỉ</th><th class="p-3">Link Trang</th><th class="p-3">Trạng Thái</th><th class="p-3 text-right">Thao Tác</th></tr></thead>
-                                <tbody id="customer-table-list"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 5. TAB: BẢNG GIÁ DỊCH VỤ -->
-        <div id="tab-services" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-concierge-bell mr-2"></i> Bảng Giá Dịch Vụ</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Thêm Dịch Vụ Mới</h3>
-                    <form id="service-form" onsubmit="saveService(event)">
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Loại Dịch Vụ</label><input type="text" id="serv-type" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Mô Tả Công Việc</label><textarea id="serv-desc" rows="3" class="w-full text-sm border rounded px-3 py-2"></textarea></div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Đơn Vị Tính</label><input type="text" id="serv-unit" value="Gói" class="w-full text-sm border rounded px-3 py-2"></div>
-                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Giá Tiền</label><input type="number" id="serv-price" value="1500000" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        </div>
-                        <button type="submit" class="w-full bg-brandBlue text-white text-sm font-bold py-2 rounded hover:bg-blue-700 shadow">Thêm Dịch Vụ</button>
-                    </form>
-                </div>
-                <div class="lg:col-span-2">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Dịch Vụ Cung Cấp</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-3">Loại Dịch Vụ</th><th class="p-3">Mô Tả Công Việc</th><th class="p-3">ĐVT</th><th class="p-3">Giá Tiền</th><th class="p-3 text-right">Xóa</th></tr></thead>
-                                <tbody id="service-table-list"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 6. TAB: TẠO BÁO GIÁ -->
-        <div id="tab-quotation" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-file-invoice-dollar mr-2"></i> Tạo Báo Giá Điện Năng Lượng Mặt Trời</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print">
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200 lg:col-span-1 space-y-3">
-                    <h3 class="text-md font-bold text-gray-700 border-b pb-2">Thông Tin Khảo Sát & Khách Hàng</h3>
-                    <div><label class="block text-xs font-bold text-gray-600 mb-1">Công Suất Hệ Thống (KW)</label><input type="text" id="quote-power" class="w-full text-sm border rounded px-3 py-2"></div>
-                    <div><label class="block text-xs font-bold text-gray-600 mb-1">Họ Tên Khách Hàng</label><input type="text" id="quote-customer" class="w-full text-sm border rounded px-3 py-2"></div>
-                    <div><label class="block text-xs font-bold text-gray-600 mb-1">Chi Phí Lắp Đặt</label><input type="number" id="quote-install" value="2000000" class="w-full text-sm border rounded px-3 py-2" onchange="calculateQuotation()"></div>
-                    <div><label class="block text-xs font-bold text-gray-600 mb-1">Chi Phí Thiết Kế & Hồ Sơ</label><input type="number" id="quote-design" value="500000" class="w-full text-sm border rounded px-3 py-2" onchange="calculateQuotation()"></div>
-                    <button onclick="generateQuotationPrint()" class="w-full bg-brandBlue text-white font-bold py-2 rounded hover:bg-blue-700 shadow flex items-center justify-center"><i class="fas fa-print mr-2"></i> In Báo Giá Mẫu A4</button>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200 lg:col-span-2">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2 flex justify-between items-center">
-                        <span>Thêm Hàng Hoá, Vật Tư, Thiết Bị Vào Báo Giá</span>
-                        <button onclick="addQuoteItemRow()" class="bg-green-600 text-white text-xs px-2 py-1 rounded"><i class="fas fa-plus mr-1"></i> Thêm Mục</button>
-                    </h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-gray-50 border-b"><tr><th class="p-2">Chọn Hàng Từ Kho</th><th class="p-2">Số Lượng</th><th class="p-2">Đơn Giá</th><th class="p-2">Thành Tiền</th><th class="p-2">Xóa</th></tr></thead>
-                            <tbody id="quote-items-tbody"></tbody>
-                        </table>
-                    </div>
-                    <div class="mt-4 text-right font-bold text-brandBlue text-lg">Tổng Thành Tiền: <span id="quote-total-display">0</span> VNĐ</div>
-                </div>
-            </div>
-
-            <!-- MẪU A4 IN BÁO GIÁ -->
-            <div id="print-section" class="hidden bg-white p-8 max-w-4xl mx-auto shadow-2xl mt-6 border">
-                <div class="flex justify-between items-center border-b-2 pb-4 mb-6">
-                    <div class="flex items-center space-x-3">
-                        <img src="logo.png" alt="Logo" class="w-16 h-16 object-contain" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'">
-                        <div>
-                            <h2 class="text-xl font-black text-brandBlue">CÔNG TY CP ĐIỆN NƯỚC AN GIANG</h2>
-                            <p class="text-xs text-gray-600">Địa chỉ: Số 18, Đường Tôn Đức Thắng, TP. Long Xuyên, Tỉnh An Giang</p>
-                            <p class="text-xs text-gray-600">Hotline: 0296 3852 345</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <h1 class="text-2xl font-black text-brandRed uppercase">BẢNG BÁO GIÁ</h1>
-                        <p class="text-xs text-gray-500">Ngày: 16/10/2026</p>
-                    </div>
-                </div>
-                <div class="mb-4 text-sm space-y-1">
-                    <p><strong>Kính gửi Quý khách hàng:</strong> <span id="print-cust-name" class="underline"></span></p>
-                    <p><strong>Công suất hệ thống mặt trời:</strong> <span id="print-cust-power" class="underline font-bold text-brandBlue"></span></p>
-                </div>
-                <table class="w-full text-left text-sm border-collapse border border-gray-400 mb-6">
-                    <thead>
-                        <tr class="bg-gray-100 text-center"><th class="border border-gray-400 p-2">STT</th><th class="border border-gray-400 p-2">Tên Mặt Hàng</th><th class="border border-gray-400 p-2">ĐVT</th><th class="border border-gray-400 p-2">SL</th><th class="border border-gray-400 p-2">Đơn Giá</th><th class="border border-gray-400 p-2">Thành Tiền</th></tr>
-                    </thead>
-                    <tbody id="print-quotation-tbody"></tbody>
-                </table>
-                <div class="flex justify-end mb-8">
-                    <div class="w-72 space-y-2 text-sm">
-                        <div class="flex justify-between"><span>Chi phí lắp đặt:</span> <span id="print-install-cost">0</span> VNĐ</div>
-                        <div class="flex justify-between"><span>Chi phí thiết kế:</span> <span id="print-design-cost">0</span> VNĐ</div>
-                        <div class="flex justify-between font-bold text-brandRed text-lg border-t pt-2"><span>TỔNG THÀNH TIỀN:</span> <span id="print-grand-total">0</span> VNĐ</div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 text-center mt-12 text-sm">
-                    <div><p class="font-bold">ĐẠI DIỆN CÔNG TY</p></div>
-                    <div><p class="font-bold">XÁC NHẬN KHÁCH HÀNG</p></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 7. TAB: XUẤT KHO BÁN HÀNG -->
-        <div id="tab-sales" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-cash-register mr-2"></i> Xuất Kho & Bán Hàng</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print">
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200 lg:col-span-1 space-y-3">
-                    <h3 class="text-md font-bold text-gray-700 border-b pb-2">Thông Tin Khách Hàng Xuất Kho</h3>
-                    <div><label class="block text-xs font-bold text-gray-600 mb-1">Họ Tên Khách Hàng</label><input type="text" id="sales-cust-name" class="w-full text-sm border rounded px-3 py-2" required></div>
-                    <div><label class="block text-xs font-bold text-gray-600 mb-1">Số Điện Thoại</label><input type="text" id="sales-phone" class="w-full text-sm border rounded px-3 py-2"></div>
-                    <div><label class="block text-xs font-bold text-gray-600 mb-1">Địa Chỉ</label><input type="text" id="sales-address" class="w-full text-sm border rounded px-3 py-2"></div>
-                    <div><label class="block text-xs font-bold text-gray-600 mb-1">Nội Dung Xuất Bán</label><textarea id="sales-content" rows="2" class="w-full text-sm border rounded px-3 py-2"></textarea></div>
-                    <button onclick="executeSalesExport()" class="w-full bg-brandRed text-white font-bold py-2 rounded hover:bg-red-700 shadow flex items-center justify-center"><i class="fas fa-print mr-2"></i> Xuất Kho & In Phiếu A4</button>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200 lg:col-span-2">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2 flex justify-between items-center">
-                        <span>Chọn Sản Phẩm Xuất Kho</span>
-                        <button onclick="addSalesItemRow()" class="bg-green-600 text-white text-xs px-2 py-1 rounded"><i class="fas fa-plus mr-1"></i> Thêm Mục</button>
-                    </h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-gray-50 border-b"><tr><th class="p-2">Chọn Kho Hàng</th><th class="p-2">Số Lượng</th><th class="p-2">Đơn Giá Bán</th><th class="p-2">Thành Tiền</th><th class="p-2">Xóa</th></tr></thead>
-                            <tbody id="sales-items-tbody"></tbody>
-                        </table>
-                    </div>
-                    <div class="mt-4 text-right font-bold text-brandRed text-lg">Tổng Tiền: <span id="sales-total-display">0</span> VNĐ</div>
-                </div>
-            </div>
-
-            <!-- MẪU A4 IN PHIẾU XUẤT KHO -->
-            <div id="print-sales-section" class="hidden bg-white p-8 max-w-4xl mx-auto shadow-2xl mt-6 border">
-                <div class="flex justify-between items-center border-b-2 pb-4 mb-6">
-                    <div class="flex items-center space-x-3">
-                        <img src="logo.png" alt="Logo" class="w-16 h-16 object-contain" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'">
-                        <div>
-                            <h2 class="text-xl font-black text-brandBlue">CÔNG TY CP ĐIỆN NƯỚC AN GIANG</h2>
-                            <p class="text-xs text-gray-600">Địa chỉ: Số 18, Đường Tôn Đức Thắng, TP. Long Xuyên, Tỉnh An Giang</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <h1 class="text-2xl font-black text-brandRed uppercase">PHIẾU XUẤT KHO</h1>
-                        <p class="text-xs text-gray-500" id="sales-code-print">Mã: XK-2026</p>
-                    </div>
-                </div>
-                <div class="mb-4 text-sm space-y-1">
-                    <p><strong>Khách hàng:</strong> <span id="print-sales-cust" class="underline font-bold"></span></p>
-                    <p><strong>Số điện thoại:</strong> <span id="print-sales-phone" class="underline"></span></p>
-                    <p><strong>Địa chỉ:</strong> <span id="print-sales-address" class="underline"></span></p>
-                    <p><strong>Nội dung:</strong> <span id="print-sales-content" class="italic"></span></p>
-                </div>
-                <table class="w-full text-left text-sm border-collapse border border-gray-400 mb-6">
-                    <thead>
-                        <tr class="bg-gray-100 text-center"><th class="border border-gray-400 p-2">STT</th><th class="border border-gray-400 p-2">Tên Mặt Hàng</th><th class="border border-gray-400 p-2">ĐVT</th><th class="border border-gray-400 p-2">SL</th><th class="border border-gray-400 p-2">Đơn Giá</th><th class="border border-gray-400 p-2">Thành Tiền</th></tr>
-                    </thead>
-                    <tbody id="print-sales-tbody"></tbody>
-                </table>
-                <div class="flex justify-end mb-8">
-                    <div class="w-72 space-y-2 text-sm font-bold text-brandRed text-lg border-t pt-2">
-                        <div class="flex justify-between"><span>TỔNG THANH TOÁN:</span> <span id="print-sales-grand-total">0</span> VNĐ</div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 text-center mt-12 text-sm">
-                    <div><p class="font-bold">NGƯỜI LẬP PHIẾU</p></div>
-                    <div><p class="font-bold">THỦ KHO</p></div>
-                    <div><p class="font-bold">KHÁCH HÀNG</p></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 8. TAB: BÁO CÁO TỒN KHO -->
-        <div id="tab-inventory" class="tab-content hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-brandBlue flex items-center"><i class="fas fa-warehouse mr-2"></i> Báo Cáo Tồn Kho Theo Danh Mục</h2>
-                <button onclick="downloadInventoryExcel()" class="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 shadow flex items-center text-sm"><i class="fas fa-file-excel mr-2"></i> Xuất File XLSX Tồn Kho</button>
-            </div>
-            <div class="space-y-6">
-                <div class="bg-white p-5 rounded-lg shadow border">
-                    <h3 class="font-bold text-brandBlue mb-3">1. Danh Mục Pin NLMT</h3>
-                    <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-gray-50 border-b"><tr><th class="p-2">Thương Hiệu</th><th class="p-2">Công Suất</th><th class="p-2">Loại</th><th class="p-2">Tồn Kho</th><th class="p-2">Giá Nhập</th><th class="p-2">Giá Bán</th></tr></thead><tbody id="inv-report-solar"></tbody></table></div>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow border">
-                    <h3 class="font-bold text-brandBlue mb-3">2. Danh Mục Vật Tư</h3>
-                    <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-gray-50 border-b"><tr><th class="p-2">Tên Vật Tư</th><th class="p-2">Loại</th><th class="p-2">Tồn Kho</th><th class="p-2">ĐVT</th><th class="p-2">Giá Nhập</th><th class="p-2">Giá Bán</th></tr></thead><tbody id="inv-report-material"></tbody></table></div>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow border">
-                    <h3 class="font-bold text-brandBlue mb-3">3. Danh Mục Thiết Bị</h3>
-                    <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-gray-50 border-b"><tr><th class="p-2">Thương Hiệu</th><th class="p-2">Công Suất</th><th class="p-2">Loại</th><th class="p-2">Tồn Kho</th><th class="p-2">Giá Nhập</th><th class="p-2">Giá Bán</th></tr></thead><tbody id="inv-report-equipment"></tbody></table></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 9. TAB: CHI PHÍ -->
-        <div id="tab-expenses" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-file-invoice mr-2"></i> Quản Lý Chi Phí Phát Sinh</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Nhập Chi Phí</h3>
-                    <form id="expense-form" onsubmit="saveExpense(event)">
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Tên Khách Hàng / Dự Án</label><input type="text" id="exp-customer" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Nội Dung Chi Phí</label><textarea id="exp-content" rows="3" class="w-full text-sm border rounded px-3 py-2" required></textarea></div>
-                        <div class="mb-4"><label class="block text-xs font-bold text-gray-600 mb-1">Số Tiền Chi</label><input type="number" id="exp-cost" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <button type="submit" class="w-full bg-brandBlue text-white text-sm font-bold py-2 rounded hover:bg-blue-700 shadow">Lưu Chi Phí</button>
-                    </form>
-                </div>
-                <div class="lg:col-span-2">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Chi Phí Đã Nhập</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-3">Khách Hàng</th><th class="p-3">Nội Dung</th><th class="p-3">Số Tiền</th><th class="p-3">Thời Gian</th><th class="p-3 text-right">Xóa</th></tr></thead>
-                                <tbody id="expense-table-list"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 10. TAB: BÁO CÁO DOANH THU & LỢI NHUẬN -->
-        <div id="tab-revenue" class="tab-content hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-brandBlue flex items-center"><i class="fas fa-chart-line mr-2"></i> Báo Cáo Doanh Thu & Lợi Nhuận</h2>
-                <button onclick="downloadRevenueExcel()" class="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 shadow flex items-center text-sm"><i class="fas fa-file-excel mr-2"></i> Xuất File XLSX</button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white p-4 rounded-lg shadow border border-blue-200"><p class="text-xs font-bold text-gray-500">TỔNG DOANH THU</p><p class="text-xl font-black text-brandBlue" id="rev-total-sales">0 VNĐ</p></div>
-                <div class="bg-white p-4 rounded-lg shadow border border-red-200"><p class="text-xs font-bold text-gray-500">TỔNG VỐN NHẬP</p><p class="text-xl font-black text-brandRed" id="rev-total-import">0 VNĐ</p></div>
-                <div class="bg-white p-4 rounded-lg shadow border border-yellow-200"><p class="text-xs font-bold text-gray-500">TỔNG CHI PHÍ</p><p class="text-xl font-black text-yellow-600" id="rev-total-expense">0 VNĐ</p></div>
-                <div class="bg-white p-4 rounded-lg shadow border border-green-200"><p class="text-xs font-bold text-gray-500">LỢI NHUẬN THUẦN</p><p class="text-xl font-black text-green-600" id="rev-net-profit">0 VNĐ</p></div>
-            </div>
+        <!-- 2. Vật tư -->
+        <div id="public-materials" class="pub-tab-content hidden">
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-boxes mr-2"></i> Danh Mục Vật Tư Điện Năng Lượng</h2>
             <div class="bg-white p-5 rounded-lg shadow border">
-                <h3 class="font-bold text-brandBlue mb-3">Chi Tiết Các Phiếu Xuất Kho</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-gray-50 border-b"><tr><th class="p-3">Mã Khách Hàng</th><th class="p-3">Thời Gian</th><th class="p-3">Họ Tên</th><th class="p-3">Địa Chỉ</th><th class="p-3">Số Tiền</th><th class="p-3 text-right">Thao Tác</th></tr></thead>
-                        <tbody id="revenue-sales-table"></tbody>
-                    </table>
-                </div>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-blue-50 border-b"><tr><th class="p-3">Tên Vật Tư</th><th class="p-3">Chủng Loại</th><th class="p-3">ĐVT</th><th class="p-3">Giá Bán</th></tr></thead>
+                    <tbody id="pub-material-table"></tbody>
+                </table>
             </div>
         </div>
 
-        <!-- 11. TAB: QUẢN LÝ TÀI KHOẢN ADMIN -->
-        <div id="tab-admins" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-user-shield mr-2"></i> Quản Lý Tài Khoản Quản Trị Viên</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Thêm / Sửa Tài Khoản Admin</h3>
-                    <form id="admin-form" onsubmit="saveAdmin(event)">
-                        <input type="hidden" id="admin-id">
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Tên Đăng Nhập</label><input type="text" id="admin-user" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-3">
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Mật Khẩu</label>
-                            <input type="password" id="admin-pass" placeholder="Nhập mật khẩu..." class="w-full text-sm border rounded px-3 py-2">
-                            <p class="text-[10px] text-gray-500 mt-1">Để trống nếu không muốn đổi mật khẩu khi sửa.</p>
-                        </div>
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Họ và Tên</label><input type="text" id="admin-name" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-4">
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Quyền Hạn</label>
-                            <select id="admin-role" class="w-full text-sm border rounded px-3 py-2">
-                                <option value="Quản trị tối cao">Quản trị tối cao (Super Admin)</option>
-                                <option value="Nhân viên kho">Nhân viên kho / Kế toán</option>
-                            </select>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button type="submit" class="flex-1 bg-brandBlue text-white text-sm font-bold py-2 rounded hover:bg-blue-700 shadow">Lưu Tài Khoản</button>
-                            <button type="button" onclick="resetAdminForm()" class="bg-gray-300 text-gray-700 text-sm font-bold px-3 py-2 rounded">Hủy</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="lg:col-span-2">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Tài Khoản Quản Trị</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-3">Tên Đăng Nhập</th><th class="p-3">Họ Tên</th><th class="p-3">Quyền Hạn</th><th class="p-3">Ngày Tạo</th><th class="p-3 text-right">Thao Tác</th></tr></thead>
-                                <tbody id="admin-table-list"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+        <!-- 3. Thiết bị -->
+        <div id="public-equipment" class="pub-tab-content hidden">
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-tools mr-2"></i> Danh Mục Thiết Bị (Inverter, Biến tần...)</h2>
+            <div id="pub-equipment-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </div>
+
+        <!-- 4. Khách hàng -->
+        <div id="public-customers" class="pub-tab-content hidden">
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Danh Sách Khách Hàng & Dự Án Tiêu Biểu</h2>
+            <div class="bg-white p-5 rounded-lg shadow border">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 border-b"><tr><th class="p-3">Họ Tên Khách Hàng</th><th class="p-3">Địa Chỉ</th><th class="p-3">Link Trang / Dự Án</th><th class="p-3">Trạng Thái</th></tr></thead>
+                    <tbody id="pub-customer-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 5. Dịch vụ -->
+        <div id="public-services" class="pub-tab-content hidden">
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-concierge-bell mr-2"></i> Bảng Giá Dịch Vụ & Lắp Đặt Trọn Gói</h2>
+            <div class="bg-white p-5 rounded-lg shadow border">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 border-b"><tr><th class="p-3">Loại Dịch Vụ</th><th class="p-3">Mô Tả Chi Tiết</th><th class="p-3">ĐVT</th><th class="p-3">Giá Tiền</th></tr></thead>
+                    <tbody id="pub-service-table"></tbody>
+                </table>
             </div>
         </div>
 
     </main>
 
-    <!-- SCRIPTS -->
-    <script>
-        let allProducts = [], allMaterials = [], allEquipment = [], allCustomers = [], allServices = [], allExpenses = [], allSales = [], allAdmins = [];
+    <footer class="bg-brandDark text-white text-center py-4 mt-12 text-xs">
+        <p>Copyright © 2026 CÔNG TY CP ĐIỆN NƯỚC AN GIANG. All rights reserved.</p>
+    </footer>
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => {
+    <script>
+        function switchPublicTab(tabId) {
+            document.querySelectorAll('.pub-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.pub-tab-btn').forEach(el => {
                 el.classList.remove('bg-brandBlue', 'text-white');
                 el.classList.add('hover:bg-gray-700');
             });
             document.getElementById(tabId).classList.remove('hidden');
             event.currentTarget.classList.add('bg-brandBlue', 'text-white');
             event.currentTarget.classList.remove('hover:bg-gray-700');
-            loadAllData();
         }
 
-        async function loadAllData() {
+        async function loadPublicData() {
             try {
-                const [pRes, mRes, eRes, cRes, sRes, expRes, salesRes, adminRes] = await Promise.all([
+                const [pRes, mRes, eRes, cRes, sRes] = await Promise.all([
                     fetch('/api/solar-products').then(r => r.json()),
                     fetch('/api/materials').then(r => r.json()),
                     fetch('/api/equipment').then(r => r.json()),
                     fetch('/api/customers').then(r => r.json()),
-                    fetch('/api/services').then(r => r.json()),
-                    fetch('/api/expenses').then(r => r.json()),
-                    fetch('/api/sales').then(r => r.json()),
-                    fetch('/api/admins').then(r => r.json())
+                    fetch('/api/services').then(r => r.json())
                 ]);
-                allProducts = pRes;
-                allMaterials = mRes;
-                allEquipment = eRes;
-                allCustomers = cRes;
-                allServices = sRes;
-                allExpenses = expRes;
-                allSales = salesRes;
-                allAdmins = adminRes;
 
-                renderProducts();
-                renderMaterials();
-                renderEquipment();
-                renderCustomers();
-                renderServices();
-                renderExpenses();
-                renderInventoryReport();
-                renderRevenueReport();
-                renderAdmins();
-            } catch (err) {
-                console.error("Error loading data:", err);
-            }
+                // Render Products (3 items/row grid)
+                let pHtml = '';
+                pRes.forEach(p => {
+                    pHtml += `<div class="bg-white border rounded-lg p-4 shadow flex flex-col justify-between"><div><img src="${p.image_url}" class="w-full h-40 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${p.brand} - ${p.power}</h4><p class="text-xs text-gray-600">Loại: ${p.category || 'N/A'}</p>${p.catalog_link ? `<a href="${p.catalog_link}" target="_blank" class="text-xs text-blue-500 underline block mt-1"><i class="fas fa-file-pdf mr-1"></i> Xem Catalog</a>` : ''}</div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-base">${Number(p.selling_price).toLocaleString()} VNĐ</span><span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Pin NLMT</span></div></div>`;
+                });
+                document.getElementById('pub-product-grid').innerHTML = pHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu hàng hoá</p>';
+
+                // Render Materials
+                let mHtml = '';
+                mRes.forEach(m => {
+                    mHtml += `<tr class="border-b"><td class="p-3 font-bold">${m.name}</td><td class="p-3">${m.category || ''}</td><td class="p-3">${m.unit}</td><td class="p-3 text-brandRed font-bold">${Number(m.selling_price).toLocaleString()} VNĐ</td></tr>`;
+                });
+                document.getElementById('pub-material-table').innerHTML = mHtml || '<tr><td colspan="4" class="text-center p-3 text-gray-400">Chưa có dữ liệu vật tư</td></tr>';
+
+                // Render Equipment (3 items/row grid)
+                let eHtml = '';
+                eRes.forEach(eq => {
+                    eHtml += `<div class="bg-white border rounded-lg p-4 shadow flex flex-col justify-between"><div><img src="${eq.image_url}" class="w-full h-40 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${eq.brand} - ${eq.power}</h4><p class="text-xs text-gray-600">Chủng loại: ${eq.category || 'N/A'}</p></div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-base">${Number(eq.selling_price).toLocaleString()} VNĐ</span><span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Thiết bị</span></div></div>`;
+                });
+                document.getElementById('pub-equipment-grid').innerHTML = eHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu thiết bị</p>';
+
+                // Render Customers
+                let cHtml = '';
+                cRes.forEach(c => {
+                    cHtml += `<tr class="border-b"><td class="p-3 font-bold">${c.name}</td><td class="p-3 text-xs text-gray-600">${c.address}</td><td class="p-3"><a href="${c.link || '#'}" target="_blank" class="text-blue-500 underline text-xs">Xem Trang</a></td><td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-bold">${c.status}</span></td></tr>`;
+                });
+                document.getElementById('pub-customer-table').innerHTML = cHtml || '<tr><td colspan="4" class="text-center p-3 text-gray-400">Chưa có khách hàng</td></tr>';
+
+                // Render Services
+                let sHtml = '';
+                sRes.forEach(s => {
+                    sHtml += `<tr class="border-b"><td class="p-3 font-bold">${s.service_type}</td><td class="p-3 text-xs text-gray-600">${s.description || ''}</td><td class="p-3">${s.unit}</td><td class="p-3 font-bold text-brandBlue">${Number(s.price).toLocaleString()} VNĐ</td></tr>`;
+                });
+                document.getElementById('pub-service-table').innerHTML = sHtml || '<tr><td colspan="4" class="text-center p-3 text-gray-400">Chưa có dịch vụ</td></tr>';
+
+            } catch (err) { console.error("Error loading public data:", err); }
         }
 
-        function openPostImg() {
-            window.open('https://postimg.cc', '_blank');
-            const url = prompt("Nhập trực tiếp link ảnh đã upload từ postimg.cc:");
-            if (url) document.getElementById('prod-image').value = url;
-        }
-
-        function openPostImgEq() {
-            window.open('https://postimg.cc', '_blank');
-            const url = prompt("Nhập trực tiếp link ảnh đã upload từ postimg.cc:");
-            if (url) document.getElementById('eq-image').value = url;
-        }
-
-        // --- Products ---
-        async function saveProduct(e) {
-            e.preventDefault();
-            const id = document.getElementById('prod-id').value;
-            const data = {
-                image_url: document.getElementById('prod-image').value,
-                brand: document.getElementById('prod-brand').value,
-                power: document.getElementById('prod-power').value,
-                category: document.getElementById('prod-category').value,
-                catalog_link: document.getElementById('prod-catalog').value,
-                stock: parseInt(document.getElementById('prod-stock').value),
-                unit: document.getElementById('prod-unit').value,
-                import_price: parseFloat(document.getElementById('prod-import').value),
-                selling_price: parseFloat(document.getElementById('prod-selling').value)
-            };
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `/api/solar-products/${id}` : '/api/solar-products';
-            await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            resetProductForm();
-            loadAllData();
-        }
-
-        function resetProductForm() { document.getElementById('product-form').reset(); document.getElementById('prod-id').value = ''; }
-
-        function editProduct(id) {
-            const p = allProducts.find(x => x.id === id);
-            if (!p) return;
-            document.getElementById('prod-id').value = p.id;
-            document.getElementById('prod-image').value = p.image_url;
-            document.getElementById('prod-brand').value = p.brand;
-            document.getElementById('prod-power').value = p.power;
-            document.getElementById('prod-category').value = p.category;
-            document.getElementById('prod-catalog').value = p.catalog_link;
-            document.getElementById('prod-stock').value = p.stock;
-            document.getElementById('prod-unit').value = p.unit;
-            document.getElementById('prod-import').value = p.import_price;
-            document.getElementById('prod-selling').value = p.selling_price;
-        }
-
-        async function deleteProduct(id) {
-            if (confirm('Xóa pin NLMT này?')) { await fetch(`/api/solar-products/${id}`, { method: 'DELETE' }); loadAllData(); }
-        }
-
-        function renderProducts() {
-            let stockHtml = '', gridHtml = '';
-            allProducts.forEach(p => {
-                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${p.image_url}" class="w-8 h-8 object-cover rounded"></td><td class="p-2 font-bold">${p.brand} (${p.power})</td><td class="p-2">${p.power}</td><td class="p-2">${p.stock} ${p.unit}</td><td class="p-2 text-brandBlue font-bold">${Number(p.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button onclick="editProduct(${p.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteProduct(${p.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-                gridHtml += `<div class="bg-white border rounded-lg p-3 shadow hover:shadow-md transition flex flex-col justify-between"><div><img src="${p.image_url}" class="w-full h-36 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${p.brand} - ${p.power}</h4><p class="text-xs text-gray-600">Tồn: ${p.stock} ${p.unit}</p>${p.catalog_link ? `<a href="${p.catalog_link}" target="_blank" class="text-xs text-blue-500 underline block mt-1">Catalog</a>` : ''}</div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-sm">${Number(p.selling_price).toLocaleString()}đ</span><span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Pin</span></div></div>`;
-            });
-            document.getElementById('product-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
-            document.getElementById('product-grid').innerHTML = gridHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu hàng hoá</p>';
-        }
-
-        // --- Materials ---
-        async function saveMaterial(e) {
-            e.preventDefault();
-            const id = document.getElementById('mat-id').value;
-            const data = {
-                name: document.getElementById('mat-name').value,
-                category: document.getElementById('mat-category').value,
-                stock: parseInt(document.getElementById('mat-stock').value),
-                unit: document.getElementById('mat-unit').value,
-                import_price: parseFloat(document.getElementById('mat-import').value),
-                selling_price: parseFloat(document.getElementById('mat-selling').value)
-            };
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `/api/materials/${id}` : '/api/materials';
-            await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            resetMaterialForm(); loadAllData();
-        }
-
-        function resetMaterialForm() { document.getElementById('material-form').reset(); document.getElementById('mat-id').value = ''; }
-
-        function editMaterial(id) {
-            const m = allMaterials.find(x => x.id === id);
-            if (!m) return;
-            document.getElementById('mat-id').value = m.id;
-            document.getElementById('mat-name').value = m.name;
-            document.getElementById('mat-category').value = m.category;
-            document.getElementById('mat-stock').value = m.stock;
-            document.getElementById('mat-unit').value = m.unit;
-            document.getElementById('mat-import').value = m.import_price;
-            document.getElementById('mat-selling').value = m.selling_price;
-        }
-
-        async function deleteMaterial(id) {
-            if (confirm('Xóa vật tư này?')) { await fetch(`/api/materials/${id}`, { method: 'DELETE' }); loadAllData(); }
-        }
-
-        async function importMaterialsXLSX() {
-            const fileInput = document.getElementById('mat-xlsx-file');
-            if (!fileInput.files[0]) { alert('Vui lòng chọn file xlsx!'); return; }
-            const formData = new FormData(); formData.append('file', fileInput.files[0]);
-            const res = await fetch('/api/materials/import', { method: 'POST', body: formData });
-            const data = await res.json();
-            if (data.success) { alert(`Import thành công ${data.count} vật tư!`); loadAllData(); } else { alert('Lỗi: ' + data.error); }
-        }
-
-        function renderMaterials() {
-            let stockHtml = '', tableHtml = '';
-            allMaterials.forEach(m => {
-                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2 font-bold">${m.name}</td><td class="p-2">${m.category || ''}</td><td class="p-2">${m.stock}</td><td class="p-2">${m.unit}</td><td class="p-2 text-brandBlue">${Number(m.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button onclick="editMaterial(${m.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteMaterial(${m.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-                tableHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">${m.name}</td><td class="p-3">${m.category || ''}</td><td class="p-3">${m.unit}</td><td class="p-3 text-brandRed font-bold">${Number(m.selling_price).toLocaleString()} VNĐ</td></tr>`;
-            });
-            document.getElementById('material-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
-            document.getElementById('material-table-list').innerHTML = tableHtml || '<tr><td colspan="4" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
-        }
-
-        // --- Equipment ---
-        async function saveEquipment(e) {
-            e.preventDefault();
-            const id = document.getElementById('eq-id').value;
-            const data = {
-                image_url: document.getElementById('eq-image').value,
-                brand: document.getElementById('eq-brand').value,
-                power: document.getElementById('eq-power').value,
-                category: document.getElementById('eq-category').value,
-                catalog_link: document.getElementById('eq-catalog').value,
-                stock: parseInt(document.getElementById('eq-stock').value),
-                unit: document.getElementById('eq-unit').value,
-                import_price: parseFloat(document.getElementById('eq-import').value),
-                selling_price: parseFloat(document.getElementById('eq-selling').value)
-            };
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `/api/equipment/${id}` : '/api/equipment';
-            await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            resetEquipmentForm(); loadAllData();
-        }
-
-        function resetEquipmentForm() { document.getElementById('equipment-form').reset(); document.getElementById('eq-id').value = ''; }
-
-        function editEquipment(id) {
-            const eq = allEquipment.find(x => x.id === id);
-            if (!eq) return;
-            document.getElementById('eq-id').value = eq.id;
-            document.getElementById('eq-image').value = eq.image_url;
-            document.getElementById('eq-brand').value = eq.brand;
-            document.getElementById('eq-power').value = eq.power;
-            document.getElementById('eq-category').value = eq.category;
-            document.getElementById('eq-catalog').value = eq.catalog_link;
-            document.getElementById('eq-stock').value = eq.stock;
-            document.getElementById('eq-unit').value = eq.unit;
-            document.getElementById('eq-import').value = eq.import_price;
-            document.getElementById('eq-selling').value = eq.selling_price;
-        }
-
-        async function deleteEquipment(id) {
-            if (confirm('Xóa thiết bị này?')) { await fetch(`/api/equipment/${id}`, { method: 'DELETE' }); loadAllData(); }
-        }
-
-        function renderEquipment() {
-            let stockHtml = '', gridHtml = '';
-            allEquipment.forEach(eq => {
-                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${eq.image_url}" class="w-8 h-8 object-cover rounded"></td><td class="p-2 font-bold">${eq.brand}</td><td class="p-2">${eq.power}</td><td class="p-2">${eq.stock}</td><td class="p-2 text-brandBlue font-bold">${Number(eq.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button onclick="editEquipment(${eq.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteEquipment(${eq.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-                gridHtml += `<div class="bg-white border rounded-lg p-3 shadow hover:shadow-md transition flex flex-col justify-between"><div><img src="${eq.image_url}" class="w-full h-36 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${eq.brand} - ${eq.power}</h4><p class="text-xs text-gray-600">Tồn: ${eq.stock} ${eq.unit}</p></div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-sm">${Number(eq.selling_price).toLocaleString()}đ</span><span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Thiết bị</span></div></div>`;
-            });
-            document.getElementById('equipment-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
-            document.getElementById('equipment-grid').innerHTML = gridHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu thiết bị</p>';
-        }
-
-        // --- Customers ---
-        async function saveCustomer(e) {
-            e.preventDefault();
-            const id = document.getElementById('cust-id').value;
-            const data = { name: document.getElementById('cust-name').value, address: document.getElementById('cust-address').value, link: document.getElementById('cust-link').value, status: document.getElementById('cust-status').value };
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `/api/customers/${id}` : '/api/customers';
-            await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            resetCustomerForm(); loadAllData();
-        }
-
-        function resetCustomerForm() { document.getElementById('customer-form').reset(); document.getElementById('cust-id').value = ''; }
-
-        function editCustomer(id) {
-            const c = allCustomers.find(x => x.id === id);
-            if (!c) return;
-            document.getElementById('cust-id').value = c.id;
-            document.getElementById('cust-name').value = c.name;
-            document.getElementById('cust-address').value = c.address;
-            document.getElementById('cust-link').value = c.link;
-            document.getElementById('cust-status').value = c.status;
-        }
-
-        async function deleteCustomer(id) {
-            if (confirm('Xóa khách hàng này?')) { await fetch(`/api/customers/${id}`, { method: 'DELETE' }); loadAllData(); }
-        }
-
-        function renderCustomers() {
-            let html = '';
-            allCustomers.forEach(c => {
-                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">${c.name}</td><td class="p-3 text-xs text-gray-600">${c.address}</td><td class="p-3"><a href="${c.link || '#'}" target="_blank" class="text-blue-500 underline text-xs">Xem Trang</a></td><td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-bold">${c.status}</span></td><td class="p-3 text-right"><button onclick="editCustomer(${c.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteCustomer(${c.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-            });
-            document.getElementById('customer-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có khách hàng</td></tr>';
-        }
-
-        // --- Services ---
-        async function saveService(e) {
-            e.preventDefault();
-            const data = { service_type: document.getElementById('serv-type').value, description: document.getElementById('serv-desc').value, unit: document.getElementById('serv-unit').value, price: parseFloat(document.getElementById('serv-price').value) };
-            await fetch('/api/services', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            document.getElementById('service-form').reset(); loadAllData();
-        }
-
-        async function deleteService(id) {
-            if (confirm('Xóa dịch vụ này?')) { await fetch(`/api/services/${id}`, { method: 'DELETE' }); loadAllData(); }
-        }
-
-        function renderServices() {
-            let html = '';
-            allServices.forEach(s => {
-                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">${s.service_type}</td><td class="p-3 text-xs text-gray-600">${s.description || ''}</td><td class="p-3">${s.unit}</td><td class="p-3 font-bold text-brandBlue">${Number(s.price).toLocaleString()} VNĐ</td><td class="p-3 text-right"><button onclick="deleteService(${s.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-            });
-            document.getElementById('service-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có dịch vụ</td></tr>';
-        }
-
-        // --- Quotation ---
-        function addQuoteItemRow() {
-            const tbody = document.getElementById('quote-items-tbody');
-            const tr = document.createElement('tr'); tr.className = 'border-b quote-item-row';
-            let options = '<option value="">-- Chọn hàng hoá / vật tư / thiết bị --';
-            allProducts.forEach(p => options += `<option value="product_${p.id}" data-price="${p.selling_price}">[Pin] ${p.brand} ${p.power} (${Number(p.selling_price).toLocaleString()}đ)</option>`);
-            allMaterials.forEach(m => options += `<option value="material_${m.id}" data-price="${m.selling_price}">[Vật tư] ${m.name} (${Number(m.selling_price).toLocaleString()}đ)</option>`);
-            allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (${Number(eq.selling_price).toLocaleString()}đ)</option>`);
-
-            tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 item-select" onchange="updateQuoteRow(this)">${options}</select></td><td class="p-2"><input type="number" value="1" class="w-20 text-xs border rounded p-1 item-qty" onchange="calculateQuotation()"></td><td class="p-2"><input type="number" value="0" class="w-28 text-xs border rounded p-1 item-price" onchange="calculateQuotation()"></td><td class="p-2 item-subtotal font-bold text-brandBlue">0 VNĐ</td><td class="p-2"><button type="button" onclick="this.closest('tr').remove(); calculateQuotation();" class="text-red-600"><i class="fas fa-trash"></i></button></td>`;
-            tbody.appendChild(tr);
-        }
-
-        function updateQuoteRow(selectEl) {
-            const opt = selectEl.options[selectEl.selectedIndex];
-            const price = opt.getAttribute('data-price') || 0;
-            selectEl.closest('tr').querySelector('.item-price').value = price;
-            calculateQuotation();
-        }
-
-        function calculateQuotation() {
-            let subtotal = 0;
-            document.querySelectorAll('.quote-item-row').forEach(tr => {
-                const qty = parseFloat(tr.querySelector('.item-qty').value) || 0;
-                const price = parseFloat(tr.querySelector('.item-price').value) || 0;
-                const total = qty * price;
-                tr.querySelector('.item-subtotal').innerText = total.toLocaleString() + ' VNĐ';
-                subtotal += total;
-            });
-            const install = parseFloat(document.getElementById('quote-install').value) || 0;
-            const design = parseFloat(document.getElementById('quote-design').value) || 0;
-            const grandTotal = subtotal + install + design;
-            document.getElementById('quote-total-display').innerText = grandTotal.toLocaleString();
-            return grandTotal;
-        }
-
-        function generateQuotationPrint() {
-            const custName = document.getElementById('quote-customer').value;
-            const power = document.getElementById('quote-power').value;
-            if (!custName) { alert('Nhập tên khách hàng!'); return; }
-
-            document.getElementById('print-cust-name').innerText = custName;
-            document.getElementById('print-cust-power').innerText = power + ' KW';
-            document.getElementById('print-install-cost').innerText = Number(document.getElementById('quote-install').value).toLocaleString();
-            document.getElementById('print-design-cost').innerText = Number(document.getElementById('quote-design').value).toLocaleString();
-            document.getElementById('print-grand-total').innerText = document.getElementById('quote-total-display').innerText;
-
-            let tbodyHtml = ''; let stt = 1;
-            document.querySelectorAll('.quote-item-row').forEach(tr => {
-                const select = tr.querySelector('.item-select');
-                const text = select.options[select.selectedIndex].text;
-                const qty = tr.querySelector('.item-qty').value;
-                const price = Number(tr.querySelector('.item-price').value).toLocaleString();
-                const sub = (parseFloat(tr.querySelector('.item-qty').value) * parseFloat(tr.querySelector('.item-price').value)).toLocaleString();
-                tbodyHtml += `<tr><td class="border border-gray-400 p-2 text-center">${stt++}</td><td class="border border-gray-400 p-2">${text}</td><td class="border border-gray-400 p-2 text-center">Cái</td><td class="border border-gray-400 p-2 text-center">${qty}</td><td class="border border-gray-400 p-2 text-right">${price}</td><td class="border border-gray-400 p-2 text-right">${sub}</td></tr>`;
-            });
-            document.getElementById('print-quotation-tbody').innerHTML = tbodyHtml;
-            document.getElementById('print-section').classList.remove('hidden');
-            window.print();
-        }
-
-        // --- Sales ---
-        function addSalesItemRow() {
-            const tbody = document.getElementById('sales-items-tbody');
-            const tr = document.createElement('tr'); tr.className = 'border-b sales-item-row';
-            let options = '<option value="">-- Chọn hàng từ kho / dịch vụ --';
-            allProducts.forEach(p => options += `<option value="product_${p.id}" data-id="${p.id}" data-type="product" data-name="${p.brand} ${p.power}" data-import="${p.import_price}" data-price="${p.selling_price}">[Pin] ${p.brand} ${p.power} (Tồn: ${p.stock})</option>`);
-            allMaterials.forEach(m => options += `<option value="material_${m.id}" data-id="${m.id}" data-type="material" data-name="${m.name}" data-import="${m.import_price}" data-price="${m.selling_price}">[Vật tư] ${m.name} (Tồn: ${m.stock})</option>`);
-            allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-id="${eq.id}" data-type="equipment" data-name="${eq.brand} ${eq.power}" data-import="${eq.import_price}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (Tồn: ${eq.stock})</option>`);
-            allServices.forEach(s => options += `<option value="service_${s.id}" data-id="${s.id}" data-type="service" data-name="${s.service_type}" data-import="0" data-price="${s.price}">[Dịch vụ] ${s.service_type}</option>`);
-
-            tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 sales-select" onchange="updateSalesRow(this)">${options}</select></td><td class="p-2"><input type="number" value="1" class="w-20 text-xs border rounded p-1 sales-qty" onchange="calculateSalesTotal()"></td><td class="p-2"><input type="number" value="0" class="w-28 text-xs border rounded p-1 sales-price" onchange="calculateSalesTotal()"></td><td class="p-2 sales-subtotal font-bold text-brandRed">0 VNĐ</td><td class="p-2"><button type="button" onclick="this.closest('tr').remove(); calculateSalesTotal();" class="text-red-600"><i class="fas fa-trash"></i></button></td>`;
-            tbody.appendChild(tr);
-        }
-
-        function updateSalesRow(selectEl) {
-            const opt = selectEl.options[selectEl.selectedIndex];
-            selectEl.closest('tr').querySelector('.sales-price').value = opt.getAttribute('data-price') || 0;
-            calculateSalesTotal();
-        }
-
-        function calculateSalesTotal() {
-            let total = 0;
-            document.querySelectorAll('.sales-item-row').forEach(tr => {
-                const qty = parseFloat(tr.querySelector('.sales-qty').value) || 0;
-                const price = parseFloat(tr.querySelector('.sales-price').value) || 0;
-                const sub = qty * price;
-                tr.querySelector('.sales-subtotal').innerText = sub.toLocaleString() + ' VNĐ';
-                total += sub;
-            });
-            document.getElementById('sales-total-display').innerText = total.toLocaleString();
-            return total;
-        }
-
-        async function executeSalesExport() {
-            const custName = document.getElementById('sales-cust-name').value;
-            const phone = document.getElementById('sales-phone').value;
-            const address = document.getElementById('sales-address').value;
-            const content = document.getElementById('sales-content').value;
-            if (!custName) { alert('Nhập tên khách hàng!'); return; }
-
-            let items = [], totalAmount = 0, totalImportCost = 0;
-            document.querySelectorAll('.sales-item-row').forEach(tr => {
-                const select = tr.querySelector('.sales-select');
-                const opt = select.options[select.selectedIndex];
-                if (!opt.value) return;
-                const qty = parseFloat(tr.querySelector('.sales-qty').value) || 0;
-                const price = parseFloat(tr.querySelector('.sales-price').value) || 0;
-                const importPrice = parseFloat(opt.getAttribute('data-import')) || 0;
-
-                items.push({ id: opt.getAttribute('data-id'), type: opt.getAttribute('data-type'), name: opt.getAttribute('data-name'), quantity: qty, price: price, subtotal: qty * price });
-                totalAmount += qty * price;
-                totalImportCost += qty * importPrice;
-            });
-
-            if (items.length === 0) { alert('Chọn ít nhất một mặt hàng!'); return; }
-            const invoice_code = 'XK-' + Math.floor(100000 + Math.random() * 900000);
-
-            await fetch('/api/sales', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ invoice_code, customer_name: custName, phone, address, content, items, total_amount: totalAmount, total_import_cost: totalImportCost, profit: totalAmount - totalImportCost }) });
-
-            document.getElementById('print-sales-cust').innerText = custName;
-            document.getElementById('print-sales-phone').innerText = phone;
-            document.getElementById('print-sales-address').innerText = address;
-            document.getElementById('print-sales-content').innerText = content;
-            document.getElementById('sales-code-print').innerText = 'Mã: ' + invoice_code;
-            document.getElementById('print-sales-grand-total').innerText = totalAmount.toLocaleString();
-
-            let tbodyHtml = ''; let stt = 1;
-            items.forEach(i => {
-                tbodyHtml += `<tr><td class="border border-gray-400 p-2 text-center">${stt++}</td><td class="border border-gray-400 p-2">${i.name}</td><td class="border border-gray-400 p-2 text-center">Cái</td><td class="border border-gray-400 p-2 text-center">${i.quantity}</td><td class="border border-gray-400 p-2 text-right">${i.price.toLocaleString()}</td><td class="border border-gray-400 p-2 text-right">${i.subtotal.toLocaleString()}</td></tr>`;
-            });
-            document.getElementById('print-sales-tbody').innerHTML = tbodyHtml;
-            document.getElementById('print-sales-section').classList.remove('hidden');
-            window.print(); loadAllData();
-        }
-
-        // --- Inventory & Reports ---
-        function renderInventoryReport() {
-            let sHtml = '', mHtml = '', eHtml = '';
-            allProducts.forEach(p => sHtml += `<tr class="border-b"><td class="p-2">${p.brand}</td><td class="p-2">${p.power}</td><td class="p-2">${p.category || ''}</td><td class="p-2 font-bold">${p.stock} ${p.unit}</td><td class="p-2">${Number(p.import_price).toLocaleString()}đ</td><td class="p-2">${Number(p.selling_price).toLocaleString()}đ</td></tr>`);
-            allMaterials.forEach(m => mHtml += `<tr class="border-b"><td class="p-2">${m.name}</td><td class="p-2">${m.category || ''}</td><td class="p-2 font-bold">${m.stock}</td><td class="p-2">${m.unit}</td><td class="p-2">${Number(m.import_price).toLocaleString()}đ</td><td class="p-2">${Number(m.selling_price).toLocaleString()}đ</td></tr>`);
-            allEquipment.forEach(eq => eHtml += `<tr class="border-b"><td class="p-2">${eq.brand}</td><td class="p-2">${eq.power}</td><td class="p-2">${eq.category || ''}</td><td class="p-2 font-bold">${eq.stock} ${eq.unit}</td><td class="p-2">${Number(eq.import_price).toLocaleString()}đ</td><td class="p-2">${Number(eq.selling_price).toLocaleString()}đ</td></tr>`);
-
-            document.getElementById('inv-report-solar').innerHTML = sHtml || '<tr><td colspan="6" class="p-2 text-gray-400">Không có dữ liệu</td></tr>';
-            document.getElementById('inv-report-material').innerHTML = mHtml || '<tr><td colspan="6" class="p-2 text-gray-400">Không có dữ liệu</td></tr>';
-            document.getElementById('inv-report-equipment').innerHTML = eHtml || '<tr><td colspan="6" class="p-2 text-gray-400">Không có dữ liệu</td></tr>';
-        }
-
-        function downloadInventoryExcel() { window.location.href = '/api/export/inventory-report'; }
-
-        // --- Expenses ---
-        async function saveExpense(e) {
-            e.preventDefault();
-            const data = { customer_name: document.getElementById('exp-customer').value, content: document.getElementById('exp-content').value, cost: parseFloat(document.getElementById('exp-cost').value) };
-            await fetch('/api/expenses', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            document.getElementById('expense-form').reset(); loadAllData();
-        }
-
-        async function deleteExpense(id) {
-            if (confirm('Xóa chi phí này?')) { await fetch(`/api/expenses/${id}`, { method: 'DELETE' }); loadAllData(); }
-        }
-
-        function renderExpenses() {
-            let html = '';
-            allExpenses.forEach(ex => {
-                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">${ex.customer_name}</td><td class="p-3 text-xs text-gray-600">${ex.content}</td><td class="p-3 text-brandRed font-bold">${Number(ex.cost).toLocaleString()} VNĐ</td><td class="p-3 text-xs text-gray-500">${new Date(ex.created_at).toLocaleDateString()}</td><td class="p-3 text-right"><button onclick="deleteExpense(${ex.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-            });
-            document.getElementById('expense-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
-        }
-
-        // --- Revenue ---
-        function renderRevenueReport() {
-            let totalSales = 0, totalImport = 0, totalExp = 0;
-            allSales.forEach(s => { totalSales += parseFloat(s.total_amount || 0); totalImport += parseFloat(s.total_import_cost || 0); });
-            allExpenses.forEach(ex => { totalExp += parseFloat(ex.cost || 0); });
-            const netProfit = totalSales - totalImport - totalExp;
-
-            document.getElementById('rev-total-sales').innerText = totalSales.toLocaleString() + ' VNĐ';
-            document.getElementById('rev-total-import').innerText = totalImport.toLocaleString() + ' VNĐ';
-            document.getElementById('rev-total-expense').innerText = totalExp.toLocaleString() + ' VNĐ';
-            document.getElementById('rev-net-profit').innerText = netProfit.toLocaleString() + ' VNĐ';
-
-            let html = '';
-            allSales.forEach(s => {
-                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">KH-${s.id}</td><td class="p-3 text-xs">${new Date(s.created_at).toLocaleString()}</td><td class="p-3 font-bold">${s.customer_name}</td><td class="p-3 text-xs text-gray-600">${s.address || ''}</td><td class="p-3 text-brandBlue font-bold">${Number(s.total_amount).toLocaleString()} VNĐ</td><td class="p-3 text-right"><button onclick="alert('In lại phiếu xuất kho mã: ${s.invoice_code}')" class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">In lại</button></td></tr>`;
-            });
-            document.getElementById('revenue-sales-table').innerHTML = html || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu phiếu xuất</td></tr>';
-        }
-
-        function downloadRevenueExcel() { window.location.href = '/api/export/revenue-report'; }
-
-        // --- Admins ---
-        async function saveAdmin(e) {
-            e.preventDefault();
-            const id = document.getElementById('admin-id').value;
-            const data = {
-                username: document.getElementById('admin-user').value,
-                password: document.getElementById('admin-pass').value,
-                full_name: document.getElementById('admin-name').value,
-                role: document.getElementById('admin-role').value
-            };
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `/api/admins/${id}` : '/api/admins';
-            await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            resetAdminForm(); loadAllData();
-        }
-
-        function resetAdminForm() { document.getElementById('admin-form').reset(); document.getElementById('admin-id').value = ''; }
-
-        function editAdmin(id) {
-            const a = allAdmins.find(x => x.id === id);
-            if (!a) return;
-            document.getElementById('admin-id').value = a.id;
-            document.getElementById('admin-user').value = a.username;
-            document.getElementById('admin-pass').value = '';
-            document.getElementById('admin-name').value = a.full_name;
-            document.getElementById('admin-role').value = a.role;
-        }
-
-        async function deleteAdmin(id) {
-            if (confirm('Xóa tài khoản này?')) { await fetch(`/api/admins/${id}`, { method: 'DELETE' }); loadAllData(); }
-        }
-
-        function renderAdmins() {
-            let html = '';
-            allAdmins.forEach(a => {
-                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold text-brandBlue">${a.username}</td><td class="p-3">${a.full_name || ''}</td><td class="p-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-bold">${a.role}</span></td><td class="p-3 text-xs text-gray-500">${new Date(a.created_at).toLocaleDateString()}</td><td class="p-3 text-right"><button onclick="editAdmin(${a.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteAdmin(${a.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-            });
-            document.getElementById('admin-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có tài khoản quản trị</td></tr>';
-        }
-
-        window.onload = () => { loadAllData(); addQuoteItemRow(); addSalesItemRow(); };
+        window.onload = loadPublicData;
     </script>
 </body>
 </html>
