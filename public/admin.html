@@ -440,44 +440,6 @@
                     <div class="mt-4 text-right font-bold text-brandRed text-lg">Tổng Tiền: <span id="sales-total-display">0</span> VNĐ</div>
                 </div>
             </div>
-
-            <div id="print-sales-section" class="hidden bg-white p-8 max-w-4xl mx-auto shadow-2xl mt-6 border">
-                <div class="flex justify-between items-center border-b-2 pb-4 mb-6">
-                    <div class="flex items-center space-x-3">
-                        <img src="logo.png" alt="Logo" class="w-16 h-16 object-contain" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'">
-                        <div>
-                            <h2 class="text-xl font-black text-brandBlue">CÔNG TY CP ĐIỆN NƯỚC AN GIANG</h2>
-                            <p class="text-xs text-gray-600">Địa chỉ: Số 18, Đường Tôn Đức Thắng, TP. Long Xuyên, Tỉnh An Giang</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <h1 class="text-2xl font-black text-brandRed uppercase">PHIẾU XUẤT KHO</h1>
-                        <p class="text-xs text-gray-500" id="sales-code-print">Mã: XK-2026</p>
-                    </div>
-                </div>
-                <div class="mb-4 text-sm space-y-1">
-                    <p><strong>Khách hàng:</strong> <span id="print-sales-cust" class="underline font-bold"></span></p>
-                    <p><strong>Số điện thoại:</strong> <span id="print-sales-phone" class="underline"></span></p>
-                    <p><strong>Địa chỉ:</strong> <span id="print-sales-address" class="underline"></span></p>
-                    <p><strong>Nội dung:</strong> <span id="print-sales-content" class="italic"></span></p>
-                </div>
-                <table class="w-full text-left text-sm border-collapse border border-gray-400 mb-6">
-                    <thead>
-                        <tr class="bg-gray-100 text-center"><th class="border border-gray-400 p-2">STT</th><th class="border border-gray-400 p-2">Tên Mặt Hàng</th><th class="border border-gray-400 p-2">ĐVT</th><th class="border border-gray-400 p-2">SL</th><th class="border border-gray-400 p-2">Đơn Giá</th><th class="border border-gray-400 p-2">Thành Tiền</th></tr>
-                    </thead>
-                    <tbody id="print-sales-tbody"></tbody>
-                </table>
-                <div class="flex justify-end mb-8">
-                    <div class="w-72 space-y-2 text-sm font-bold text-brandRed text-lg border-t pt-2">
-                        <div class="flex justify-between"><span>TỔNG THANH TOÁN:</span> <span id="print-sales-grand-total">0</span> VNĐ</div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 text-center mt-12 text-sm">
-                    <div><p class="font-bold">NGƯỜI LẬP PHIẾU</p></div>
-                    <div><p class="font-bold">THỦ KHO</p></div>
-                    <div><p class="font-bold">KHÁCH HÀNG</p></div>
-                </div>
-            </div>
         </div>
 
         <!-- 8. TAB: BÁO CÁO TỒN KHO -->
@@ -603,6 +565,45 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- GLOBAL PRINT SALES SECTION (Đã di chuyển ra ngoài để khắc phục lỗi in bị trắng khi ở tab Doanh Thu) -->
+        <div id="print-sales-section" class="hidden bg-white p-8 max-w-4xl mx-auto shadow-2xl mt-6 border">
+            <div class="flex justify-between items-center border-b-2 pb-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <img src="logo.png" alt="Logo" class="w-16 h-16 object-contain" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'">
+                    <div>
+                        <h2 class="text-xl font-black text-brandBlue">CÔNG TY CP ĐIỆN NƯỚC AN GIANG</h2>
+                        <p class="text-xs text-gray-600">Địa chỉ: Số 18, Đường Tôn Đức Thắng, TP. Long Xuyên, Tỉnh An Giang</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <h1 class="text-2xl font-black text-brandRed uppercase">PHIẾU XUẤT KHO</h1>
+                    <p class="text-xs text-gray-500" id="sales-code-print">Mã: XK-2026</p>
+                </div>
+            </div>
+            <div class="mb-4 text-sm space-y-1">
+                <p><strong>Khách hàng:</strong> <span id="print-sales-cust" class="underline font-bold"></span></p>
+                <p><strong>Số điện thoại:</strong> <span id="print-sales-phone" class="underline"></span></p>
+                <p><strong>Địa chỉ:</strong> <span id="print-sales-address" class="underline"></span></p>
+                <p><strong>Nội dung:</strong> <span id="print-sales-content" class="italic"></span></p>
+            </div>
+            <table class="w-full text-left text-sm border-collapse border border-gray-400 mb-6">
+                <thead>
+                    <tr class="bg-gray-100 text-center"><th class="border border-gray-400 p-2">STT</th><th class="border border-gray-400 p-2">Tên Mặt Hàng</th><th class="border border-gray-400 p-2">ĐVT</th><th class="border border-gray-400 p-2">SL</th><th class="border border-gray-400 p-2">Đơn Giá</th><th class="border border-gray-400 p-2">Thành Tiền</th></tr>
+                </thead>
+                <tbody id="print-sales-tbody"></tbody>
+            </table>
+            <div class="flex justify-end mb-8">
+                <div class="w-72 space-y-2 text-sm font-bold text-brandRed text-lg border-t pt-2">
+                    <div class="flex justify-between"><span>TỔNG THANH TOÁN:</span> <span id="print-sales-grand-total">0</span> VNĐ</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 text-center mt-12 text-sm">
+                <div><p class="font-bold">NGƯỜI LẬP PHIẾU</p></div>
+                <div><p class="font-bold">THỦ KHO</p></div>
+                <div><p class="font-bold">KHÁCH HÀNG</p></div>
             </div>
         </div>
 
