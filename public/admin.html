@@ -36,7 +36,6 @@
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
 
-    <!-- HEADER / COMPANY BANNER -->
     <header class="bg-white shadow-md border-b-4 border-brandBlue no-print">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center space-x-4">
@@ -54,7 +53,6 @@
         </div>
     </header>
 
-    <!-- NAVIGATION TABS -->
     <nav class="bg-brandDark text-white shadow-lg sticky top-0 z-50 no-print">
         <div class="max-w-7xl mx-auto px-2 overflow-x-auto">
             <div class="flex space-x-1 whitespace-nowrap py-2 text-sm font-semibold">
@@ -74,7 +72,6 @@
         </div>
     </nav>
 
-    <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-6">
 
         <!-- 0. TAB: BÁO GIÁ TRỌN GÓI -->
@@ -343,6 +340,12 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print">
                 <div class="bg-white p-5 rounded-lg shadow border border-gray-200 lg:col-span-1 space-y-3">
                     <h3 class="text-md font-bold text-gray-700 border-b pb-2">Thông Tin Khảo Sát & Khách Hàng</h3>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Chọn Gói Trọn Gói / Công Suất</label>
+                        <select id="quote-package-select" class="w-full text-sm border rounded px-3 py-2 bg-blue-50 font-bold text-brandBlue" onchange="applyPackageToQuotation(this)">
+                            <option value="">-- Chọn gói công suất có sẵn --</option>
+                        </select>
+                    </div>
                     <div><label class="block text-xs font-bold text-gray-600 mb-1">Công Suất Hệ Thống (KW)</label><input type="text" id="quote-power" class="w-full text-sm border rounded px-3 py-2"></div>
                     <div><label class="block text-xs font-bold text-gray-600 mb-1">Họ Tên Khách Hàng</label><input type="text" id="quote-customer" class="w-full text-sm border rounded px-3 py-2"></div>
                     <div><label class="block text-xs font-bold text-gray-600 mb-1">Chi Phí Lắp Đặt</label><input type="number" id="quote-install" value="2000000" class="w-full text-sm border rounded px-3 py-2" onchange="calculateQuotation()"></div>
@@ -350,9 +353,12 @@
                     <button type="button" onclick="generateQuotationPrint()" class="w-full bg-brandBlue text-white font-bold py-2 rounded hover:bg-blue-700 shadow flex items-center justify-center"><i class="fas fa-print mr-2"></i> In Báo Giá</button>
                 </div>
                 <div class="bg-white p-5 rounded-lg shadow border border-gray-200 lg:col-span-2">
-                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2 flex justify-between items-center">
+                    <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2 flex justify-between items-center flex-wrap gap-2">
                         <span>Thêm Hàng Hoá, Vật Tư, Thiết Bị Vào Báo Giá</span>
-                        <button type="button" onclick="addQuoteItemRow()" class="bg-green-600 text-white text-xs px-2 py-1 rounded"><i class="fas fa-plus mr-1"></i> Thêm Mục</button>
+                        <div class="flex items-center space-x-2">
+                            <input type="text" id="quote-search-input" placeholder="🔍 Tìm kiếm theo tên..." class="text-xs border rounded px-2 py-1" oninput="filterQuoteItems(this.value)">
+                            <button type="button" onclick="addQuoteItemRow()" class="bg-green-600 text-white text-xs px-2 py-1 rounded"><i class="fas fa-plus mr-1"></i> Thêm Mục</button>
+                        </div>
                     </h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs min-w-[500px]">
@@ -364,7 +370,6 @@
                 </div>
             </div>
 
-            <!-- MẪU A4 IN BÁO GIÁ -->
             <div id="print-section" class="hidden bg-white p-8 max-w-4xl mx-auto shadow-2xl mt-6 border">
                 <div class="flex justify-between items-center border-b-2 pb-4 mb-6">
                     <div class="flex items-center space-x-3">
@@ -431,7 +436,6 @@
                 </div>
             </div>
 
-            <!-- MẪU A4 IN PHIẾU XUẤT KHO -->
             <div id="print-sales-section" class="hidden bg-white p-8 max-w-4xl mx-auto shadow-2xl mt-6 border">
                 <div class="flex justify-between items-center border-b-2 pb-4 mb-6">
                     <div class="flex items-center space-x-3">
@@ -659,6 +663,7 @@
                 renderInventoryReport();
                 renderRevenueReport();
                 renderAdmins();
+                populateQuotePackageSelect();
             } catch (err) {
                 console.error("Error loading data:", err);
             }
@@ -985,16 +990,80 @@
         }
 
         // --- Quotation ---
+        function populateQuotePackageSelect() {
+            const select = document.getElementById('quote-package-select');
+            if(!select) return;
+            let options = '<option value="">-- Chọn gói công suất có sẵn --</option>';
+            allPackages.forEach(pkg => {
+                options += `<option value="${pkg.id}" data-power="${pkg.power}">${pkg.package_name} - ${pkg.power} (${Number(pkg.package_price).toLocaleString()}đ)</option>`;
+            });
+            select.innerHTML = options;
+        }
+
+        function applyPackageToQuotation(selectEl) {
+            const pkgId = selectEl.value;
+            if(!pkgId) return;
+            const pkg = allPackages.find(x => x.id == pkgId);
+            if(!pkg) return;
+
+            document.getElementById('quote-power').value = pkg.power;
+            
+            // Tự động nạp danh sách gợi ý vào bảng báo giá
+            const tbody = document.getElementById('quote-items-tbody');
+            tbody.innerHTML = ''; // Xóa sạch bảng cũ
+            
+            // Thêm 1 dòng inverter / thiết bị phù hợp công suất nếu có
+            if(allEquipment.length > 0) {
+                const eq = allEquipment[0];
+                addQuoteItemRowWithData(`equipment_${eq.id}`, 1, eq.selling_price);
+            }
+            // Thêm tấm pin NLMT
+            if(allProducts.length > 0) {
+                const p = allProducts[0];
+                addQuoteItemRowWithData(`product_${p.id}`, 10, p.selling_price);
+            }
+            calculateQuotation();
+        }
+
+        function addQuoteItemRowWithData(val, qty, price) {
+            const tbody = document.getElementById('quote-items-tbody');
+            const tr = document.createElement('tr'); tr.className = 'border-b quote-item-row';
+            let options = '<option value="">-- Chọn hàng hoá / vật tư / thiết bị --</option>';
+            allProducts.forEach(p => options += `<option value="product_${p.id}" data-price="${p.selling_price}">[Pin] ${p.brand} ${p.power} (${Number(p.selling_price).toLocaleString()}đ)</option>`);
+            allMaterials.forEach(m => options += `<option value="material_${m.id}" data-price="${m.selling_price}">[Vật tư] ${m.name} (${Number(m.selling_price).toLocaleString()}đ)</option>`);
+            allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (${Number(eq.selling_price).toLocaleString()}đ)</option>`);
+
+            tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 item-select" onchange="updateQuoteRow(this)">${options}</select></td><td class="p-2"><input type="number" value="${qty}" class="w-20 text-xs border rounded p-1 item-qty" onchange="calculateQuotation()"></td><td class="p-2"><input type="number" value="${price}" class="w-28 text-xs border rounded p-1 item-price" onchange="calculateQuotation()"></td><td class="p-2 item-subtotal font-bold text-brandBlue">0 VNĐ</td><td class="p-2"><button type="button" onclick="this.closest('tr').remove(); calculateQuotation();" class="text-red-600"><i class="fas fa-trash"></i></button></td>`;
+            tbody.appendChild(tr);
+            tr.querySelector('.item-select').value = val;
+            calculateQuotation();
+        }
+
         function addQuoteItemRow() {
             const tbody = document.getElementById('quote-items-tbody');
             const tr = document.createElement('tr'); tr.className = 'border-b quote-item-row';
-            let options = '<option value="">-- Chọn hàng hoá / vật tư / thiết bị --';
+            let options = '<option value="">-- Chọn hàng hoá / vật tư / thiết bị --</option>';
             allProducts.forEach(p => options += `<option value="product_${p.id}" data-price="${p.selling_price}">[Pin] ${p.brand} ${p.power} (${Number(p.selling_price).toLocaleString()}đ)</option>`);
             allMaterials.forEach(m => options += `<option value="material_${m.id}" data-price="${m.selling_price}">[Vật tư] ${m.name} (${Number(m.selling_price).toLocaleString()}đ)</option>`);
             allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (${Number(eq.selling_price).toLocaleString()}đ)</option>`);
 
             tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 item-select" onchange="updateQuoteRow(this)">${options}</select></td><td class="p-2"><input type="number" value="1" class="w-20 text-xs border rounded p-1 item-qty" onchange="calculateQuotation()"></td><td class="p-2"><input type="number" value="0" class="w-28 text-xs border rounded p-1 item-price" onchange="calculateQuotation()"></td><td class="p-2 item-subtotal font-bold text-brandBlue">0 VNĐ</td><td class="p-2"><button type="button" onclick="this.closest('tr').remove(); calculateQuotation();" class="text-red-600"><i class="fas fa-trash"></i></button></td>`;
             tbody.appendChild(tr);
+        }
+
+        function filterQuoteItems(keyword) {
+            keyword = keyword.toLowerCase().trim();
+            document.querySelectorAll('.quote-item-row').forEach(tr => {
+                const select = tr.querySelector('.item-select');
+                let found = false;
+                for (let opt of select.options) {
+                    if (opt.text.toLowerCase().includes(keyword) || keyword === '') {
+                        found = true;
+                        break;
+                    }
+                }
+                tr.style.display = found ? '' : 'none';
+            });
         }
 
         function updateQuoteRow(selectEl) {
@@ -1007,6 +1076,7 @@
         function calculateQuotation() {
             let subtotal = 0;
             document.querySelectorAll('.quote-item-row').forEach(tr => {
+                if(tr.style.display === 'none') return;
                 const qty = parseFloat(tr.querySelector('.item-qty').value) || 0;
                 const price = parseFloat(tr.querySelector('.item-price').value) || 0;
                 const total = qty * price;
@@ -1049,7 +1119,7 @@
         function addSalesItemRow() {
             const tbody = document.getElementById('sales-items-tbody');
             const tr = document.createElement('tr'); tr.className = 'border-b sales-item-row';
-            let options = '<option value="">-- Chọn hàng từ kho / dịch vụ --';
+            let options = '<option value="">-- Chọn hàng từ kho / dịch vụ --</option>';
             allProducts.forEach(p => options += `<option value="product_${p.id}" data-id="${p.id}" data-type="product" data-name="${p.brand} ${p.power}" data-import="${p.import_price}" data-price="${p.selling_price}">[Pin] ${p.brand} ${p.power} (Tồn: ${p.stock})</option>`);
             allMaterials.forEach(m => options += `<option value="material_${m.id}" data-id="${m.id}" data-type="material" data-name="${m.name}" data-import="${m.import_price}" data-price="${m.selling_price}">[Vật tư] ${m.name} (Tồn: ${m.stock})</option>`);
             allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-id="${eq.id}" data-type="equipment" data-name="${eq.brand} ${eq.power}" data-import="${eq.import_price}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (Tồn: ${eq.stock})</option>`);
@@ -1210,10 +1280,37 @@
                     <td class="p-3 font-bold">${s.customer_name}</td>
                     <td class="p-3 text-xs text-gray-700 italic">${s.content || 'Không có nội dung'}</td>
                     <td class="p-3 text-brandBlue font-bold">${Number(s.total_amount).toLocaleString()} VNĐ</td>
-                    <td class="p-3 text-right"><button type="button" onclick="alert('In lại phiếu xuất kho mã: ${s.invoice_code}\\nLưu ý: Tính năng in trực tiếp phiếu này chưa khả dụng, vui lòng thử lại sau.')" class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold">In lại</button></td>
+                    <td class="p-3 text-right"><button type="button" onclick="reprintSalesInvoice(${s.id})" class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold hover:bg-blue-200">In lại</button></td>
                 </tr>`;
             });
             document.getElementById('revenue-sales-table').innerHTML = html || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Không có dữ liệu phiếu xuất trong khoảng thời gian này</td></tr>';
+        }
+
+        // Chức năng in lại phiếu xuất kho từ tab Doanh thu
+        function reprintSalesInvoice(salesId) {
+            const s = allSales.find(x => x.id === salesId);
+            if(!s) { alert('Không tìm thấy thông tin phiếu xuất!'); return; }
+
+            document.getElementById('print-sales-cust').innerText = s.customer_name || '';
+            document.getElementById('print-sales-phone').innerText = s.phone || '';
+            document.getElementById('print-sales-address').innerText = s.address || '';
+            document.getElementById('print-sales-content').innerText = s.content || '';
+            document.getElementById('sales-code-print').innerText = 'Mã: ' + s.invoice_code;
+            document.getElementById('print-sales-grand-total').innerText = Number(s.total_amount || 0).toLocaleString();
+
+            let tbodyHtml = ''; let stt = 1;
+            let items = s.items;
+            if (typeof items === 'string') {
+                try { items = JSON.parse(items); } catch(e) { items = []; }
+            }
+            if(Array.isArray(items)) {
+                items.forEach(i => {
+                    tbodyHtml += `<tr><td class="border border-gray-400 p-2 text-center">${stt++}</td><td class="border border-gray-400 p-2">${i.name}</td><td class="border border-gray-400 p-2 text-center">Cái</td><td class="border border-gray-400 p-2 text-center">${i.quantity}</td><td class="border border-gray-400 p-2 text-right">${Number(i.price).toLocaleString()}</td><td class="border border-gray-400 p-2 text-right">${Number(i.subtotal).toLocaleString()}</td></tr>`;
+                });
+            }
+            document.getElementById('print-sales-tbody').innerHTML = tbodyHtml;
+            document.getElementById('print-sales-section').classList.remove('hidden');
+            window.print();
         }
 
         function filterRevenueReport() {
@@ -1282,7 +1379,12 @@
             document.getElementById('admin-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có tài khoản quản trị</td></tr>';
         }
 
-        window.onload = () => { loadAllData(); addQuoteItemRow(); addSalesItemRow(); };
+        window.onload = () => { 
+            loadAllData().then(() => {
+                addQuoteItemRow(); 
+                addSalesItemRow();
+            }); 
+        };
     </script>
 </body>
 </html>
