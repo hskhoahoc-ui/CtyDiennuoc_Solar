@@ -50,7 +50,7 @@
             <div class="mt-3 md:mt-0 flex items-center space-x-3">
                 <span class="bg-blue-100 text-brandBlue px-3 py-1 rounded-full text-xs font-bold uppercase shadow-inner"><i class="fas fa-user-shield mr-1"></i> Quản trị viên</span>
                 <a href="index.html" class="bg-gray-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-700 transition"><i class="fas fa-home mr-1"></i> Xem Trang Chủ</a>
-                <button onclick="handleLogout()" class="bg-brandRed text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-red-700 transition"><i class="fas fa-sign-out-alt mr-1"></i> Đăng Xuất</button>
+                <button type="button" onclick="handleLogout()" class="bg-brandRed text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-red-700 transition"><i class="fas fa-sign-out-alt mr-1"></i> Đăng Xuất</button>
             </div>
         </div>
     </header>
@@ -86,7 +86,7 @@
                     <form id="product-form" onsubmit="saveProduct(event)">
                         <input type="hidden" id="prod-id">
                         <div class="mb-3">
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Ảnh Hàng Hoá (Link ảnh trực tiếp)</label>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Ảnh Hàng Hoá</label>
                             <div class="flex items-center space-x-2">
                                 <input type="text" id="prod-image" placeholder="https://i.postimg.cc/..." class="w-full text-sm border rounded px-3 py-2">
                                 <button type="button" onclick="openPostImg()" class="bg-green-600 text-white text-xs px-3 py-2 rounded whitespace-nowrap"><i class="fas fa-cloud-upload-alt mr-1"></i> Upload</button>
@@ -112,19 +112,17 @@
                         </div>
                     </form>
                 </div>
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Tồn Kho & Thao Tác Sửa/Xóa</h3>
-                        <div class="max-h-60 overflow-y-auto">
+                <div class="lg:col-span-2">
+                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200 h-full">
+                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Tồn Kho Pin NLMT & Thao Tác Sửa/Xóa</h3>
+                        <div class="max-h-[550px] overflow-y-auto">
                             <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-2">Ảnh</th><th class="p-2">Thương hiệu</th><th class="p-2">CS</th><th class="p-2">Tồn</th><th class="p-2">Giá Bán</th><th class="p-2 text-right">Thao Tác</th></tr></thead>
+                                <thead class="bg-gray-50 border-b sticky top-0">
+                                    <tr><th class="p-2">Ảnh</th><th class="p-2">Thương hiệu</th><th class="p-2">CS</th><th class="p-2">Tồn</th><th class="p-2">Giá Bán</th><th class="p-2 text-right">Thao Tác</th></tr>
+                                </thead>
                                 <tbody id="product-stock-table"></tbody>
                             </table>
                         </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Hiển Thị Ngoài Trang Chủ (index.html)</h3>
-                        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                     </div>
                 </div>
             </div>
@@ -160,22 +158,13 @@
                         </div>
                     </form>
                 </div>
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Tồn Kho Vật Tư & Sửa/Xóa</h3>
-                        <div class="max-h-60 overflow-y-auto">
+                <div class="lg:col-span-2">
+                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200 h-full">
+                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Tồn Kho Vật Tư & Thao Tác Sửa/Xóa</h3>
+                        <div class="max-h-[550px] overflow-y-auto">
                             <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-2">Ảnh</th><th class="p-2">Tên Vật Tư</th><th class="p-2">Loại</th><th class="p-2">Tồn</th><th class="p-2">Giá Bán</th><th class="p-2 text-right">Thao Tác</th></tr></thead>
+                                <thead class="bg-gray-50 border-b sticky top-0"><tr><th class="p-2">Ảnh</th><th class="p-2">Tên Vật Tư</th><th class="p-2">Loại</th><th class="p-2">Tồn</th><th class="p-2">Giá Bán</th><th class="p-2 text-right">Thao Tác</th></tr></thead>
                                 <tbody id="material-stock-table"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Hiển Thị Ngoài Trang Chủ (index.html)</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-blue-50 border-b"><tr><th class="p-3">Ảnh</th><th class="p-3">Tên Vật Tư</th><th class="p-3">Chủng Loại</th><th class="p-3">Đơn Vị Tính</th><th class="p-3">Giá Bán</th></tr></thead>
-                                <tbody id="material-table-list"></tbody>
                             </table>
                         </div>
                     </div>
@@ -218,19 +207,15 @@
                         </div>
                     </form>
                 </div>
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Tồn Kho Thiết Bị & Sửa/Xóa</h3>
-                        <div class="max-h-60 overflow-y-auto">
+                <div class="lg:col-span-2">
+                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200 h-full">
+                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Tồn Kho Thiết Bị & Thao Tác Sửa/Xóa</h3>
+                        <div class="max-h-[550px] overflow-y-auto">
                             <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-2">Ảnh</th><th class="p-2">Thương hiệu</th><th class="p-2">CS</th><th class="p-2">Tồn</th><th class="p-2">Giá Bán</th><th class="p-2 text-right">Thao Tác</th></tr></thead>
+                                <thead class="bg-gray-50 border-b sticky top-0"><tr><th class="p-2">Ảnh</th><th class="p-2">Thương hiệu</th><th class="p-2">CS</th><th class="p-2">Tồn</th><th class="p-2">Giá Bán</th><th class="p-2 text-right">Thao Tác</th></tr></thead>
                                 <tbody id="equipment-stock-table"></tbody>
                             </table>
                         </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Hiển Thị Ngoài Trang Chủ (index.html)</h3>
-                        <div id="equipment-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                     </div>
                 </div>
             </div>
@@ -684,16 +669,12 @@
         }
 
         function renderProducts() {
-            let stockHtml = '', gridHtml = '';
+            let stockHtml = '';
             allProducts.forEach(p => {
                 const img = p.image_url || 'https://i.imgur.com/7j8p3Q8.png';
                 stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2 font-bold">${p.brand}</td><td class="p-2">${p.power}</td><td class="p-2">${p.stock} ${p.unit}</td><td class="p-2 text-brandBlue font-bold">${Number(p.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button type="button" onclick="editProduct(${p.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteProduct(${p.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-                
-                // Đồng bộ hiển thị dạng card giống index.html
-                gridHtml += `<div class="bg-white border rounded-lg p-3 shadow hover:shadow-md transition flex flex-col justify-between"><div><img src="${img}" class="w-full h-36 object-cover rounded mb-2" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"><h4 class="font-black text-brandBlue text-sm">${p.brand} - ${p.power}</h4><p class="text-xs text-gray-600">Tồn kho: ${p.stock} ${p.unit}</p>${p.catalog_link ? `<a href="${p.catalog_link}" target="_blank" class="text-xs text-blue-500 underline block mt-1">Xem Catalog</a>` : ''}</div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-sm">${Number(p.selling_price).toLocaleString()}đ</span><span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Pin NLMT</span></div></div>`;
             });
             document.getElementById('product-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
-            document.getElementById('product-grid').innerHTML = gridHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu hàng hoá</p>';
         }
 
         // --- Materials ---
@@ -749,16 +730,12 @@
         }
 
         function renderMaterials() {
-            let stockHtml = '', tableHtml = '';
+            let stockHtml = '';
             allMaterials.forEach(m => {
                 const img = m.image_url || 'https://i.imgur.com/7j8p3Q8.png';
-                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2 font-bold">${m.name}</td><td class="p-2">${m.category || ''}</td><td class="p-2">${m.stock}</td><td class="p-2 text-brandBlue">${Number(m.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button type="button" onclick="editMaterial(${m.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteMaterial(${m.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-                
-                // Đồng bộ hiển thị giống index.html
-                tableHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-3"><img src="${img}" class="w-10 h-10 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-3 font-bold">${m.name}</td><td class="p-3">${m.category || ''}</td><td class="p-3">${m.unit}</td><td class="p-3 text-brandRed font-bold">${Number(m.selling_price).toLocaleString()} VNĐ</td></tr>`;
+                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2 font-bold">${m.name}</td><td class="p-2">${m.category || ''}</td><td class="p-2">${m.stock} ${m.unit}</td><td class="p-2 text-brandBlue">${Number(m.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button type="button" onclick="editMaterial(${m.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteMaterial(${m.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
             });
             document.getElementById('material-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
-            document.getElementById('material-table-list').innerHTML = tableHtml || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
         }
 
         // --- Equipment ---
@@ -807,16 +784,12 @@
         }
 
         function renderEquipment() {
-            let stockHtml = '', gridHtml = '';
+            let stockHtml = '';
             allEquipment.forEach(eq => {
                 const img = eq.image_url || 'https://i.imgur.com/7j8p3Q8.png';
-                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2 font-bold">${eq.brand}</td><td class="p-2">${eq.power}</td><td class="p-2">${eq.stock}</td><td class="p-2 text-brandBlue font-bold">${Number(eq.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button type="button" onclick="editEquipment(${eq.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteEquipment(${eq.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-                
-                // Đồng bộ hiển thị giống index.html
-                gridHtml += `<div class="bg-white border rounded-lg p-3 shadow hover:shadow-md transition flex flex-col justify-between"><div><img src="${img}" class="w-full h-36 object-cover rounded mb-2" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"><h4 class="font-black text-brandBlue text-sm">${eq.brand} - ${eq.power}</h4><p class="text-xs text-gray-600">Tồn kho: ${eq.stock} ${eq.unit}</p></div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-sm">${Number(eq.selling_price).toLocaleString()}đ</span><span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Thiết bị</span></div></div>`;
+                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'"></td><td class="p-2 font-bold">${eq.brand}</td><td class="p-2">${eq.power}</td><td class="p-2">${eq.stock} ${eq.unit}</td><td class="p-2 text-brandBlue font-bold">${Number(eq.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button type="button" onclick="editEquipment(${eq.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteEquipment(${eq.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
             });
             document.getElementById('equipment-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
-            document.getElementById('equipment-grid').innerHTML = gridHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu thiết bị</p>';
         }
 
         // --- Customers ---
