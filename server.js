@@ -284,7 +284,27 @@ app.post('/api/customers', async (req, res) => {
     res.json(result.rows[0]);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
+// --- BỔ SUNG API ĐĂNG NHẬP ---
+app.post('/api/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    
+    // Kiểm tra tài khoản khởi tạo mặc định
+    if (username === 'admin' && password === '123456') {
+      return res.json({ success: true, message: 'Đăng nhập thành công', role: 'Super Admin' });
+    }
 
+    // Kiểm tra trong cơ sở dữ liệu bảng admins
+    const result = await pool.query('SELECT * FROM admins WHERE username = $1 AND password = $2', [username, password]);
+    if (result.rows.length > 0) {
+      res.json({ success: true, message: 'Đăng nhập thành công', role: result.rows[0].role });
+    } else {
+      res.status(401).json({ success: false, error: 'Tên đăng nhập hoặc mật khẩu không chính xác!' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 app.put('/api/customers/:id', async (req, res) => {
   try {
     const { id } = req.params;
