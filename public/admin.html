@@ -7,6 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
+      // Kiểm tra bảo mật đăng nhập ngay lập tức trước khi render giao diện
+      if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+          window.location.href = 'login.html';
+      }
+
       tailwind.config = {
         theme: {
           extend: {
@@ -45,6 +50,7 @@
             <div class="mt-3 md:mt-0 flex items-center space-x-3">
                 <span class="bg-blue-100 text-brandBlue px-3 py-1 rounded-full text-xs font-bold uppercase shadow-inner"><i class="fas fa-user-shield mr-1"></i> Quản trị viên</span>
                 <a href="index.html" class="bg-gray-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-700 transition"><i class="fas fa-home mr-1"></i> Xem Trang Chủ</a>
+                <button onclick="handleLogout()" class="bg-brandRed text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-red-700 transition"><i class="fas fa-sign-out-alt mr-1"></i> Đăng Xuất</button>
             </div>
         </div>
     </header>
@@ -554,6 +560,12 @@
     <script>
         let allProducts = [], allMaterials = [], allEquipment = [], allCustomers = [], allServices = [], allExpenses = [], allSales = [], allAdmins = [];
 
+        function handleLogout() {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('username');
+            window.location.href = 'login.html';
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -659,8 +671,8 @@
         function renderProducts() {
             let stockHtml = '', gridHtml = '';
             allProducts.forEach(p => {
-                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${p.image_url}" class="w-8 h-8 object-cover rounded"></td><td class="p-2 font-bold">${p.brand} (${p.power})</td><td class="p-2">${p.power}</td><td class="p-2">${p.stock} ${p.unit}</td><td class="p-2 text-brandBlue font-bold">${Number(p.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button onclick="editProduct(${p.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteProduct(${p.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-                gridHtml += `<div class="bg-white border rounded-lg p-3 shadow hover:shadow-md transition flex flex-col justify-between"><div><img src="${p.image_url}" class="w-full h-36 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${p.brand} - ${p.power}</h4><p class="text-xs text-gray-600">Tồn: ${p.stock} ${p.unit}</p>${p.catalog_link ? `<a href="${p.catalog_link}" target="_blank" class="text-xs text-blue-500 underline block mt-1">Catalog</a>` : ''}</div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-sm">${Number(p.selling_price).toLocaleString()}đ</span><span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Pin</span></div></div>`;
+                stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${p.image_url}" class="w-8 h-8 object-cover rounded"></td><td class="p-2 font-bold">${p.brand} (${p.power})</td><td class="p-2">${p.power}</td><td class="p-2">${p.stock}${p.unit}</td><td class="p-2 text-brandBlue font-bold">${Number(p.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button onclick="editProduct(${p.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteProduct(${p.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
+                gridHtml += `<div class="bg-white border rounded-lg p-3 shadow hover:shadow-md transition flex flex-col justify-between"><div><img src="${p.image_url}" class="w-full h-36 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${p.brand} -${p.power}</h4><p class="text-xs text-gray-600">Tồn: ${p.stock} ${p.unit}</p>${p.catalog_link ? `<a href="${p.catalog_link}" target="_blank" class="text-xs text-blue-500 underline block mt-1">Catalog</a>` : ''}</div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-sm">${Number(p.selling_price).toLocaleString()}đ</span><span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Pin</span></div></div>`;
             });
             document.getElementById('product-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
             document.getElementById('product-grid').innerHTML = gridHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu hàng hoá</p>';
@@ -767,7 +779,7 @@
             let stockHtml = '', gridHtml = '';
             allEquipment.forEach(eq => {
                 stockHtml += `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${eq.image_url}" class="w-8 h-8 object-cover rounded"></td><td class="p-2 font-bold">${eq.brand}</td><td class="p-2">${eq.power}</td><td class="p-2">${eq.stock}</td><td class="p-2 text-brandBlue font-bold">${Number(eq.selling_price).toLocaleString()}đ</td><td class="p-2 text-right"><button onclick="editEquipment(${eq.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteEquipment(${eq.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-                gridHtml += `<div class="bg-white border rounded-lg p-3 shadow hover:shadow-md transition flex flex-col justify-between"><div><img src="${eq.image_url}" class="w-full h-36 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${eq.brand} - ${eq.power}</h4><p class="text-xs text-gray-600">Tồn: ${eq.stock} ${eq.unit}</p></div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-sm">${Number(eq.selling_price).toLocaleString()}đ</span><span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Thiết bị</span></div></div>`;
+                gridHtml += `<div class="bg-white border rounded-lg p-3 shadow hover:shadow-md transition flex flex-col justify-between"><div><img src="${eq.image_url}" class="w-full h-36 object-cover rounded mb-2"><h4 class="font-black text-brandBlue text-sm">${eq.brand} -${eq.power}</h4><p class="text-xs text-gray-600">Tồn: ${eq.stock}${eq.unit}</p></div><div class="mt-3 pt-2 border-t flex justify-between items-center"><span class="text-brandRed font-bold text-sm">${Number(eq.selling_price).toLocaleString()}đ</span><span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Thiết bị</span></div></div>`;
             });
             document.getElementById('equipment-stock-table').innerHTML = stockHtml || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
             document.getElementById('equipment-grid').innerHTML = gridHtml || '<p class="col-span-3 text-center text-gray-400 py-6">Chưa có dữ liệu thiết bị</p>';
@@ -837,229 +849,4 @@
             allMaterials.forEach(m => options += `<option value="material_${m.id}" data-price="${m.selling_price}">[Vật tư] ${m.name} (${Number(m.selling_price).toLocaleString()}đ)</option>`);
             allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (${Number(eq.selling_price).toLocaleString()}đ)</option>`);
 
-            tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 item-select" onchange="updateQuoteRow(this)">${options}</select></td><td class="p-2"><input type="number" value="1" class="w-20 text-xs border rounded p-1 item-qty" onchange="calculateQuotation()"></td><td class="p-2"><input type="number" value="0" class="w-28 text-xs border rounded p-1 item-price" onchange="calculateQuotation()"></td><td class="p-2 item-subtotal font-bold text-brandBlue">0 VNĐ</td><td class="p-2"><button type="button" onclick="this.closest('tr').remove(); calculateQuotation();" class="text-red-600"><i class="fas fa-trash"></i></button></td>`;
-            tbody.appendChild(tr);
-        }
-
-        function updateQuoteRow(selectEl) {
-            const opt = selectEl.options[selectEl.selectedIndex];
-            const price = opt.getAttribute('data-price') || 0;
-            selectEl.closest('tr').querySelector('.item-price').value = price;
-            calculateQuotation();
-        }
-
-        function calculateQuotation() {
-            let subtotal = 0;
-            document.querySelectorAll('.quote-item-row').forEach(tr => {
-                const qty = parseFloat(tr.querySelector('.item-qty').value) || 0;
-                const price = parseFloat(tr.querySelector('.item-price').value) || 0;
-                const total = qty * price;
-                tr.querySelector('.item-subtotal').innerText = total.toLocaleString() + ' VNĐ';
-                subtotal += total;
-            });
-            const install = parseFloat(document.getElementById('quote-install').value) || 0;
-            const design = parseFloat(document.getElementById('quote-design').value) || 0;
-            const grandTotal = subtotal + install + design;
-            document.getElementById('quote-total-display').innerText = grandTotal.toLocaleString();
-            return grandTotal;
-        }
-
-        function generateQuotationPrint() {
-            const custName = document.getElementById('quote-customer').value;
-            const power = document.getElementById('quote-power').value;
-            if (!custName) { alert('Nhập tên khách hàng!'); return; }
-
-            document.getElementById('print-cust-name').innerText = custName;
-            document.getElementById('print-cust-power').innerText = power + ' KW';
-            document.getElementById('print-install-cost').innerText = Number(document.getElementById('quote-install').value).toLocaleString();
-            document.getElementById('print-design-cost').innerText = Number(document.getElementById('quote-design').value).toLocaleString();
-            document.getElementById('print-grand-total').innerText = document.getElementById('quote-total-display').innerText;
-
-            let tbodyHtml = ''; let stt = 1;
-            document.querySelectorAll('.quote-item-row').forEach(tr => {
-                const select = tr.querySelector('.item-select');
-                const text = select.options[select.selectedIndex].text;
-                const qty = tr.querySelector('.item-qty').value;
-                const price = Number(tr.querySelector('.item-price').value).toLocaleString();
-                const sub = (parseFloat(tr.querySelector('.item-qty').value) * parseFloat(tr.querySelector('.item-price').value)).toLocaleString();
-                tbodyHtml += `<tr><td class="border border-gray-400 p-2 text-center">${stt++}</td><td class="border border-gray-400 p-2">${text}</td><td class="border border-gray-400 p-2 text-center">Cái</td><td class="border border-gray-400 p-2 text-center">${qty}</td><td class="border border-gray-400 p-2 text-right">${price}</td><td class="border border-gray-400 p-2 text-right">${sub}</td></tr>`;
-            });
-            document.getElementById('print-quotation-tbody').innerHTML = tbodyHtml;
-            document.getElementById('print-section').classList.remove('hidden');
-            window.print();
-        }
-
-        // --- Sales ---
-        function addSalesItemRow() {
-            const tbody = document.getElementById('sales-items-tbody');
-            const tr = document.createElement('tr'); tr.className = 'border-b sales-item-row';
-            let options = '<option value="">-- Chọn hàng từ kho / dịch vụ --';
-            allProducts.forEach(p => options += `<option value="product_${p.id}" data-id="${p.id}" data-type="product" data-name="${p.brand} ${p.power}" data-import="${p.import_price}" data-price="${p.selling_price}">[Pin] ${p.brand} ${p.power} (Tồn: ${p.stock})</option>`);
-            allMaterials.forEach(m => options += `<option value="material_${m.id}" data-id="${m.id}" data-type="material" data-name="${m.name}" data-import="${m.import_price}" data-price="${m.selling_price}">[Vật tư] ${m.name} (Tồn: ${m.stock})</option>`);
-            allEquipment.forEach(eq => options += `<option value="equipment_${eq.id}" data-id="${eq.id}" data-type="equipment" data-name="${eq.brand} ${eq.power}" data-import="${eq.import_price}" data-price="${eq.selling_price}">[Thiết bị] ${eq.brand} ${eq.power} (Tồn: ${eq.stock})</option>`);
-            allServices.forEach(s => options += `<option value="service_${s.id}" data-id="${s.id}" data-type="service" data-name="${s.service_type}" data-import="0" data-price="${s.price}">[Dịch vụ] ${s.service_type}</option>`);
-
-            tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 sales-select" onchange="updateSalesRow(this)">${options}</select></td><td class="p-2"><input type="number" value="1" class="w-20 text-xs border rounded p-1 sales-qty" onchange="calculateSalesTotal()"></td><td class="p-2"><input type="number" value="0" class="w-28 text-xs border rounded p-1 sales-price" onchange="calculateSalesTotal()"></td><td class="p-2 sales-subtotal font-bold text-brandRed">0 VNĐ</td><td class="p-2"><button type="button" onclick="this.closest('tr').remove(); calculateSalesTotal();" class="text-red-600"><i class="fas fa-trash"></i></button></td>`;
-            tbody.appendChild(tr);
-        }
-
-        function updateSalesRow(selectEl) {
-            const opt = selectEl.options[selectEl.selectedIndex];
-            selectEl.closest('tr').querySelector('.sales-price').value = opt.getAttribute('data-price') || 0;
-            calculateSalesTotal();
-        }
-
-        function calculateSalesTotal() {
-            let total = 0;
-            document.querySelectorAll('.sales-item-row').forEach(tr => {
-                const qty = parseFloat(tr.querySelector('.sales-qty').value) || 0;
-                const price = parseFloat(tr.querySelector('.sales-price').value) || 0;
-                const sub = qty * price;
-                tr.querySelector('.sales-subtotal').innerText = sub.toLocaleString() + ' VNĐ';
-                total += sub;
-            });
-            document.getElementById('sales-total-display').innerText = total.toLocaleString();
-            return total;
-        }
-
-        async function executeSalesExport() {
-            const custName = document.getElementById('sales-cust-name').value;
-            const phone = document.getElementById('sales-phone').value;
-            const address = document.getElementById('sales-address').value;
-            const content = document.getElementById('sales-content').value;
-            if (!custName) { alert('Nhập tên khách hàng!'); return; }
-
-            let items = [], totalAmount = 0, totalImportCost = 0;
-            document.querySelectorAll('.sales-item-row').forEach(tr => {
-                const select = tr.querySelector('.sales-select');
-                const opt = select.options[select.selectedIndex];
-                if (!opt.value) return;
-                const qty = parseFloat(tr.querySelector('.sales-qty').value) || 0;
-                const price = parseFloat(tr.querySelector('.sales-price').value) || 0;
-                const importPrice = parseFloat(opt.getAttribute('data-import')) || 0;
-
-                items.push({ id: opt.getAttribute('data-id'), type: opt.getAttribute('data-type'), name: opt.getAttribute('data-name'), quantity: qty, price: price, subtotal: qty * price });
-                totalAmount += qty * price;
-                totalImportCost += qty * importPrice;
-            });
-
-            if (items.length === 0) { alert('Chọn ít nhất một mặt hàng!'); return; }
-            const invoice_code = 'XK-' + Math.floor(100000 + Math.random() * 900000);
-
-            await fetch('/api/sales', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ invoice_code, customer_name: custName, phone, address, content, items, total_amount: totalAmount, total_import_cost: totalImportCost, profit: totalAmount - totalImportCost }) });
-
-            document.getElementById('print-sales-cust').innerText = custName;
-            document.getElementById('print-sales-phone').innerText = phone;
-            document.getElementById('print-sales-address').innerText = address;
-            document.getElementById('print-sales-content').innerText = content;
-            document.getElementById('sales-code-print').innerText = 'Mã: ' + invoice_code;
-            document.getElementById('print-sales-grand-total').innerText = totalAmount.toLocaleString();
-
-            let tbodyHtml = ''; let stt = 1;
-            items.forEach(i => {
-                tbodyHtml += `<tr><td class="border border-gray-400 p-2 text-center">${stt++}</td><td class="border border-gray-400 p-2">${i.name}</td><td class="border border-gray-400 p-2 text-center">Cái</td><td class="border border-gray-400 p-2 text-center">${i.quantity}</td><td class="border border-gray-400 p-2 text-right">${i.price.toLocaleString()}</td><td class="border border-gray-400 p-2 text-right">${i.subtotal.toLocaleString()}</td></tr>`;
-            });
-            document.getElementById('print-sales-tbody').innerHTML = tbodyHtml;
-            document.getElementById('print-sales-section').classList.remove('hidden');
-            window.print(); loadAllData();
-        }
-
-        // --- Inventory & Reports ---
-        function renderInventoryReport() {
-            let sHtml = '', mHtml = '', eHtml = '';
-            allProducts.forEach(p => sHtml += `<tr class="border-b"><td class="p-2">${p.brand}</td><td class="p-2">${p.power}</td><td class="p-2">${p.category || ''}</td><td class="p-2 font-bold">${p.stock} ${p.unit}</td><td class="p-2">${Number(p.import_price).toLocaleString()}đ</td><td class="p-2">${Number(p.selling_price).toLocaleString()}đ</td></tr>`);
-            allMaterials.forEach(m => mHtml += `<tr class="border-b"><td class="p-2">${m.name}</td><td class="p-2">${m.category || ''}</td><td class="p-2 font-bold">${m.stock}</td><td class="p-2">${m.unit}</td><td class="p-2">${Number(m.import_price).toLocaleString()}đ</td><td class="p-2">${Number(m.selling_price).toLocaleString()}đ</td></tr>`);
-            allEquipment.forEach(eq => eHtml += `<tr class="border-b"><td class="p-2">${eq.brand}</td><td class="p-2">${eq.power}</td><td class="p-2">${eq.category || ''}</td><td class="p-2 font-bold">${eq.stock} ${eq.unit}</td><td class="p-2">${Number(eq.import_price).toLocaleString()}đ</td><td class="p-2">${Number(eq.selling_price).toLocaleString()}đ</td></tr>`);
-
-            document.getElementById('inv-report-solar').innerHTML = sHtml || '<tr><td colspan="6" class="p-2 text-gray-400">Không có dữ liệu</td></tr>';
-            document.getElementById('inv-report-material').innerHTML = mHtml || '<tr><td colspan="6" class="p-2 text-gray-400">Không có dữ liệu</td></tr>';
-            document.getElementById('inv-report-equipment').innerHTML = eHtml || '<tr><td colspan="6" class="p-2 text-gray-400">Không có dữ liệu</td></tr>';
-        }
-
-        function downloadInventoryExcel() { window.location.href = '/api/export/inventory-report'; }
-
-        // --- Expenses ---
-        async function saveExpense(e) {
-            e.preventDefault();
-            const data = { customer_name: document.getElementById('exp-customer').value, content: document.getElementById('exp-content').value, cost: parseFloat(document.getElementById('exp-cost').value) };
-            await fetch('/api/expenses', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            document.getElementById('expense-form').reset(); loadAllData();
-        }
-
-        async function deleteExpense(id) {
-            if (confirm('Xóa chi phí này?')) { await fetch(`/api/expenses/${id}`, { method: 'DELETE' }); loadAllData(); }
-        }
-
-        function renderExpenses() {
-            let html = '';
-            allExpenses.forEach(ex => {
-                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">${ex.customer_name}</td><td class="p-3 text-xs text-gray-600">${ex.content}</td><td class="p-3 text-brandRed font-bold">${Number(ex.cost).toLocaleString()} VNĐ</td><td class="p-3 text-xs text-gray-500">${new Date(ex.created_at).toLocaleDateString()}</td><td class="p-3 text-right"><button onclick="deleteExpense(${ex.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-            });
-            document.getElementById('expense-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có dữ liệu</td></tr>';
-        }
-
-        // --- Revenue ---
-        function renderRevenueReport() {
-            let totalSales = 0, totalImport = 0, totalExp = 0;
-            allSales.forEach(s => { totalSales += parseFloat(s.total_amount || 0); totalImport += parseFloat(s.total_import_cost || 0); });
-            allExpenses.forEach(ex => { totalExp += parseFloat(ex.cost || 0); });
-            const netProfit = totalSales - totalImport - totalExp;
-
-            document.getElementById('rev-total-sales').innerText = totalSales.toLocaleString() + ' VNĐ';
-            document.getElementById('rev-total-import').innerText = totalImport.toLocaleString() + ' VNĐ';
-            document.getElementById('rev-total-expense').innerText = totalExp.toLocaleString() + ' VNĐ';
-            document.getElementById('rev-net-profit').innerText = netProfit.toLocaleString() + ' VNĐ';
-
-            let html = '';
-            allSales.forEach(s => {
-                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">KH-${s.id}</td><td class="p-3 text-xs">${new Date(s.created_at).toLocaleString()}</td><td class="p-3 font-bold">${s.customer_name}</td><td class="p-3 text-xs text-gray-600">${s.address || ''}</td><td class="p-3 text-brandBlue font-bold">${Number(s.total_amount).toLocaleString()} VNĐ</td><td class="p-3 text-right"><button onclick="alert('In lại phiếu xuất kho mã: ${s.invoice_code}')" class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">In lại</button></td></tr>`;
-            });
-            document.getElementById('revenue-sales-table').innerHTML = html || '<tr><td colspan="6" class="text-center p-3 text-gray-400">Chưa có dữ liệu phiếu xuất</td></tr>';
-        }
-
-        function downloadRevenueExcel() { window.location.href = '/api/export/revenue-report'; }
-
-        // --- Admins ---
-        async function saveAdmin(e) {
-            e.preventDefault();
-            const id = document.getElementById('admin-id').value;
-            const data = {
-                username: document.getElementById('admin-user').value,
-                password: document.getElementById('admin-pass').value,
-                full_name: document.getElementById('admin-name').value,
-                role: document.getElementById('admin-role').value
-            };
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `/api/admins/${id}` : '/api/admins';
-            await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            resetAdminForm(); loadAllData();
-        }
-
-        function resetAdminForm() { document.getElementById('admin-form').reset(); document.getElementById('admin-id').value = ''; }
-
-        function editAdmin(id) {
-            const a = allAdmins.find(x => x.id === id);
-            if (!a) return;
-            document.getElementById('admin-id').value = a.id;
-            document.getElementById('admin-user').value = a.username;
-            document.getElementById('admin-pass').value = '';
-            document.getElementById('admin-name').value = a.full_name;
-            document.getElementById('admin-role').value = a.role;
-        }
-
-        async function deleteAdmin(id) {
-            if (confirm('Xóa tài khoản này?')) { await fetch(`/api/admins/${id}`, { method: 'DELETE' }); loadAllData(); }
-        }
-
-        function renderAdmins() {
-            let html = '';
-            allAdmins.forEach(a => {
-                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold text-brandBlue">${a.username}</td><td class="p-3">${a.full_name || ''}</td><td class="p-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-bold">${a.role}</span></td><td class="p-3 text-xs text-gray-500">${new Date(a.created_at).toLocaleDateString()}</td><td class="p-3 text-right"><button onclick="editAdmin(${a.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteAdmin(${a.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
-            });
-            document.getElementById('admin-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có tài khoản quản trị</td></tr>';
-        }
-
-        window.onload = () => { loadAllData(); addQuoteItemRow(); addSalesItemRow(); };
-    </script>
-</body>
-</html>
+            tr.innerHTML = `<td class="p-2"><select class="w-full text-xs border rounded p-1 item-select" onchange="
