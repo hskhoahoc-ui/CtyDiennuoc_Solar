@@ -19,7 +19,7 @@ const pool = new Pool({
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
-// Initialize Database Tables
+// Initialize Database Tables & Safe Migrations
 pool.query(`
   CREATE TABLE IF NOT EXISTS solar_products (
       id SERIAL PRIMARY KEY,
@@ -66,11 +66,13 @@ pool.query(`
       address TEXT,
       link TEXT,
       status VARCHAR(50) DEFAULT 'Hoạt động',
-      is_online BOOLEAN DEFAULT false,
-      last_status_change TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      last_checked TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
+
+  -- Tự động bổ sung các cột giám sát link nếu bảng customers cũ chưa có
+  ALTER TABLE customers ADD COLUMN IF NOT EXISTS is_online BOOLEAN DEFAULT false;
+  ALTER TABLE customers ADD COLUMN IF NOT EXISTS last_status_change TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+  ALTER TABLE customers ADD COLUMN IF NOT EXISTS last_checked TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
   CREATE TABLE IF NOT EXISTS services (
       id SERIAL PRIMARY KEY,
@@ -135,24 +137,26 @@ pool.query(`
       role VARCHAR(50) DEFAULT 'Quản trị viên',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
-`).then(() => console.log("Database tables verified/created.")).catch(err => console.error("DB Init Error:", err));
+`).then(() => console.log("Database tables verified/created successfully.")).catch(err => console.error("DB Init Error:", err));
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-// --- MÁY KIỂM TRA TRẠNG THÁI LINK KHÁCH HÀNG (ONLINE / OFFLINE) ---
+// --- HÀM KIỂM TRA TRẠNG THÁI LINK AN TOÀN ---
 async function checkCustomerLinkStatus(url) {
-  if (!url || !url.startsWith('http')) return false;
+  if (!url || typeof url !== 'string' || !url.trim().startsWith('http')) {
+    return false;
+  }
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(url, { method: 'HEAD', signal: controller.signal });
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(url.trim(), { method: 'HEAD', signal: controller.signal });
     clearTimeout(timeout);
     return res.ok || (res.status >= 200 && res.status < 400);
   } catch (e) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch(url, { method: 'GET', signal: controller.signal });
+      const timeout = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch(url.trim(), { method: 'GET', signal: controller.signal });
       clearTimeout(timeout);
       return res.ok || (res.status >= 200 && res.status < 400);
     } catch (err) {
@@ -161,6 +165,7 @@ async function checkCustomerLinkStatus(url) {
   }
 }
 
+// Định kỳ quét trạng thái link các khách hàng
 async function pingAllCustomerLinks() {
   try {
     const result = await pool.query('SELECT id, link, is_online FROM customers WHERE link IS NOT NULL AND link != \'\'');
@@ -184,7 +189,6 @@ async function pingAllCustomerLinks() {
   }
 }
 
-// Chạy tự động ping mỗi 3 phút 1 lần
 setInterval(pingAllCustomerLinks, 3 * 60 * 1000);
 
 // --- API ENDPOINTS ---
@@ -326,7 +330,7 @@ app.delete('/api/equipment/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// --- CUSTOMERS & STATUS LINK CHECK ---
+// --- CUSTOMERS CRUD & SAFE PING ---
 app.get('/api/customers', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM customers ORDER BY id DESC');
@@ -337,31 +341,51 @@ app.get('/api/customers', async (req, res) => {
 app.post('/api/customers', async (req, res) => {
   try {
     const { name, address, link, status } = req.body;
-    const isOnlineState = await checkCustomerLinkStatus(link);
+    let isOnlineState = false;
+    try {
+      if (link && link.trim()) {
+        isOnlineState = await checkCustomerLinkStatus(link);
+      }
+    } catch (e) {
+      isOnlineState = false;
+    }
     const now = new Date();
 
     const result = await pool.query(
       `INSERT INTO customers (name, address, link, status, is_online, last_status_change, last_checked) 
        VALUES ($1, $2, $3, $4, $5, $6, $6) RETURNING *`,
-      [name, address, link, status || 'Hoạt động', isOnlineState, now]
+      [name, address, link || '', status || 'Hoạt động', isOnlineState, now]
     );
     res.json(result.rows[0]);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    console.error("Error adding customer:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.put('/api/customers/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { name, address, link, status } = req.body;
-    const isOnlineState = await checkCustomerLinkStatus(link);
+    let isOnlineState = false;
+    try {
+      if (link && link.trim()) {
+        isOnlineState = await checkCustomerLinkStatus(link);
+      }
+    } catch (e) {
+      isOnlineState = false;
+    }
     const now = new Date();
 
     const result = await pool.query(
       `UPDATE customers SET name=$1, address=$2, link=$3, status=$4, is_online=$5, last_status_change=$6, last_checked=$6 WHERE id=$7 RETURNING *`,
-      [name, address, link, status, isOnlineState, now, id]
+      [name, address, link || '', status || 'Hoạt động', isOnlineState, now, id]
     );
     res.json(result.rows[0]);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    console.error("Error updating customer:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.delete('/api/customers/:id', async (req, res) => {
