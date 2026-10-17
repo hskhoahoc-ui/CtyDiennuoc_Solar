@@ -84,8 +84,15 @@
         <div id="public-customers" class="pub-tab-content hidden">
             <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Danh Sách Khách Hàng & Dự Án Tiêu Biểu</h2>
             <div class="bg-white p-5 rounded-lg shadow border overflow-x-auto">
-                <table class="w-full text-left text-sm min-w-[600px]">
-                    <thead class="bg-gray-50 border-b"><tr><th class="p-3">Họ Tên Khách Hàng</th><th class="p-3">Địa Chỉ</th><th class="p-3">Link Trang / Dự Án</th><th class="p-3">Trạng Thái</th></tr></thead>
+                <table class="w-full text-left text-sm min-w-[650px]">
+                    <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="p-3">Họ Tên Khách Hàng</th>
+                            <th class="p-3">Địa Chỉ</th>
+                            <th class="p-3">Link Trang / Dự Án</th>
+                            <th class="p-3">Trạng Thái Link & Thời Gian</th>
+                        </tr>
+                    </thead>
                     <tbody id="pub-customer-table"></tbody>
                 </table>
             </div>
@@ -116,6 +123,18 @@
             document.getElementById(tabId).classList.remove('hidden');
             event.currentTarget.classList.add('bg-brandBlue', 'text-white');
             event.currentTarget.classList.remove('hover:bg-gray-700');
+        }
+
+        function calculateDurationText(lastChange) {
+            if (!lastChange) return "Mới tạo";
+            const diffMs = new Date() - new Date(lastChange);
+            const diffMinutes = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMinutes / 60);
+            const diffDays = Math.floor(diffHours / 24);
+
+            if (diffDays > 0) return `${diffDays} ngày ${diffHours % 24} giờ`;
+            if (diffHours > 0) return `${diffHours} giờ ${diffMinutes % 60} phút`;
+            return `${Math.max(1, diffMinutes)} phút`;
         }
 
         async function loadPublicData() {
@@ -169,7 +188,24 @@
 
                 let cHtml = '';
                 cRes.forEach(c => {
-                    cHtml += `<tr class="border-b"><td class="p-3 font-bold">${c.name}</td><td class="p-3 text-xs text-gray-600">${c.address}</td><td class="p-3"><a href="${c.link || '#'}" target="_blank" class="text-blue-500 underline text-xs">Xem Trang</a></td><td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-bold">${c.status}</span></td></tr>`;
+                    const isOnline = !!c.is_online;
+                    const durationStr = calculateDurationText(c.last_status_change);
+                    const badgeClass = isOnline ? 'bg-green-100 text-green-800 border-green-300' : 'bg-red-100 text-red-800 border-red-300';
+                    const icon = isOnline ? '<i class="fas fa-wifi text-green-600 mr-1"></i> ONLINE' : '<i class="fas fa-exclamation-triangle text-red-600 mr-1"></i> OFFLINE';
+
+                    cHtml += `<tr class="border-b hover:bg-gray-50">
+                        <td class="p-3 font-bold">${c.name}</td>
+                        <td class="p-3 text-xs text-gray-600">${c.address || ''}</td>
+                        <td class="p-3">
+                            ${c.link ? `<a href="${c.link}" target="_blank" class="text-blue-600 hover:underline text-xs flex items-center"><i class="fas fa-external-link-alt mr-1"></i> ${c.link}</a>` : '<span class="text-gray-400 text-xs">Chưa có link</span>'}
+                        </td>
+                        <td class="p-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2.5 py-1 text-xs rounded-full border font-bold ${badgeClass}">${icon}</span>
+                                <span class="text-xs text-gray-600 font-semibold"><i class="fas fa-clock mr-1 text-gray-400"></i> ${durationStr}</span>
+                            </div>
+                        </td>
+                    </tr>`;
                 });
                 document.getElementById('pub-customer-table').innerHTML = cHtml || '<tr><td colspan="4" class="text-center p-3 text-gray-400">Chưa có khách hàng</td></tr>';
 
