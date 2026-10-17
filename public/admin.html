@@ -24,7 +24,6 @@
       }
     </script>
     <style>
-      /* Ẩn hoàn toàn trên giao diện thông thường ở tất cả các tab */
       #print-sales-section {
         display: none !important;
       }
@@ -33,7 +32,6 @@
         #print-section, #print-section * { visibility: visible !important; }
         #print-section { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; background: white !important; }
         
-        /* Chỉ hiển thị khi kích hoạt lệnh in phiếu xuất kho */
         #print-sales-section.printing, #print-sales-section.printing * { visibility: visible !important; }
         #print-sales-section.printing { display: block !important; position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; padding: 20px !important; background: white !important; z-index: 99999 !important; }
         
@@ -205,7 +203,7 @@
                         </div>
                         <div class="flex space-x-2 mb-4">
                             <button type="submit" class="flex-1 bg-brandBlue text-white text-sm font-bold py-2 rounded hover:bg-blue-700 shadow">Lưu Vật Tư</button>
-                            <button type="button" onclick="resetMaterialForm()" class="bg-gray-300 text-gray-700 text-sm font-bold px-3 py-2 rounded">Hủy</button>
+                            <button type="button" onclick="resetMaterialForm()" class="bg-gray-300 text-gray-700 text-sm font-bold py-2 rounded">Hủy</button>
                         </div>
                         <div class="border-t pt-3">
                             <label class="block text-xs font-bold text-gray-600 mb-1"><i class="fas fa-file-excel text-green-600"></i> Import File XLSX Vật Tư</label>
@@ -279,7 +277,7 @@
 
         <!-- 4. TAB: KHÁCH HÀNG -->
         <div id="tab-customers" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Quản Lý Khách Hàng</h2>
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Quản Lý Khách Hàng & Giám Sát Link Online</h2>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
                     <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Thêm / Sửa Khách Hàng</h3>
@@ -287,7 +285,7 @@
                         <input type="hidden" id="cust-id">
                         <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Họ Tên Khách Hàng (*)</label><input type="text" id="cust-name" class="w-full text-sm border rounded px-3 py-2" required></div>
                         <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Địa Chỉ Khách Hàng (*)</label><input type="text" id="cust-address" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Link Của Khách Hàng</label><input type="text" id="cust-link" class="w-full text-sm border rounded px-3 py-2"></div>
+                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Link Của Khách Hàng (http:// hoặc https://)</label><input type="text" id="cust-link" placeholder="https://..." class="w-full text-sm border rounded px-3 py-2"></div>
                         <div class="mb-4">
                             <label class="block text-xs font-bold text-gray-600 mb-1">Trạng Thái Trang</label>
                             <select id="cust-status" class="w-full text-sm border rounded px-3 py-2">
@@ -304,10 +302,21 @@
                 </div>
                 <div class="lg:col-span-2">
                     <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Danh Sách Khách Hàng & Trạng Thái Trang</h3>
+                        <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2 flex justify-between items-center">
+                            <span>Danh Sách Khách Hàng & Trạng Thái Link Thực Tế</span>
+                            <button type="button" onclick="loadAllData()" class="bg-blue-50 text-brandBlue border border-blue-200 text-xs px-2.5 py-1 rounded hover:bg-blue-100 font-bold"><i class="fas fa-sync-alt mr-1"></i> Làm Mới Trạng Thái Link</button>
+                        </h3>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm min-w-[600px]">
-                                <thead class="bg-gray-50 border-b"><tr><th class="p-3">Họ Tên</th><th class="p-3">Địa Chỉ</th><th class="p-3">Link Trang</th><th class="p-3">Trạng Thái</th><th class="p-3 text-right">Thao Tác</th></tr></thead>
+                            <table class="w-full text-left text-sm min-w-[650px]">
+                                <thead class="bg-gray-50 border-b">
+                                    <tr>
+                                        <th class="p-3">Họ Tên</th>
+                                        <th class="p-3">Địa Chỉ</th>
+                                        <th class="p-3">Link Trang</th>
+                                        <th class="p-3">Trạng Thái Link</th>
+                                        <th class="p-3 text-right">Thao Tác</th>
+                                    </tr>
+                                </thead>
                                 <tbody id="customer-table-list"></tbody>
                             </table>
                         </div>
@@ -575,7 +584,7 @@
             </div>
         </div>
 
-        <!-- GLOBAL PRINT SALES SECTION (Đã bị ẩn hoàn toàn bằng CSS trên giao diện, chỉ hiển thị đúng lúc in phiếu) -->
+        <!-- GLOBAL PRINT SALES SECTION -->
         <div id="print-sales-section" class="bg-white p-8 max-w-4xl mx-auto shadow-2xl mt-6 border">
             <div class="flex justify-between items-center border-b-2 pb-4 mb-6">
                 <div class="flex items-center space-x-3">
@@ -637,6 +646,18 @@
                 targetTab.classList.remove('hidden');
             }
             loadAllData();
+        }
+
+        function calculateDurationText(lastChange) {
+            if (!lastChange) return "Mới ghi nhận";
+            const diffMs = new Date() - new Date(lastChange);
+            const diffMinutes = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMinutes / 60);
+            const diffDays = Math.floor(diffHours / 24);
+
+            if (diffDays > 0) return `${diffDays} ngày ${diffHours % 24} giờ`;
+            if (diffHours > 0) return `${diffHours} giờ ${diffMinutes % 60} phút`;
+            return `${Math.max(1, diffMinutes)} phút`;
         }
 
         async function loadAllData() {
@@ -947,7 +968,12 @@
         async function saveCustomer(e) {
             e.preventDefault();
             const id = document.getElementById('cust-id').value;
-            const data = { name: document.getElementById('cust-name').value.trim(), address: document.getElementById('cust-address').value.trim(), link: document.getElementById('cust-link').value.trim(), status: document.getElementById('cust-status').value };
+            const data = { 
+                name: document.getElementById('cust-name').value.trim(), 
+                address: document.getElementById('cust-address').value.trim(), 
+                link: document.getElementById('cust-link').value.trim(), 
+                status: document.getElementById('cust-status').value 
+            };
             const method = id ? 'PUT' : 'POST';
             const url = id ? `/api/customers/${id}` : '/api/customers';
             await fetch(url, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
@@ -962,7 +988,7 @@
             document.getElementById('cust-id').value = c.id;
             document.getElementById('cust-name').value = c.name;
             document.getElementById('cust-address').value = c.address;
-            document.getElementById('cust-link').value = c.link;
+            document.getElementById('cust-link').value = c.link || '';
             document.getElementById('cust-status').value = c.status;
         }
 
@@ -973,7 +999,26 @@
         function renderCustomers() {
             let html = '';
             allCustomers.forEach(c => {
-                html += `<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">${c.name}</td><td class="p-3 text-xs text-gray-600">${c.address}</td><td class="p-3"><a href="${c.link || '#'}" target="_blank" class="text-blue-500 underline text-xs">Xem Trang</a></td><td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-bold">${c.status}</span></td><td class="p-3 text-right"><button type="button" onclick="editCustomer(${c.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button><button type="button" onclick="deleteCustomer(${c.id})" class="text-red-600"><i class="fas fa-trash"></i></button></td></tr>`;
+                const isOnline = !!c.is_online;
+                const durationStr = calculateDurationText(c.last_status_change);
+                const badgeClass = isOnline ? 'bg-green-100 text-green-800 border-green-300' : 'bg-red-100 text-red-800 border-red-300';
+                const icon = isOnline ? '🟢 ONLINE' : '🔴 OFFLINE';
+
+                html += `<tr class="border-b hover:bg-gray-50">
+                    <td class="p-3 font-bold">${c.name}</td>
+                    <td class="p-3 text-xs text-gray-600">${c.address || ''}</td>
+                    <td class="p-3">
+                        ${c.link ? `<a href="${c.link}" target="_blank" class="text-blue-600 underline text-xs"><i class="fas fa-external-link-alt mr-1"></i>Xem trang</a>` : '<span class="text-gray-400 text-xs">Chưa có link</span>'}
+                    </td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 border text-xs rounded-full font-bold ${badgeClass}">${icon}</span>
+                        <p class="text-[11px] text-gray-500 mt-1"><i class="fas fa-clock mr-1"></i>${durationStr}</p>
+                    </td>
+                    <td class="p-3 text-right">
+                        <button type="button" onclick="editCustomer(${c.id})" class="text-blue-600 mr-2"><i class="fas fa-edit"></i></button>
+                        <button type="button" onclick="deleteCustomer(${c.id})" class="text-red-600"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
             });
             document.getElementById('customer-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có khách hàng</td></tr>';
         }
