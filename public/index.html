@@ -19,6 +19,36 @@
         }
       }
     </script>
+    <style>
+        /* Widget & Quick Contact Styling */
+        #solar-contact-widget { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+        .quick-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.25); transition: transform 0.2s; }
+        .quick-btn:hover { transform: scale(1.1); }
+        .phone-btn { background: #28a745; }
+        .zalo-btn { background: #0068ff; color: white; font-weight: bold; font-size: 13px; }
+        .zalo-icon-text { font-family: sans-serif; font-weight: 800; letter-spacing: -0.5px; }
+
+        #chat-toggle-btn { background: #007bff; color: white; padding: 12px 20px; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.25); font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+
+        #chat-box-container { width: 340px; height: 490px; background: white; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; }
+        #chat-header { background: #007bff; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .header-info span { font-weight: bold; font-size: 14px; display: block; }
+        .header-info small { font-size: 11px; opacity: 0.9; }
+        #chat-header button { background: none; border: none; color: white; font-size: 18px; cursor: pointer; }
+
+        #chat-messages { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f8f9fa; }
+        .message { max-width: 82%; padding: 10px 14px; border-radius: 10px; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
+        .bot-msg { background: #e9ecef; color: #212529; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .user-msg { background: #007bff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        #chat-quick-links { display: flex; gap: 6px; padding: 8px 10px; background: #fff; border-top: 1px solid #eee; }
+        .chat-link-btn { flex: 1; text-align: center; padding: 7px 0; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 11px; font-weight: bold; }
+        .chat-link-btn.zalo-link { background: #0068ff; }
+
+        #chat-input-area { display: flex; border-top: 1px solid #ddd; }
+        #user-input { flex: 1; padding: 12px; border: none; outline: none; font-size: 13px; }
+        #chat-input-area button { background: #007bff; color: white; border: none; padding: 0 16px; cursor: pointer; font-weight: bold; }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
 
@@ -109,11 +139,102 @@
         </div>
     </main>
 
+    <!-- Contact & AI Chatbot Widget -->
+    <div id="solar-contact-widget">
+        <!-- Nút gọi điện thoại nhanh -->
+        <a href="tel:02963603382" class="quick-btn phone-btn" title="Gọi Hotline 0296 3603 382">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </a>
+
+        <!-- Nút chat Zalo -->
+        <a href="http://zalo.me/385561373292339133?src=qr" target="_blank" class="quick-btn zalo-btn" title="Chat qua Zalo">
+            <span class="zalo-icon-text">Zalo</span>
+        </a>
+
+        <!-- Nút Chat AI -->
+        <div id="chat-toggle-btn" onclick="toggleChatBox()">
+            💬 AI Tư Vấn
+        </div>
+
+        <!-- Khung Chat AI -->
+        <div id="chat-box-container" style="display: none;">
+            <div id="chat-header">
+                <div class="header-info">
+                    <span>Tư Vấn Điện Mặt Trời POWACO</span>
+                    <small>Hotline: <a href="tel:02963603382" style="color:#fff;">0296 3603 382</a></small>
+                </div>
+                <button onclick="toggleChatBox()">✕</button>
+            </div>
+
+            <div id="chat-messages">
+                <div class="message bot-msg">
+                    Xin chào! Tôi là AI hỗ trợ của Điện Nước An Giang. Bạn cần tư vấn thông tin thiết bị, pin mặt trời hay báo giá trọn gói ạ?
+                </div>
+            </div>
+
+            <div id="chat-quick-links">
+                <a href="tel:02963603382" class="chat-link-btn">📞 Gọi 0296 3603 382</a>
+                <a href="http://zalo.me/385561373292339133?src=qr" target="_blank" class="chat-link-btn zalo-link">💬 Chat Zalo</a>
+            </div>
+
+            <div id="chat-input-area">
+                <input type="text" id="user-input" placeholder="Nhập câu hỏi hoặc SĐT..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()">Gửi</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-brandDark text-white text-center py-4 mt-12 text-xs">
         <p>Copyright © 2026 CÔNG TY CP ĐIỆN NƯỚC AN GIANG. All rights reserved.</p>
     </footer>
 
     <script>
+        let chatHistory = [];
+
+        function toggleChatBox() {
+            const box = document.getElementById('chat-box-container');
+            box.style.display = box.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const text = inputField.value.trim();
+            if (!text) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            
+            chatMessages.innerHTML += `<div class="message user-msg">${escapeHtml(text)}</div>`;
+            inputField.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            chatHistory.push({ role: 'user', parts: [{ text: text }] });
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text, history: chatHistory })
+                });
+                
+                const data = await response.json();
+                const botReply = data.reply || "Xin lỗi, hiện tại hệ thống chưa phản hồi được. Vui lòng gọi 0296 3603 382.";
+
+                chatMessages.innerHTML += `<div class="message bot-msg">${escapeHtml(botReply)}</div>`;
+                chatHistory.push({ role: 'model', parts: [{ text: botReply }] });
+            } catch (error) {
+                chatMessages.innerHTML += `<div class="message bot-msg">Lỗi kết nối máy chủ. Quý khách vui lòng liên hệ Hotline 0296 3603 382 hoặc Zalo để được hỗ trợ.</div>`;
+            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
         function switchPublicTab(tabId) {
             document.querySelectorAll('.pub-tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.pub-tab-btn').forEach(el => {
