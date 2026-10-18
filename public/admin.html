@@ -71,6 +71,13 @@
                 <button type="button" onclick="switchTab('tab-materials')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-boxes mr-1"></i> Vật Tư</button>
                 <button type="button" onclick="switchTab('tab-equipment')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-tools mr-1"></i> Thiết Bị</button>
                 <button type="button" onclick="switchTab('tab-customers')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-users mr-1"></i> Khách Hàng</button>
+                
+                <!-- TAB HỖ TRỢ KHÁCH HÀNG MỚI CÓ BADGE ĐẾM SỐ -->
+                <button type="button" onclick="switchTab('tab-support')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition relative">
+                    <i class="fas fa-headset mr-1"></i> Hỗ Trợ Khách Hàng
+                    <span id="support-badge" class="ml-1 bg-brandRed text-white text-xs font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </button>
+
                 <button type="button" onclick="switchTab('tab-services')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-concierge-bell mr-1"></i> Dịch Vụ</button>
                 <button type="button" onclick="switchTab('tab-quotation')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-file-invoice-dollar mr-1"></i> Tạo Báo Giá</button>
                 <button type="button" onclick="switchTab('tab-sales')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-cash-register mr-1"></i> Xuất Kho</button>
@@ -275,16 +282,16 @@
             </div>
         </div>
 
-        <!-- 4. TAB: KHÁCH HÀNG & KHÁCH TIỀM NĂNG TỪ CHATBOT -->
+        <!-- 4. TAB: KHÁCH HÀNG DỰ ÁN -->
         <div id="tab-customers" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Quản Lý Khách Hàng, Chatbot Leads & Giám Sát Link Online</h2>
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Quản Lý Khách Hàng & Giám Sát Link Online</h2>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
                     <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Thêm / Sửa Khách Hàng</h3>
                     <form id="customer-form" onsubmit="saveCustomer(event)">
                         <input type="hidden" id="cust-id">
                         <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Họ Tên Khách Hàng (*)</label><input type="text" id="cust-name" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Địa Chỉ / Nội Dung Chat (*)</label><input type="text" id="cust-address" class="w-full text-sm border rounded px-3 py-2" required></div>
+                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Địa Chỉ Khách Hàng (*)</label><input type="text" id="cust-address" class="w-full text-sm border rounded px-3 py-2" required></div>
                         <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Link Của Khách Hàng (http:// hoặc https://)</label><input type="text" id="cust-link" placeholder="https://..." class="w-full text-sm border rounded px-3 py-2"></div>
                         <div class="mb-4">
                             <label class="block text-xs font-bold text-gray-600 mb-1">Trạng Thái Trang</label>
@@ -293,6 +300,7 @@
                                 <option value="Đang khảo sát">Đang khảo sát</option>
                                 <option value="Đang thi công">Đang thi công</option>
                                 <option value="Tiềm năng từ Chatbot">Tiềm năng từ Chatbot</option>
+                                <option value="Đã tư vấn">Đã tư vấn</option>
                             </select>
                         </div>
                         <div class="flex space-x-2">
@@ -304,14 +312,14 @@
                 <div class="lg:col-span-2">
                     <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
                         <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2 flex justify-between items-center">
-                            <span>Danh Sách Khách Hàng & Leads Chatbot AI</span>
-                            <button type="button" onclick="loadAllData()" class="bg-blue-50 text-brandBlue border border-blue-200 text-xs px-2.5 py-1 rounded hover:bg-blue-100 font-bold"><i class="fas fa-sync-alt mr-1"></i> Làm Mới Dữ Liệu</button>
+                            <span>Danh Sách Khách Hàng & Trạng Thái Link Thực Tế</span>
+                            <button type="button" onclick="loadAllData()" class="bg-blue-50 text-brandBlue border border-blue-200 text-xs px-2.5 py-1 rounded hover:bg-blue-100 font-bold"><i class="fas fa-sync-alt mr-1"></i> Làm Mới Trạng Thái Link</button>
                         </h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm min-w-[650px]">
                                 <thead class="bg-gray-50 border-b">
                                     <tr>
-                                        <th class="p-3">Họ Tên / SĐT</th>
+                                        <th class="p-3">Họ Tên</th>
                                         <th class="p-3">Địa Chỉ / Nội Dung Chat</th>
                                         <th class="p-3">Link Dự án</th>
                                         <th class="p-3">Trạng Thái</th>
@@ -322,6 +330,38 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4.1 TAB RIÊNG: HỖ TRỢ KHÁCH HÀNG (CHATBOT LEADS) -->
+        <div id="tab-support" class="tab-content hidden">
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center">
+                <i class="fas fa-headset mr-2"></i> Khách Hàng Tiềm Năng Cần Tư Vấn & Chatbot Leads
+            </h2>
+            <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <div>
+                        <h3 class="text-md font-bold text-gray-700">Danh Sách Lịch Sử Chat & Tư Vấn Mới</h3>
+                        <p class="text-xs text-gray-500">Các tin nhắn / số điện thoại do AI Chatbot ghi nhận từ trang chủ.</p>
+                    </div>
+                    <button type="button" onclick="loadAllData()" class="bg-blue-50 text-brandBlue border border-blue-200 text-xs px-3 py-1.5 rounded hover:bg-blue-100 font-bold">
+                        <i class="fas fa-sync-alt mr-1"></i> Làm Mới Tin Nhắn
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm min-w-[700px]">
+                        <thead class="bg-gray-50 border-b">
+                            <tr>
+                                <th class="p-3">STT</th>
+                                <th class="p-3">Khách Hàng / SĐT</th>
+                                <th class="p-3">Nội Dung Chat / Yêu Cầu</th>
+                                <th class="p-3">Trạng Thái</th>
+                                <th class="p-3 text-right">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="support-table-list"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -624,11 +664,36 @@
             </div>
         </div>
 
+        <!-- MODAL POPUP XEM CHI TIẾT CHAT KHÁCH HÀNG -->
+        <div id="chat-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+            <div class="bg-white rounded-lg p-6 max-w-lg w-full shadow-2xl space-y-4">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <h3 class="text-lg font-bold text-brandBlue flex items-center">
+                        <i class="fas fa-comment-alt mr-2"></i> Chi Tiết Khách Hàng Chat
+                    </h3>
+                    <button type="button" onclick="closeChatModal()" class="text-gray-500 hover:text-red-600 text-xl font-bold">&times;</button>
+                </div>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Họ Tên / SĐT:</strong> <span id="modal-cust-name" class="font-bold text-brandBlue"></span></p>
+                    <p><strong>Nội Dung Chat / Khảo Sát:</strong></p>
+                    <div id="modal-cust-chat" class="p-3 bg-gray-50 border rounded text-xs text-gray-700 whitespace-pre-wrap max-h-48 overflow-y-auto"></div>
+                    <p><strong>Trạng Thái:</strong> <span id="modal-cust-status" class="px-2 py-0.5 rounded text-xs font-bold"></span></p>
+                </div>
+                <div class="flex justify-end space-x-2 border-t pt-3">
+                    <button type="button" id="btn-mark-consulted" onclick="markAsConsulted()" class="bg-green-600 text-white text-xs px-3 py-2 rounded font-bold hover:bg-green-700">
+                        <i class="fas fa-check-circle mr-1"></i> Đánh Dấu Đã Tư Vấn
+                    </button>
+                    <button type="button" onclick="closeChatModal()" class="bg-gray-300 text-gray-700 text-xs px-3 py-2 rounded font-bold">Đóng</button>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- SCRIPTS -->
     <script>
         let allPackages = [], allProducts = [], allMaterials = [], allEquipment = [], allCustomers = [], allServices = [], allExpenses = [], allSales = [], allAdmins = [];
+        let currentViewingChatId = null;
 
         function handleLogout() {
             sessionStorage.removeItem('isLoggedIn');
@@ -689,6 +754,7 @@
                 renderMaterials();
                 renderEquipment();
                 renderCustomers();
+                renderSupportTab();
                 renderServices();
                 renderExpenses();
                 renderInventoryReport();
@@ -1022,6 +1088,91 @@
                 </tr>`;
             });
             document.getElementById('customer-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có khách hàng</td></tr>';
+        }
+
+        // --- XỬ LÝ TAB HỖ TRỢ KHÁCH HÀNG & BADGE ĐẾM SỐ ---
+        function renderSupportTab() {
+            // Lọc danh sách khách hàng mới / tư vấn từ chatbot
+            const pendingLeads = allCustomers.filter(c => c.status === 'Tiềm năng từ Chatbot');
+            const badgeEl = document.getElementById('support-badge');
+
+            if (pendingLeads.length > 0) {
+                badgeEl.innerText = pendingLeads.length;
+                badgeEl.classList.remove('hidden');
+            } else {
+                badgeEl.classList.add('hidden');
+            }
+
+            let html = '';
+            let stt = 1;
+            allCustomers.forEach(c => {
+                if (c.status === 'Tiềm năng từ Chatbot' || c.status === 'Đã tư vấn') {
+                    const isPending = c.status === 'Tiềm năng từ Chatbot';
+                    const badgeStatus = isPending 
+                        ? '<span class="px-2.5 py-1 bg-red-100 text-red-800 text-xs rounded-full font-bold"><i class="fas fa-bell mr-1"></i>Cần Tư Vấn</span>' 
+                        : '<span class="px-2.5 py-1 bg-green-100 text-green-800 text-xs rounded-full font-bold"><i class="fas fa-check mr-1"></i>Đã Tư Vấn</span>';
+
+                    html += `<tr class="border-b hover:bg-gray-50">
+                        <td class="p-3 font-bold">${stt++}</td>
+                        <td class="p-3 font-bold text-brandBlue">${c.name}</td>
+                        <td class="p-3 text-xs text-gray-700 max-w-sm truncate">${c.address || 'Không có nội dung'}</td>
+                        <td class="p-3">${badgeStatus}</td>
+                        <td class="p-3 text-right">
+                            <button type="button" onclick="openChatModal(${c.id})" class="bg-brandBlue text-white text-xs px-3 py-1.5 rounded font-bold hover:bg-blue-700 shadow">
+                                <i class="fas fa-eye mr-1"></i> Xem Chat
+                            </button>
+                        </td>
+                    </tr>`;
+                }
+            });
+
+            document.getElementById('support-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-4 text-gray-400">Chưa có lịch sử tin nhắn mới nào từ khách hàng</td></tr>';
+        }
+
+        function openChatModal(id) {
+            const c = allCustomers.find(x => x.id === id);
+            if (!c) return;
+            currentViewingChatId = id;
+
+            document.getElementById('modal-cust-name').innerText = c.name;
+            document.getElementById('modal-cust-chat').innerText = c.address || 'Không có nội dung chat chi tiết';
+            
+            const isPending = c.status === 'Tiềm năng từ Chatbot';
+            const statusEl = document.getElementById('modal-cust-status');
+            statusEl.innerText = isPending ? 'Cần tư vấn ngay' : 'Đã tư vấn hoàn tất';
+            statusEl.className = isPending 
+                ? 'px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-800' 
+                : 'px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-800';
+
+            document.getElementById('btn-mark-consulted').style.display = isPending ? 'inline-block' : 'none';
+            document.getElementById('chat-detail-modal').classList.remove('hidden');
+        }
+
+        function closeChatModal() {
+            document.getElementById('chat-detail-modal').classList.add('hidden');
+            currentViewingChatId = null;
+        }
+
+        async function markAsConsulted() {
+            if (!currentViewingChatId) return;
+            const c = allCustomers.find(x => x.id === currentViewingChatId);
+            if (!c) return;
+
+            const updatedData = {
+                name: c.name,
+                address: c.address,
+                link: c.link || '',
+                status: 'Đã tư vấn'
+            };
+
+            await fetch(`/api/customers/${currentViewingChatId}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(updatedData)
+            });
+
+            closeChatModal();
+            loadAllData();
         }
 
         // --- Services ---
@@ -1449,6 +1600,8 @@
                 addQuoteItemRow(); 
                 addSalesItemRow();
             }); 
+            // Tự động làm mới dữ liệu mỗi 30 giây để cập nhật tin nhắn mới
+            setInterval(loadAllData, 30000);
         };
     </script>
 </body>
