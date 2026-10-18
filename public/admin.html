@@ -275,16 +275,16 @@
             </div>
         </div>
 
-        <!-- 4. TAB: KHÁCH HÀNG -->
+        <!-- 4. TAB: KHÁCH HÀNG & KHÁCH TIỀM NĂNG TỪ CHATBOT -->
         <div id="tab-customers" class="tab-content hidden">
-            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Quản Lý Khách Hàng & Giám Sát Link Online</h2>
+            <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Quản Lý Khách Hàng, Chatbot Leads & Giám Sát Link Online</h2>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
                     <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2">Thêm / Sửa Khách Hàng</h3>
                     <form id="customer-form" onsubmit="saveCustomer(event)">
                         <input type="hidden" id="cust-id">
                         <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Họ Tên Khách Hàng (*)</label><input type="text" id="cust-name" class="w-full text-sm border rounded px-3 py-2" required></div>
-                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Địa Chỉ Khách Hàng (*)</label><input type="text" id="cust-address" class="w-full text-sm border rounded px-3 py-2" required></div>
+                        <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Địa Chỉ / Nội Dung Chat (*)</label><input type="text" id="cust-address" class="w-full text-sm border rounded px-3 py-2" required></div>
                         <div class="mb-3"><label class="block text-xs font-bold text-gray-600 mb-1">Link Của Khách Hàng (http:// hoặc https://)</label><input type="text" id="cust-link" placeholder="https://..." class="w-full text-sm border rounded px-3 py-2"></div>
                         <div class="mb-4">
                             <label class="block text-xs font-bold text-gray-600 mb-1">Trạng Thái Trang</label>
@@ -292,6 +292,7 @@
                                 <option value="Hoạt động">Hoạt động</option>
                                 <option value="Đang khảo sát">Đang khảo sát</option>
                                 <option value="Đang thi công">Đang thi công</option>
+                                <option value="Tiềm năng từ Chatbot">Tiềm năng từ Chatbot</option>
                             </select>
                         </div>
                         <div class="flex space-x-2">
@@ -303,15 +304,15 @@
                 <div class="lg:col-span-2">
                     <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
                         <h3 class="text-md font-bold text-gray-700 mb-3 border-b pb-2 flex justify-between items-center">
-                            <span>Danh Sách Khách Hàng & Trạng Thái Link Thực Tế</span>
-                            <button type="button" onclick="loadAllData()" class="bg-blue-50 text-brandBlue border border-blue-200 text-xs px-2.5 py-1 rounded hover:bg-blue-100 font-bold"><i class="fas fa-sync-alt mr-1"></i> Làm Mới Trạng Thái Link</button>
+                            <span>Danh Sách Khách Hàng & Leads Chatbot AI</span>
+                            <button type="button" onclick="loadAllData()" class="bg-blue-50 text-brandBlue border border-blue-200 text-xs px-2.5 py-1 rounded hover:bg-blue-100 font-bold"><i class="fas fa-sync-alt mr-1"></i> Làm Mới Dữ Liệu</button>
                         </h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm min-w-[650px]">
                                 <thead class="bg-gray-50 border-b">
                                     <tr>
-                                        <th class="p-3">Họ Tên</th>
-                                        <th class="p-3">Địa Chỉ</th>
+                                        <th class="p-3">Họ Tên / SĐT</th>
+                                        <th class="p-3">Địa Chỉ / Nội Dung Chat</th>
                                         <th class="p-3">Link Dự án</th>
                                         <th class="p-3">Trạng Thái</th>
                                         <th class="p-3 text-right">Thao Tác</th>
