@@ -203,7 +203,7 @@ async function pingAllCustomerLinks() {
 
 setInterval(pingAllCustomerLinks, 3 * 60 * 1000);
 
-// --- API CHATBOT GEMINI & TỰ ĐỘNG LƯU VÀO CHATBOT_LEADS ---
+// --- API CHATBOT GEMINI & TỰ ĐỘNG LƯU VÀO CHATBOT_LEADS (ĐÚNG TAB HỖ TRỢ KHÁCH HÀNG) ---
 app.post('/api/chat', async (req, res) => {
     try {
         const { message, history } = req.body;
@@ -217,7 +217,7 @@ app.post('/api/chat', async (req, res) => {
         const phoneStr = (matchedPhones && matchedPhones.length > 0) ? matchedPhones[0] : 'Chưa có SĐT';
         const custName = phoneStr !== 'Chưa có SĐT' ? `Khách hàng (${phoneStr})` : `Khách vãng lai`;
 
-        // Lưu lịch sử chat vào bảng chatbot_leads để hiển thị đúng ở tab Hỗ Trợ Khách Hàng
+        // Đảm bảo chỉ lưu vào bảng chatbot_leads riêng biệt, KHÔNG lưu nhầm sang bảng customers
         await pool.query(
             `INSERT INTO chatbot_leads (customer_name, phone, chat_content, status) VALUES ($1, $2, $3, $4)`,
             [custName, phoneStr, message, 'Chưa tư vấn']
