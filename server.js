@@ -99,6 +99,15 @@ pool.query(`
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 
+  CREATE TABLE IF NOT EXISTS chatbot_leads (
+      id SERIAL PRIMARY KEY,
+      customer_name VARCHAR(255),
+      phone VARCHAR(50),
+      chat_content TEXT,
+      status VARCHAR(50) DEFAULT 'Chưa tư vấn',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+
   CREATE TABLE IF NOT EXISTS quotations (
       id SERIAL PRIMARY KEY,
       code VARCHAR(50) UNIQUE,
@@ -194,7 +203,7 @@ async function pingAllCustomerLinks() {
 
 setInterval(pingAllCustomerLinks, 3 * 60 * 1000);
 
-// --- API CHATBOT GEMINI TỰ ĐỘNG ĐỌC DỮ LIỆU & LƯU LEADS ---
+// --- API CHATBOT GEMINI & TỰ ĐỘNG LƯU VÀO CHATBOT_LEADS ---
 app.post('/api/chat', async (req, res) => {
     try {
         const { message, history } = req.body;
@@ -202,7 +211,19 @@ app.post('/api/chat', async (req, res) => {
             return res.status(400).json({ error: 'Tin nhắn không được để trống.' });
         }
 
-        // 1. Tự động lấy dữ liệu từ Database để làm ngữ cảnh (Context) cho AI
+        // Tự động kiểm tra và lọc SĐT trong tin nhắn
+        const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/g;
+        const matchedPhones = message.match(phoneRegex);
+        const phoneStr = (matchedPhones && matchedPhones.length > 0) ? matchedPhones[0] : 'Chưa có SĐT';
+        const custName = phoneStr !== 'Chưa có SĐT' ? `Khách hàng (${phoneStr})` : `Khách vãng lai`;
+
+        // Lưu lịch sử chat vào bảng chatbot_leads để hiển thị đúng ở tab Hỗ Trợ Khách Hàng
+        await pool.query(
+            `INSERT INTO chatbot_leads (customer_name, phone, chat_content, status) VALUES ($1, $2, $3, $4)`,
+            [custName, phoneStr, message, 'Chưa tư vấn']
+        );
+
+        // Lấy dữ liệu từ Database làm ngữ cảnh cho AI Gemini
         const [pkgRes, prodRes, equipRes, servRes] = await Promise.all([
             pool.query('SELECT * FROM package_quotations'),
             pool.query('SELECT brand, power, selling_price, stock FROM solar_products'),
@@ -211,7 +232,7 @@ app.post('/api/chat', async (req, res) => {
         ]);
 
         const packagesText = pkgRes.rows.map(p => `- ${p.package_name} (${p.power}): Giá ${Number(p.package_price).toLocaleString()} VNĐ, BH Pin: ${p.battery_warranty}`).join('\n');
-        const productsText = prodRes.rows.map(p => `- Pin ${p.brand} ${p.power}: ${Number(p.selling_price).toLocaleString()} VNĐ (Tồn: ${p.stock})`).join('\n');
+        const productsText = prodRes.rows.map(p => `- Pin ${p.brand} ${p.power}: ${Number(p.selling_price).toLocaleString()} VNĐ (Tồn kho: ${p.stock})`).join('\n');
         const equipmentText = equipRes.rows.map(e => `- Thiết bị ${e.brand} ${e.power}: ${Number(e.selling_price).toLocaleString()} VNĐ`).join('\n');
         const servicesText = servRes.rows.map(s => `- ${s.service_type}: ${Number(s.price).toLocaleString()} VNĐ (${s.description || ''})`).join('\n');
 
@@ -219,7 +240,7 @@ app.post('/api/chat', async (req, res) => {
 Bạn là Trợ lý ảo AI chuyên nghiệp của CÔNG TY CP ĐIỆN NƯỚC AN GIANG (POWACO).
 Thông tin liên hệ: SĐT/Hotline: 0296 3603 382, Địa chỉ: 821 Trần Hưng Đạo, P. Bình Đức, Tỉnh An Giang.
 
-Dưới đây là cơ sở dữ liệu sản phẩm, dịch vụ và báo giá thực tế của công ty hiện tại:
+Dữ liệu sản phẩm, dịch vụ và bảng giá trọn gói thực tế hiện có của công ty:
 [BÁO GIÁ TRỌN GÓI]:
 ${packagesText || 'Chưa cập nhật'}
 
@@ -232,27 +253,11 @@ ${equipmentText || 'Chưa cập nhật'}
 [DỊCH VỤ]:
 ${servicesText || 'Chưa cập nhật'}
 
-Nhiệm vụ của Chatbot:
-1. Trả lời thân thiện, lịch sự, chính xác dựa trên dữ liệu sản phẩm/báo giá ở trên bằng tiếng Việt.
-2. Nếu khách hàng hỏi sâu về báo giá hoặc khảo sát, hãy khéo léo yêu cầu khách để lại Họ tên và Số điện thoại để kỹ thuật viên liên hệ lại.
-3. Tự động lưu thông tin số điện thoại khách hàng vào hệ thống khi nhận được.
+Nhiệm vụ:
+1. Trả lời lịch sự, thân thiện, chính xác dựa trên dữ liệu trên bằng tiếng Việt.
+2. Khéo léo yêu cầu khách hàng cung cấp Họ tên và Số điện thoại nếu họ muốn có kỹ thuật viên liên hệ khảo sát tận nơi.
 `;
 
-        // 2. Tự động kiểm tra và lọc SĐT của khách hàng trong tin nhắn để lưu vào Database Khách Hàng (Tab Hỗ trợ khách hàng)
-        const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/g;
-        const matchedPhones = message.match(phoneRegex);
-        if (matchedPhones && matchedPhones.length > 0) {
-            const phone = matchedPhones[0];
-            const now = new Date();
-            await pool.query(
-                `INSERT INTO customers (name, address, link, status, is_online, last_status_change, last_checked) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $6)`,
-                [`Khách Chatbot (${phone})`, `Nội dung yêu cầu từ Chat: ${message}`, '', 'Tiềm năng từ AI', false, now]
-            );
-            console.log("📌 [LEAD MỚI TỪ CHATBOT ĐÃ LƯU VÀO DB]:", phone);
-        }
-
-        // 3. Gọi Gemini Model 2.5 Flash
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: [
@@ -272,13 +277,37 @@ Nhiệm vụ của Chatbot:
     }
 });
 
-// --- API ENDPOINTS ĐẦY ĐỦ TỪ BẢN GỐC ---
-
-app.get('/api/solar-products', async (req, res) => {
+// --- API QUẢN LÝ CHATBOT LEADS (TAB HỖ TRỢ KHÁCH HÀNG) ---
+app.get('/api/chatbot-leads', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM solar_products ORDER BY id DESC');
+    const result = await pool.query('SELECT * FROM chatbot_leads ORDER BY id DESC');
     res.json(result.rows);
   } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.put('/api/chatbot-leads/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const result = await pool.query(
+      `UPDATE chatbot_leads SET status = $1 WHERE id = $2 RETURNING *`,
+      [status, id]
+    );
+    res.json(result.rows[0]);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.delete('/api/chatbot-leads/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM chatbot_leads WHERE id = $1', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// --- CÁC API CRUD QUẢN TRỊ KHÁC ---
+
+app.get('/api/solar-products', async (req, res) => {
+  try { const result = await pool.query('SELECT * FROM solar_products ORDER BY id DESC'); res.json(result.rows); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/solar-products', async (req, res) => {
@@ -306,17 +335,11 @@ app.put('/api/solar-products/:id', async (req, res) => {
 });
 
 app.delete('/api/solar-products/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM solar_products WHERE id=$1', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { await pool.query('DELETE FROM solar_products WHERE id=$1', [req.params.id]); res.json({ success: true }); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/api/materials', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM materials ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { const result = await pool.query('SELECT * FROM materials ORDER BY id DESC'); res.json(result.rows); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/materials', async (req, res) => {
@@ -343,10 +366,7 @@ app.put('/api/materials/:id', async (req, res) => {
 });
 
 app.delete('/api/materials/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM materials WHERE id=$1', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { await pool.query('DELETE FROM materials WHERE id=$1', [req.params.id]); res.json({ success: true }); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/materials/import', upload.single('file'), async (req, res) => {
@@ -374,10 +394,7 @@ app.post('/api/materials/import', upload.single('file'), async (req, res) => {
 });
 
 app.get('/api/equipment', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM equipment ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { const result = await pool.query('SELECT * FROM equipment ORDER BY id DESC'); res.json(result.rows); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/equipment', async (req, res) => {
@@ -405,30 +422,18 @@ app.put('/api/equipment/:id', async (req, res) => {
 });
 
 app.delete('/api/equipment/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM equipment WHERE id=$1', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { await pool.query('DELETE FROM equipment WHERE id=$1', [req.params.id]); res.json({ success: true }); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/api/customers', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM customers ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { const result = await pool.query('SELECT * FROM customers ORDER BY id DESC'); res.json(result.rows); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/customers', async (req, res) => {
   try {
     const { name, address, link, status } = req.body;
     let isOnlineState = false;
-    try {
-      if (link && link.trim()) {
-        isOnlineState = await checkCustomerLinkStatus(link);
-      }
-    } catch (e) {
-      isOnlineState = false;
-    }
+    try { if (link && link.trim()) { isOnlineState = await checkCustomerLinkStatus(link); } } catch (e) { isOnlineState = false; }
     const now = new Date();
 
     const result = await pool.query(
@@ -437,10 +442,7 @@ app.post('/api/customers', async (req, res) => {
       [name, address, link || '', status || 'Hoạt động', isOnlineState, now]
     );
     res.json(result.rows[0]);
-  } catch (err) {
-    console.error("Error adding customer:", err);
-    res.status(500).json({ error: err.message });
-  }
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.put('/api/customers/:id', async (req, res) => {
@@ -448,13 +450,7 @@ app.put('/api/customers/:id', async (req, res) => {
     const { id } = req.params;
     const { name, address, link, status } = req.body;
     let isOnlineState = false;
-    try {
-      if (link && link.trim()) {
-        isOnlineState = await checkCustomerLinkStatus(link);
-      }
-    } catch (e) {
-      isOnlineState = false;
-    }
+    try { if (link && link.trim()) { isOnlineState = await checkCustomerLinkStatus(link); } } catch (e) { isOnlineState = false; }
     const now = new Date();
 
     const result = await pool.query(
@@ -462,24 +458,15 @@ app.put('/api/customers/:id', async (req, res) => {
       [name, address, link || '', status || 'Hoạt động', isOnlineState, now, id]
     );
     res.json(result.rows[0]);
-  } catch (err) {
-    console.error("Error updating customer:", err);
-    res.status(500).json({ error: err.message });
-  }
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.delete('/api/customers/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM customers WHERE id=$1', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { await pool.query('DELETE FROM customers WHERE id=$1', [req.params.id]); res.json({ success: true }); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/api/package-quotations', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM package_quotations ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { const result = await pool.query('SELECT * FROM package_quotations ORDER BY id DESC'); res.json(result.rows); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/package-quotations', async (req, res) => {
@@ -507,10 +494,7 @@ app.put('/api/package-quotations/:id', async (req, res) => {
 });
 
 app.delete('/api/package-quotations/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM package_quotations WHERE id=$1', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { await pool.query('DELETE FROM package_quotations WHERE id=$1', [req.params.id]); res.json({ success: true }); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/login', async (req, res) => {
@@ -525,16 +509,11 @@ app.post('/api/login', async (req, res) => {
     } else {
       res.status(401).json({ success: false, error: 'Tên đăng nhập hoặc mật khẩu không chính xác!' });
     }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/api/services', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM services ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { const result = await pool.query('SELECT * FROM services ORDER BY id DESC'); res.json(result.rows); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/services', async (req, res) => {
@@ -549,23 +528,16 @@ app.post('/api/services', async (req, res) => {
 });
 
 app.delete('/api/services/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM services WHERE id=$1', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { await pool.query('DELETE FROM services WHERE id=$1', [req.params.id]); res.json({ success: true }); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/api/sales', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM sales ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { const result = await pool.query('SELECT * FROM sales ORDER BY id DESC'); res.json(result.rows); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/sales', async (req, res) => {
   try {
     const { invoice_code, customer_name, phone, address, content, items, total_amount, total_import_cost, profit } = req.body;
-    
     for (let item of items) {
       if (item.type === 'product') {
         await pool.query('UPDATE solar_products SET stock = stock - $1 WHERE id = $2', [item.quantity, item.id]);
@@ -575,7 +547,6 @@ app.post('/api/sales', async (req, res) => {
         await pool.query('UPDATE equipment SET stock = stock - $1 WHERE id = $2', [item.quantity, item.id]);
       }
     }
-
     const result = await pool.query(
       `INSERT INTO sales (invoice_code, customer_name, phone, address, content, items, total_amount, total_import_cost, profit) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
       [invoice_code, customer_name, phone, address, content, JSON.stringify(items), total_amount, total_import_cost, profit]
@@ -585,10 +556,7 @@ app.post('/api/sales', async (req, res) => {
 });
 
 app.get('/api/expenses', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM expenses ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { const result = await pool.query('SELECT * FROM expenses ORDER BY id DESC'); res.json(result.rows); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/expenses', async (req, res) => {
@@ -603,17 +571,11 @@ app.post('/api/expenses', async (req, res) => {
 });
 
 app.delete('/api/expenses/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM expenses WHERE id=$1', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { await pool.query('DELETE FROM expenses WHERE id=$1', [req.params.id]); res.json({ success: true }); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/api/admins', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT id, username, full_name, role, created_at FROM admins ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { const result = await pool.query('SELECT id, username, full_name, role, created_at FROM admins ORDER BY id DESC'); res.json(result.rows); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/admins', async (req, res) => {
@@ -633,24 +595,19 @@ app.put('/api/admins/:id', async (req, res) => {
     const { username, password, full_name, role } = req.body;
     let query = `UPDATE admins SET username=$1, full_name=$2, role=$3`;
     let params = [username, full_name, role, id];
-    
     if (password && password.trim() !== '') {
       query = `UPDATE admins SET username=$1, full_name=$2, role=$3, password=$4 WHERE id=$5`;
       params = [username, full_name, role, password, id];
     } else {
       query += ` WHERE id=$4`;
     }
-
     await pool.query(query, params);
     res.json({ success: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.delete('/api/admins/:id', async (req, res) => {
-  try {
-    await pool.query('DELETE FROM admins WHERE id=$1', [req.params.id]);
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  try { await pool.query('DELETE FROM admins WHERE id=$1', [req.params.id]); res.json({ success: true }); } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/api/export/inventory-report', async (req, res) => {
@@ -660,7 +617,6 @@ app.get('/api/export/inventory-report', async (req, res) => {
     const eRes = await pool.query('SELECT * FROM equipment');
 
     const wb = XLSX.utils.book_new();
-
     const pData = pRes.rows.map(r => ({ 'Mã': r.id, 'Thương hiệu': r.brand, 'Công suất': r.power, 'Chủng loại': r.category, 'Tồn kho': r.stock, 'ĐVT': r.unit, 'Giá nhập': r.import_price, 'Giá bán': r.selling_price }));
     const mData = mRes.rows.map(r => ({ 'Mã': r.id, 'Tên vật tư': r.name, 'Loại': r.category, 'Tồn kho': r.stock, 'ĐVT': r.unit, 'Giá nhập': r.import_price, 'Giá bán': r.selling_price }));
     const eData = eRes.rows.map(r => ({ 'Mã': r.id, 'Thương hiệu': r.brand, 'Công suất': r.power, 'Chủng loại': r.category, 'Tồn kho': r.stock, 'ĐVT': r.unit, 'Giá nhập': r.import_price, 'Giá bán': r.selling_price }));
