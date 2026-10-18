@@ -1,13 +1,13 @@
 {
-  "name": "angiang-solar-management",
+  "name": "solar-chatbot-management",
   "version": "1.0.0",
-  "description": "Hệ thống quản lý Công ty CP Điện Nước An Giang - Điện Năng Lượng Mặt Trời",
+  "description": "Hệ thống Quản trị & AI Chatbot Điện Năng Lượng Mặt Trời An Giang (POWACO)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node server.js"
   },
   "dependencies": {
+    "@google/genai": "^0.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
