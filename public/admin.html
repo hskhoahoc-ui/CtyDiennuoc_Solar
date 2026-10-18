@@ -72,7 +72,7 @@
                 <button type="button" onclick="switchTab('tab-equipment')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-tools mr-1"></i> Thiết Bị</button>
                 <button type="button" onclick="switchTab('tab-customers')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition"><i class="fas fa-users mr-1"></i> Khách Hàng</button>
                 
-                <!-- TAB HỖ TRỢ KHÁCH HÀNG MỚI CÓ BADGE ĐẾM SỐ -->
+                <!-- TAB HỖ TRỢ KHÁCH HÀNG CÓ BADGE ĐẾM SỐ LƯỢNG CHƯA TƯ VẤN -->
                 <button type="button" onclick="switchTab('tab-support')" class="tab-btn px-3 py-2 rounded hover:bg-gray-700 transition relative">
                     <i class="fas fa-headset mr-1"></i> Hỗ Trợ Khách Hàng
                     <span id="support-badge" class="ml-1 bg-brandRed text-white text-xs font-bold px-2 py-0.5 rounded-full hidden">0</span>
@@ -282,7 +282,7 @@
             </div>
         </div>
 
-        <!-- 4. TAB: KHÁCH HÀNG DỰ ÁN -->
+        <!-- 4. TAB: KHÁCH HÀNG DỰ ÁN (CHỈ QUẢN LÝ LINK ONLINE THỰC TẾ) -->
         <div id="tab-customers" class="tab-content hidden">
             <h2 class="text-xl font-bold text-brandBlue mb-4 flex items-center"><i class="fas fa-users mr-2"></i> Quản Lý Khách Hàng & Giám Sát Link Online</h2>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -299,8 +299,6 @@
                                 <option value="Hoạt động">Hoạt động</option>
                                 <option value="Đang khảo sát">Đang khảo sát</option>
                                 <option value="Đang thi công">Đang thi công</option>
-                                <option value="Tiềm năng từ Chatbot">Tiềm năng từ Chatbot</option>
-                                <option value="Đã tư vấn">Đã tư vấn</option>
                             </select>
                         </div>
                         <div class="flex space-x-2">
@@ -320,7 +318,7 @@
                                 <thead class="bg-gray-50 border-b">
                                     <tr>
                                         <th class="p-3">Họ Tên</th>
-                                        <th class="p-3">Địa Chỉ / Nội Dung Chat</th>
+                                        <th class="p-3">Địa Chỉ / Nội Dung</th>
                                         <th class="p-3">Link Dự án</th>
                                         <th class="p-3">Trạng Thái</th>
                                         <th class="p-3 text-right">Thao Tác</th>
@@ -438,13 +436,13 @@
                         <img src="logo.png" alt="Logo" class="w-16 h-16 object-contain" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'">
                         <div>
                             <h2 class="text-xl font-black text-brandBlue">CÔNG TY CP ĐIỆN NƯỚC AN GIANG</h2>
-                            <p class="text-xs text-gray-600">Địa chỉ: Số 18, Đường Tôn Đức Thắng, TP. Long Xuyên, Tỉnh An Giang</p>
-                            <p class="text-xs text-gray-600">Hotline: 0296 3852 345</p>
+                            <p class="text-xs text-gray-600">Địa chỉ: 821 Trần Hưng Đạo – Tổ 13 – Khóm Bình Thới 1 – Phường Bình Đức – Tỉnh An Giang</p>
+                            <p class="text-xs text-gray-600">Hotline: 0296 3603 382</p>
                         </div>
                     </div>
                     <div class="text-right">
                         <h1 class="text-2xl font-black text-brandRed uppercase">BẢNG BÁO GIÁ</h1>
-                        <p class="text-xs text-gray-500">Ngày: 16/10/2026</p>
+                        <p class="text-xs text-gray-500">Ngày: 18/10/2026</p>
                     </div>
                 </div>
                 <div class="mb-4 text-sm space-y-1">
@@ -499,7 +497,7 @@
             </div>
         </div>
 
-        <!-- 8. TAB: BÁO CÁO TỒN KHO -->
+        <!-- 8. TAB: BẢNG CÁO TỒN KHO -->
         <div id="tab-inventory" class="tab-content hidden">
             <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
                 <h2 class="text-xl font-bold text-brandBlue flex items-center"><i class="fas fa-warehouse mr-2"></i> Báo Cáo Tồn Kho Theo Danh Mục</h2>
@@ -632,7 +630,7 @@
                     <img src="logo.png" alt="Logo" class="w-16 h-16 object-contain" onerror="this.src='https://i.imgur.com/7j8p3Q8.png'">
                     <div>
                         <h2 class="text-xl font-black text-brandBlue">CÔNG TY CP ĐIỆN NƯỚC AN GIANG</h2>
-                        <p class="text-xs text-gray-600">Địa chỉ: Số 18, Đường Tôn Đức Thắng, TP. Long Xuyên, Tỉnh An Giang</p>
+                        <p class="text-xs text-gray-600">Địa chỉ: 821 Trần Hưng Đạo – Tổ 13 – Khóm Bình Thới 1 – Phường Bình Đức – Tỉnh An Giang</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -664,24 +662,31 @@
             </div>
         </div>
 
-        <!-- MODAL POPUP XEM CHI TIẾT CHAT KHÁCH HÀNG -->
+        <!-- MODAL POPUP XEM CHI TIẾT CHAT KHÁCH HÀNG (HỖ TRỢ CHỌN HÀNH ĐỘNG) -->
         <div id="chat-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
             <div class="bg-white rounded-lg p-6 max-w-lg w-full shadow-2xl space-y-4">
                 <div class="flex justify-between items-center border-b pb-2">
                     <h3 class="text-lg font-bold text-brandBlue flex items-center">
-                        <i class="fas fa-comment-alt mr-2"></i> Chi Tiết Khách Hàng Chat
+                        <i class="fas fa-comment-alt mr-2"></i> Chi Tiết Chatbot Lead Khách Hàng
                     </h3>
                     <button type="button" onclick="closeChatModal()" class="text-gray-500 hover:text-red-600 text-xl font-bold">&times;</button>
                 </div>
                 <div class="space-y-2 text-sm">
-                    <p><strong>Họ Tên / SĐT:</strong> <span id="modal-cust-name" class="font-bold text-brandBlue"></span></p>
-                    <p><strong>Nội Dung Chat / Khảo Sát:</strong></p>
-                    <div id="modal-cust-chat" class="p-3 bg-gray-50 border rounded text-xs text-gray-700 whitespace-pre-wrap max-h-48 overflow-y-auto"></div>
-                    <p><strong>Trạng Thái:</strong> <span id="modal-cust-status" class="px-2 py-0.5 rounded text-xs font-bold"></span></p>
+                    <p><strong>Khách Hàng / SĐT:</strong> <span id="modal-lead-name" class="font-bold text-brandBlue"></span></p>
+                    <p><strong>Nội Dung Chat Từ AI:</strong></p>
+                    <div id="modal-lead-content" class="p-3 bg-gray-50 border rounded text-xs text-gray-700 whitespace-pre-wrap max-h-48 overflow-y-auto"></div>
+                    <div class="pt-2">
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Cập Nhật Trạng Thái / Hành Động:</label>
+                        <select id="modal-lead-status" class="w-full text-sm border rounded px-3 py-2 font-bold">
+                            <option value="Chưa tư vấn">Chưa tư vấn (Mặc định)</option>
+                            <option value="Đã tư vấn">Đã tư vấn</option>
+                            <option value="Tiếp tục chat với khách">Tiếp tục chat với khách</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="flex justify-end space-x-2 border-t pt-3">
-                    <button type="button" id="btn-mark-consulted" onclick="markAsConsulted()" class="bg-green-600 text-white text-xs px-3 py-2 rounded font-bold hover:bg-green-700">
-                        <i class="fas fa-check-circle mr-1"></i> Đánh Dấu Đã Tư Vấn
+                    <button type="button" onclick="saveLeadStatus()" class="bg-brandBlue text-white text-xs px-4 py-2 rounded font-bold hover:bg-blue-700 shadow">
+                        <i class="fas fa-save mr-1"></i> Lưu Trạng Thái
                     </button>
                     <button type="button" onclick="closeChatModal()" class="bg-gray-300 text-gray-700 text-xs px-3 py-2 rounded font-bold">Đóng</button>
                 </div>
@@ -692,8 +697,8 @@
 
     <!-- SCRIPTS -->
     <script>
-        let allPackages = [], allProducts = [], allMaterials = [], allEquipment = [], allCustomers = [], allServices = [], allExpenses = [], allSales = [], allAdmins = [];
-        let currentViewingChatId = null;
+        let allPackages = [], allProducts = [], allMaterials = [], allEquipment = [], allCustomers = [], allChatbotLeads = [], allServices = [], allExpenses = [], allSales = [], allAdmins = [];
+        let currentViewingLeadId = null;
 
         function handleLogout() {
             sessionStorage.removeItem('isLoggedIn');
@@ -728,12 +733,13 @@
 
         async function loadAllData() {
             try {
-                const [pkgRes, pRes, mRes, eRes, cRes, sRes, expRes, salesRes, adminRes] = await Promise.all([
+                const [pkgRes, pRes, mRes, eRes, cRes, leadRes, sRes, expRes, salesRes, adminRes] = await Promise.all([
                     fetch('/api/package-quotations').then(r => r.json()),
                     fetch('/api/solar-products').then(r => r.json()),
                     fetch('/api/materials').then(r => r.json()),
                     fetch('/api/equipment').then(r => r.json()),
                     fetch('/api/customers').then(r => r.json()),
+                    fetch('/api/chatbot-leads').then(r => r.json()),
                     fetch('/api/services').then(r => r.json()),
                     fetch('/api/expenses').then(r => r.json()),
                     fetch('/api/sales').then(r => r.json()),
@@ -744,6 +750,7 @@
                 allMaterials = mRes;
                 allEquipment = eRes;
                 allCustomers = cRes;
+                allChatbotLeads = leadRes;
                 allServices = sRes;
                 allExpenses = expRes;
                 allSales = salesRes;
@@ -1087,13 +1094,13 @@
                     </td>
                 </tr>`;
             });
-            document.getElementById('customer-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có khách hàng</td></tr>';
+            document.getElementById('customer-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-3 text-gray-400">Chưa có khách hàng giám sát link</td></tr>';
         }
 
-        // --- XỬ LÝ TAB HỖ TRỢ KHÁCH HÀNG & BADGE ĐẾM SỐ ---
+        // --- XỬ LÝ TAB HỖ TRỢ KHÁCH HÀNG & CHATBOT LEADS ---
         function renderSupportTab() {
-            // Lọc danh sách khách hàng mới / tư vấn từ chatbot
-            const pendingLeads = allCustomers.filter(c => c.status === 'Tiềm năng từ Chatbot');
+            // Lọc các lead có trạng thái "Chưa tư vấn" để đếm thông báo badge
+            const pendingLeads = allChatbotLeads.filter(l => !l.status || l.status === 'Chưa tư vấn');
             const badgeEl = document.getElementById('support-badge');
 
             if (pendingLeads.length > 0) {
@@ -1105,74 +1112,72 @@
 
             let html = '';
             let stt = 1;
-            allCustomers.forEach(c => {
-                if (c.status === 'Tiềm năng từ Chatbot' || c.status === 'Đã tư vấn') {
-                    const isPending = c.status === 'Tiềm năng từ Chatbot';
-                    const badgeStatus = isPending 
-                        ? '<span class="px-2.5 py-1 bg-red-100 text-red-800 text-xs rounded-full font-bold"><i class="fas fa-bell mr-1"></i>Cần Tư Vấn</span>' 
-                        : '<span class="px-2.5 py-1 bg-green-100 text-green-800 text-xs rounded-full font-bold"><i class="fas fa-check mr-1"></i>Đã Tư Vấn</span>';
-
-                    html += `<tr class="border-b hover:bg-gray-50">
-                        <td class="p-3 font-bold">${stt++}</td>
-                        <td class="p-3 font-bold text-brandBlue">${c.name}</td>
-                        <td class="p-3 text-xs text-gray-700 max-w-sm truncate">${c.address || 'Không có nội dung'}</td>
-                        <td class="p-3">${badgeStatus}</td>
-                        <td class="p-3 text-right">
-                            <button type="button" onclick="openChatModal(${c.id})" class="bg-brandBlue text-white text-xs px-3 py-1.5 rounded font-bold hover:bg-blue-700 shadow">
-                                <i class="fas fa-eye mr-1"></i> Xem Chat
-                            </button>
-                        </td>
-                    </tr>`;
+            allChatbotLeads.forEach(l => {
+                const statusVal = l.status || 'Chưa tư vấn';
+                let badgeClass = 'bg-yellow-100 text-yellow-800';
+                let iconClass = 'fa-clock';
+                if (statusVal === 'Đã tư vấn') {
+                    badgeClass = 'bg-green-100 text-green-800';
+                    iconClass = 'fa-check-circle';
+                } else if (statusVal === 'Tiếp tục chat với khách') {
+                    badgeClass = 'bg-blue-100 text-blue-800';
+                    iconClass = 'fa-comments';
                 }
+
+                html += `<tr class="border-b hover:bg-gray-50">
+                    <td class="p-3 font-bold">${stt++}</td>
+                    <td class="p-3 font-bold text-brandBlue">${l.customer_name || 'Khách vãng lai'}<br><span class="text-xs text-gray-500"><i class="fas fa-phone mr-1"></i>${l.phone || 'Chưa có SĐT'}</span></td>
+                    <td class="p-3 text-xs text-gray-700 max-w-sm truncate">${l.chat_content || 'Không có nội dung'}</td>
+                    <td class="p-3">
+                        <span class="px-2.5 py-1 text-xs rounded-full font-bold ${badgeClass}">
+                            <i class="fas ${iconClass} mr-1"></i>${statusVal}
+                        </span>
+                    </td>
+                    <td class="p-3 text-right">
+                        <button type="button" onclick="openChatModal(${l.id})" class="bg-brandBlue text-white text-xs px-3 py-1.5 rounded font-bold hover:bg-blue-700 shadow">
+                            <i class="fas fa-eye mr-1"></i> Xem & Xử Lý
+                        </button>
+                    </td>
+                </tr>`;
             });
 
             document.getElementById('support-table-list').innerHTML = html || '<tr><td colspan="5" class="text-center p-4 text-gray-400">Chưa có lịch sử tin nhắn mới nào từ khách hàng</td></tr>';
         }
 
         function openChatModal(id) {
-            const c = allCustomers.find(x => x.id === id);
-            if (!c) return;
-            currentViewingChatId = id;
+            const lead = allChatbotLeads.find(x => x.id === id);
+            if (!lead) return;
+            currentViewingLeadId = id;
 
-            document.getElementById('modal-cust-name').innerText = c.name;
-            document.getElementById('modal-cust-chat').innerText = c.address || 'Không có nội dung chat chi tiết';
-            
-            const isPending = c.status === 'Tiềm năng từ Chatbot';
-            const statusEl = document.getElementById('modal-cust-status');
-            statusEl.innerText = isPending ? 'Cần tư vấn ngay' : 'Đã tư vấn hoàn tất';
-            statusEl.className = isPending 
-                ? 'px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-800' 
-                : 'px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-800';
+            document.getElementById('modal-lead-name').innerText = `${lead.customer_name || 'Khách'} - SĐT: ${lead.phone || 'Không có'}`;
+            document.getElementById('modal-lead-content').innerText = lead.chat_content || 'Không có nội dung chat chi tiết';
+            document.getElementById('modal-lead-status').value = lead.status || 'Chưa tư vấn';
 
-            document.getElementById('btn-mark-consulted').style.display = isPending ? 'inline-block' : 'none';
             document.getElementById('chat-detail-modal').classList.remove('hidden');
         }
 
         function closeChatModal() {
             document.getElementById('chat-detail-modal').classList.add('hidden');
-            currentViewingChatId = null;
+            currentViewingLeadId = null;
         }
 
-        async function markAsConsulted() {
-            if (!currentViewingChatId) return;
-            const c = allCustomers.find(x => x.id === currentViewingChatId);
-            if (!c) return;
+        async function saveLeadStatus() {
+            if (!currentViewingLeadId) return;
+            const newStatus = document.getElementById('modal-lead-status').value;
 
-            const updatedData = {
-                name: c.name,
-                address: c.address,
-                link: c.link || '',
-                status: 'Đã tư vấn'
-            };
-
-            await fetch(`/api/customers/${currentViewingChatId}`, {
+            const res = await fetch(`/api/chatbot-leads/${currentViewingLeadId}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(updatedData)
+                body: JSON.stringify({ status: newStatus })
             });
 
-            closeChatModal();
-            loadAllData();
+            if (res.ok) {
+                alert('Cập nhật trạng thái thành công!');
+                closeChatModal();
+                loadAllData();
+            } else {
+                alert('Có lỗi xảy ra khi lưu trạng thái!');
+            }
         }
 
         // --- Services ---
@@ -1600,7 +1605,6 @@
                 addQuoteItemRow(); 
                 addSalesItemRow();
             }); 
-            // Tự động làm mới dữ liệu mỗi 30 giây để cập nhật tin nhắn mới
             setInterval(loadAllData, 30000);
         };
     </script>
