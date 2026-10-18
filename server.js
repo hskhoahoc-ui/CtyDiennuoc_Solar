@@ -18,24 +18,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Khởi tạo Gemini SDK
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// Ngữ cảnh hệ thống cho AI Chatbot POWACO
-const SYSTEM_CONTEXT = `
-Bạn là Trợ lý ảo AI chuyên nghiệp của CÔNG TY CP ĐIỆN NƯỚC AN GIANG (POWACO).
-Chuyên môn: Tư vấn điện năng lượng mặt trời, tấm pin solar, biến tần/inverter, vật tư điện mặt trời và báo giá lắp đặt trọn gói.
-
-Thông tin doanh nghiệp:
-- SĐT/Hotline hỗ trợ: 0296 3603 382
-- Zalo hỗ trợ: http://zalo.me/385561373292339133?src=qr
-- Địa chỉ: 821 Trần Hưng Đạo – Tổ 13 – Khóm Bình Thới 1 – Phường Bình Đức – Tỉnh An Giang.
-- Nguồn thông tin sản phẩm: https://ctydiennuoc-solar.onrender.com/
-
-Nhiệm vụ của Chatbot:
-1. Trả lời thân thiện, lịch sự, đúng trọng tâm về dịch vụ năng lượng mặt trời.
-2. Cung cấp thông tin giá cả, dịch vụ trọn gói, vật tư khi khách hỏi.
-3. Khi khách hỏi sâu về báo giá chi tiết hoặc khảo sát thực tế, hãy chủ động mời khách hàng để lại SỐ ĐIỆN THOẠI và ĐỊA CHỈ để kỹ thuật viên liên hệ lại.
-4. Nếu khách hàng có thắc mắc gấp, hướng dẫn họ gọi tới Hotline 0296 3603 382 hoặc nhắn Zalo.
-`;
-
 // PostgreSQL Connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:6543/angiang_solar',
@@ -92,7 +74,6 @@ pool.query(`
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 
-  -- Tự động bổ sung các cột giám sát link nếu bảng customers cũ chưa có
   ALTER TABLE customers ADD COLUMN IF NOT EXISTS is_online BOOLEAN DEFAULT false;
   ALTER TABLE customers ADD COLUMN IF NOT EXISTS last_status_change TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
   ALTER TABLE customers ADD COLUMN IF NOT EXISTS last_checked TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
@@ -188,7 +169,6 @@ async function checkCustomerLinkStatus(url) {
   }
 }
 
-// Định kỳ quét trạng thái link các khách hàng
 async function pingAllCustomerLinks() {
   try {
     const result = await pool.query('SELECT id, link, is_online FROM customers WHERE link IS NOT NULL AND link != \'\'');
@@ -214,7 +194,7 @@ async function pingAllCustomerLinks() {
 
 setInterval(pingAllCustomerLinks, 3 * 60 * 1000);
 
-// --- API CHATBOT GEMINI & THU THẬP SĐT KHÁCH HÀNG ---
+// --- API CHATBOT GEMINI TỰ ĐỘNG ĐỌC DỮ LIỆU & LƯU LEADS ---
 app.post('/api/chat', async (req, res) => {
     try {
         const { message, history } = req.body;
@@ -222,7 +202,43 @@ app.post('/api/chat', async (req, res) => {
             return res.status(400).json({ error: 'Tin nhắn không được để trống.' });
         }
 
-        // Tự động kiểm tra và lọc SĐT của khách hàng trong tin nhắn để lưu vào Database Khách Hàng
+        // 1. Tự động lấy dữ liệu từ Database để làm ngữ cảnh (Context) cho AI
+        const [pkgRes, prodRes, equipRes, servRes] = await Promise.all([
+            pool.query('SELECT * FROM package_quotations'),
+            pool.query('SELECT brand, power, selling_price, stock FROM solar_products'),
+            pool.query('SELECT brand, power, selling_price FROM equipment'),
+            pool.query('SELECT service_type, price, description FROM services')
+        ]);
+
+        const packagesText = pkgRes.rows.map(p => `- ${p.package_name} (${p.power}): Giá ${Number(p.package_price).toLocaleString()} VNĐ, BH Pin: ${p.battery_warranty}`).join('\n');
+        const productsText = prodRes.rows.map(p => `- Pin ${p.brand} ${p.power}: ${Number(p.selling_price).toLocaleString()} VNĐ (Tồn: ${p.stock})`).join('\n');
+        const equipmentText = equipRes.rows.map(e => `- Thiết bị ${e.brand} ${e.power}: ${Number(e.selling_price).toLocaleString()} VNĐ`).join('\n');
+        const servicesText = servRes.rows.map(s => `- ${s.service_type}: ${Number(s.price).toLocaleString()} VNĐ (${s.description || ''})`).join('\n');
+
+        const SYSTEM_CONTEXT = `
+Bạn là Trợ lý ảo AI chuyên nghiệp của CÔNG TY CP ĐIỆN NƯỚC AN GIANG (POWACO).
+Thông tin liên hệ: SĐT/Hotline: 0296 3603 382, Địa chỉ: 821 Trần Hưng Đạo, P. Bình Đức, Tỉnh An Giang.
+
+Dưới đây là cơ sở dữ liệu sản phẩm, dịch vụ và báo giá thực tế của công ty hiện tại:
+[BÁO GIÁ TRỌN GÓI]:
+${packagesText || 'Chưa cập nhật'}
+
+[PIN NĂNG LƯỢNG MẶT TRỜI]:
+${productsText || 'Chưa cập nhật'}
+
+[THIẾT BỊ / INVERTER]:
+${equipmentText || 'Chưa cập nhật'}
+
+[DỊCH VỤ]:
+${servicesText || 'Chưa cập nhật'}
+
+Nhiệm vụ của Chatbot:
+1. Trả lời thân thiện, lịch sự, chính xác dựa trên dữ liệu sản phẩm/báo giá ở trên bằng tiếng Việt.
+2. Nếu khách hàng hỏi sâu về báo giá hoặc khảo sát, hãy khéo léo yêu cầu khách để lại Họ tên và Số điện thoại để kỹ thuật viên liên hệ lại.
+3. Tự động lưu thông tin số điện thoại khách hàng vào hệ thống khi nhận được.
+`;
+
+        // 2. Tự động kiểm tra và lọc SĐT của khách hàng trong tin nhắn để lưu vào Database Khách Hàng (Tab Hỗ trợ khách hàng)
         const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/g;
         const matchedPhones = message.match(phoneRegex);
         if (matchedPhones && matchedPhones.length > 0) {
@@ -236,7 +252,7 @@ app.post('/api/chat', async (req, res) => {
             console.log("📌 [LEAD MỚI TỪ CHATBOT ĐÃ LƯU VÀO DB]:", phone);
         }
 
-        // Gọi Gemini Model 2.5 Flash
+        // 3. Gọi Gemini Model 2.5 Flash
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: [
@@ -256,7 +272,7 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// --- API ENDPOINTS ---
+// --- API ENDPOINTS ĐẦY ĐỦ TỪ BẢN GỐC ---
 
 app.get('/api/solar-products', async (req, res) => {
   try {
@@ -395,7 +411,6 @@ app.delete('/api/equipment/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// --- CUSTOMERS CRUD & SAFE PING ---
 app.get('/api/customers', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM customers ORDER BY id DESC');
