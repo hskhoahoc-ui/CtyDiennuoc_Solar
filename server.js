@@ -4,6 +4,8 @@ const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
 const XLSX = require('xlsx');
+require('dotenv').config();
+const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,6 +14,27 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Khởi tạo Gemini SDK
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+// Ngữ cảnh hệ thống cho AI Chatbot POWACO
+const SYSTEM_CONTEXT = `
+Bạn là Trợ lý ảo AI chuyên nghiệp của CÔNG TY CP ĐIỆN NƯỚC AN GIANG (POWACO).
+Chuyên môn: Tư vấn điện năng lượng mặt trời, tấm pin solar, biến tần/inverter, vật tư điện mặt trời và báo giá lắp đặt trọn gói.
+
+Thông tin doanh nghiệp:
+- SĐT/Hotline hỗ trợ: 0296 3603 382
+- Zalo hỗ trợ: http://zalo.me/385561373292339133?src=qr
+- Địa chỉ: 821 Trần Hưng Đạo – Tổ 13 – Khóm Bình Thới 1 – Phường Bình Đức – Tỉnh An Giang.
+- Nguồn thông tin sản phẩm: https://ctydiennuoc-solar.onrender.com/
+
+Nhiệm vụ của Chatbot:
+1. Trả lời thân thiện, lịch sự, đúng trọng tâm về dịch vụ năng lượng mặt trời.
+2. Cung cấp thông tin giá cả, dịch vụ trọn gói, vật tư khi khách hỏi.
+3. Khi khách hỏi sâu về báo giá chi tiết hoặc khảo sát thực tế, hãy chủ động mời khách hàng để lại SỐ ĐIỆN THOẠI và ĐỊA CHỈ để kỹ thuật viên liên hệ lại.
+4. Nếu khách hàng có thắc mắc gấp, hướng dẫn họ gọi tới Hotline 0296 3603 382 hoặc nhắn Zalo.
+`;
 
 // PostgreSQL Connection
 const pool = new Pool({
@@ -190,6 +213,48 @@ async function pingAllCustomerLinks() {
 }
 
 setInterval(pingAllCustomerLinks, 3 * 60 * 1000);
+
+// --- API CHATBOT GEMINI & THU THẬP SĐT KHÁCH HÀNG ---
+app.post('/api/chat', async (req, res) => {
+    try {
+        const { message, history } = req.body;
+        if (!message) {
+            return res.status(400).json({ error: 'Tin nhắn không được để trống.' });
+        }
+
+        // Tự động kiểm tra và lọc SĐT của khách hàng trong tin nhắn để lưu vào Database Khách Hàng
+        const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/g;
+        const matchedPhones = message.match(phoneRegex);
+        if (matchedPhones && matchedPhones.length > 0) {
+            const phone = matchedPhones[0];
+            const now = new Date();
+            await pool.query(
+                `INSERT INTO customers (name, address, link, status, is_online, last_status_change, last_checked) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $6)`,
+                [`Khách Chatbot (${phone})`, `Nội dung yêu cầu từ Chat: ${message}`, '', 'Tiềm năng từ AI', false, now]
+            );
+            console.log("📌 [LEAD MỚI TỪ CHATBOT ĐÃ LƯU VÀO DB]:", phone);
+        }
+
+        // Gọi Gemini Model 2.5 Flash
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: [
+                ...(history || []),
+                { role: 'user', parts: [{ text: message }] }
+            ],
+            config: {
+                systemInstruction: SYSTEM_CONTEXT,
+                temperature: 0.7,
+            }
+        });
+
+        res.json({ reply: response.text });
+    } catch (error) {
+        console.error('Lỗi Gemini API:', error);
+        res.status(500).json({ error: 'Hệ thống đang bận. Vui lòng thử lại sau hoặc gọi Hotline 0296 3603 382.' });
+    }
+});
 
 // --- API ENDPOINTS ---
 
